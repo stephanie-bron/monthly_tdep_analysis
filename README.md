@@ -6,7 +6,7 @@ To run the code:
 
   First source the environement: 
   
-  source setup.sh
+    source setup.sh
  
   Then:
     
