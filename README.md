@@ -8,6 +8,7 @@ To run the code:
  
   Then:
     cd pysLab
+    
     python pysLab.py
   
   Log file is in AnaSources/<name_of_source>
