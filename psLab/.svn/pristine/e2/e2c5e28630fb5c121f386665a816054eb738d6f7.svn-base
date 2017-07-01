@@ -1,0 +1,81 @@
+void monitor_eProb(I3Ark &ark){
+
+
+  
+
+  ZenithEnergyProb *zenProb = ark.eProb;
+  int ze_band = zenProb->GetZenDegBand(31.7883); //average declination
+
+
+  zenProb->SelectZenithBand(ze_band);
+  
+  TString energyVar = "log10(mmueEn)";
+  
+  TCanvas can1;
+  
+  TH1D hbkg = zenProb->GetHistProbBkg();
+  hbkg.SetLineColor(1);
+  hbkg.SetLineWidth(2);
+  hbkg.SetName("hbkg");
+  hbkg.SetXTitle(energyVar);
+  hbkg.SetYTitle("dP/dE");
+  hbkg.Draw();
+  
+     
+  TH1D* hSignal = zenProb->GetHistProbGamma(2);
+  hSignal->SetLineColor(2);
+  hSignal->SetLineWidth(2);
+  hSignal->SetName("hSignal");
+  hSignal->Draw("same");
+  
+  
+  if(gROOT->FindObject("hBartol"))
+    delete gROOT->FindObject("hBartol");
+  
+  TH1D* hBartol = new TH1D("hBartol","hBartol",
+			   hbkg.GetNbinsX(),
+			   hbkg.GetXaxis()->GetXmin(),
+			   hbkg.GetXaxis()->GetXmax());
+  
+  hBartol->SetLineColor(8);
+  hBartol->SetLineWidth(2);
+  
+  
+  // should really get this variable name from eProb...
+  
+  //TTree *srcTree = ark.evLoader.GetSourceTree();
+  
+  //energyVar += ">>hBartol";
+  
+  //srcTree->Draw(energyVar, ark.evLoader.GetCuts()*"BartolFluxWeightForOneFile","goff");
+  //srcTree->Draw(energyVar, ark.evLoader.GetCuts()*"OW*mcEn**-3.7","goff");
+  //double sum = hBartol->GetSum();
+
+  //hBartol->Scale(1./sum);
+  //hBartol->Draw("same");
+  
+  TLegend leg(0.6, 0.6, 0.85, 0.85, "", "trNDC");
+  leg.AddEntry("hbkg", "Background", "l");
+  leg.AddEntry(hSignal, "E^{-2} Signal ", "l");
+  //leg.AddEntry(hBartol, "Atmos ", "l");
+  leg.SetFillColor(kWhite);
+  leg.Draw();
+  
+  TCanvas can2;
+  
+  zenProb->GetHistProbGammaMax().Draw();
+  //gPad->SetLogz();
+  
+  TString filename = "EProb";
+  
+  TString output1 = filename;
+  TString output2 = filename;
+  
+  output1 += "_can1.root";
+
+  can1.SaveAs(output1);
+  
+  output2 += "_can2.root";
+  
+  can2.SaveAs(output2);
+}

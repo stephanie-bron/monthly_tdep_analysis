@@ -1,0 +1,46 @@
+{
+//=========Macro generated from canvas: c1/c1
+//=========  (Tue Mar  8 09:02:36 2011) by ROOT version5.24/00b
+   TCanvas *c1 = new TCanvas("c1", "c1",14,48,700,500);
+   gStyle->SetOptStat(0);
+   c1->Range(-13.75,-0.3580001,123.75,15.614);
+   c1->SetFillColor(0);
+   c1->SetBorderMode(0);
+   c1->SetBorderSize(2);
+   c1->SetFrameBorderMode(0);
+   c1->SetFrameBorderMode(0);
+   
+   TGraph *graph = new TGraph(11);
+   graph->SetName("Graph");
+   graph->SetTitle("Graph");
+   graph->SetFillColor(1);
+   graph->SetPoint(0,1e-06,2.304);
+   graph->SetPoint(1,1e-05,2.5376);
+   graph->SetPoint(2,0.0001,2.6768);
+   graph->SetPoint(3,0.001,2.9776);
+   graph->SetPoint(4,0.01,3.41504);
+   graph->SetPoint(5,0.1,4.16064);
+   graph->SetPoint(6,0.3,4.704);
+   graph->SetPoint(7,1,5.52);
+   graph->SetPoint(8,3,6.304);
+   graph->SetPoint(9,10,7.8576);
+   graph->SetPoint(10,100,12.952);
+   
+   TH1 *Graph1 = new TH1F("Graph1","Graph",100,0,110);
+   Graph1->SetMinimum(1.2392);
+   Graph1->SetMaximum(14.0168);
+   Graph1->SetDirectory(0);
+   Graph1->SetStats(0);
+   graph->SetHistogram(Graph1);
+   
+   graph->Draw("al");
+   
+   TPaveText *pt = new TPaveText(0.01,0.9390678,0.121954,0.995,"blNDC");
+   pt->SetName("title");
+   pt->SetBorderSize(1);
+   TText *text = pt->AddText("Graph");
+   pt->Draw();
+   c1->Modified();
+   c1->cd();
+   c1->SetSelected(c1);
+}

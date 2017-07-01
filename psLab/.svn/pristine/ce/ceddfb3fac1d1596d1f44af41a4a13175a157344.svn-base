@@ -1,0 +1,7 @@
+double RescaledSigma_IC86_MPE(double Sigma, double Energy)
+{
+  double x = log10(Energy);
+
+  //return Sigma * (3.100987 - 0.970976 * pow(x,1.) + 0.152560 * pow(x,2.)); //old (9095)
+  return Sigma * (14.641305 - 11.770268 * pow(x,1.) + 3.6754198 * pow(x,2.) - 0.46795588 * pow(x,3.) + 0.02225841379 * pow(x,4.)); // Pb (new)
+}

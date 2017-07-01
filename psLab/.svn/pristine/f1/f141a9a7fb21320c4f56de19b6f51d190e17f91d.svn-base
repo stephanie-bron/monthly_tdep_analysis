@@ -1,0 +1,87 @@
+
+// Define globals here if you need them in the macros called by this fn.
+// (N.B. anything defined as part of the function below has limited scope)
+
+long RANSEED;
+
+void rootSubmitMacro(long ranSeed) {
+
+  // Set Up
+
+  RANSEED = ranSeed;  // this will be used by the Track macro below
+  gROOT->Macro("Track.C");
+
+  extern I3Analysis psData;
+  psData.GenerateDataSet_with_nSrcEvents(0);
+  // this is the random set which will be evaluated.
+
+
+  // Run  
+
+  gROOT->ProcessLine(".x macro_AllSky.C(0., 360., -85., 85., 2, 10)");
+
+
+  // Save Results
+
+  TString currentDir = gSystem->pwd();
+  
+  TString resultsDir  = currentDir + "/results/";
+  TString histsDir    = currentDir + "/hists/";
+  //  TString detailsDir  = startDir + "/details/";
+  //  TString graphicsDir = startDir + "/graphics/";
+
+  gSystem->Exec("mkdir -p " + resultsDir);
+  gSystem->Exec("mkdir -p " + histsDir);
+
+  char baseName[200];
+  sprintf(baseName,"trial_%08d",-ranSeed);
+
+
+  // save main results to text file
+  TString fileName = resultsDir + TString(baseName) + "_results.txt";
+  cout << "Writing results to " << fileName << " ...\n";
+  FILE *fp = fopen(fileName,"w");
+  fprintf(fp,"%8d  %8.5f  %8.5f   %7.3f  %7.3f   %8.5f  %8.5f\n", 
+	  ranSeed, llhBest, resultMax, raDegMax, decDegMax, nsBest, gammaBest);
+  fclose(fp);
+  cout << "... done.\n";
+
+  // save all sky histograms to root file
+  fileName = histsDir + TString(baseName) + "_skymaps.root";
+  TFile *ft = new TFile(fileName,"RECREATE");
+  hAllSkyCoarse->Write();
+  hAllSkyFine->Write();
+  ft->Close();
+
+  // save details of most significant events
+  /*
+  gROOT->ProcessLine(".x macro_EventInfo_fromSubmit.C");
+  TString fileEventInfo = TString(detailsDir)+TString(baseName)+"_details.txt";
+  cout << "Writing event info to file " << fileEventInfo << "  ...\n";
+  ofstream outfile;
+  outfile.open(fileEventInfo);
+  outfile << outputInfoString;
+  outfile.close();
+  cout << "... done.\n";
+  */
+
+  // save gif plot
+  /*
+  gROOT->ProcessLine(".x macro_AllSkyNew_Show.C");
+  gSystem->cd(graphicsDir);
+  TString epsName = TString(baseName)+".eps";
+  TString ppmName = TString(baseName)+".eps001.ppm";
+  TString gifName = TString(baseName)+"_AllSky.gif";
+  cout << "making eps plot and converting to " << gifName << "   ...\n";
+  // gif's are made from pix memory, which doesn't exist in batch mode,
+  // so make eps and then convert to gif
+  // (see: http://root.cern.ch/cgi-bin/print_hit_bold.pl/root/roottalk/roottalk00/0402.html?gifbatch#first_hit )
+  canAllSkyNewShow->Print(epsName);  
+  gSystem->Exec("pstopnm -ppm -xborder 0 -yborder 0 -xsize=1496 -ysize=572 -portrait "+epsName);
+  gSystem->Exec("rm "+gifName); // preemptive, since if it already exists
+  // root sometimes mangles the gif which should replace it
+  gSystem->Exec("ppmtogif "+ppmName+" > "+gifName);
+  gSystem->Exec("rm "+epsName+" "+ppmName);
+  cout << "... done.\n";
+  */
+}

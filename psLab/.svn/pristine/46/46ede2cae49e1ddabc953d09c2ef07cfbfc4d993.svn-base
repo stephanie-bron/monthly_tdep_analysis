@@ -1,0 +1,69 @@
+void Pvalue_DecTest_show(TString filename = "", double pvalue = 0) {
+  if (filename != "") {
+    TFile *f = new TFile(filename);
+  }
+
+  hLogpDec->SetTitle(filename+";-log_{10}p;declination");
+  gROOT->SetStyle("Plain");
+  gStyle->SetOptStat(0);
+  TCanvas *can = new TCanvas("can","can",800,800);
+  hLogpDec->Draw("box");
+
+  if (pvalue > 0) {
+    TLine *line = new TLine(log10(pvalue),hLogpDec->GetYaxis()->GetXmin(),
+			    log10(pvalue),hLogpDec->GetYaxis()->GetXmax() );
+    line->SetLineColor(kBlue);
+    line->SetLineWidth(2);
+    line->Draw();
+    can->Update();
+    int entriesPerRow = hLogpDec->GetSum()/hLogpDec->GetNbinsY();
+    cout << "Trials: " << entriesPerRow << endl;
+    cout << "pvalue shown: " << pvalue << endl;
+    for (int iy = 1; iy<= hLogpDec->GetNbinsY(); ++iy) {
+      double sum = 0.;
+      for (int ix = 1; ix<= hLogpDec->GetNbinsX(); ++ix) {
+	sum += hLogpDec->GetBinContent(ix,iy);
+	if (sum > pvalue * entriesPerRow) {
+	  double x = hLogpDec->GetXaxis()->GetBinLowEdge(ix+1);
+	  double y1 = hLogpDec->GetYaxis()->GetBinLowEdge(iy);
+	  double y2 = hLogpDec->GetYaxis()->GetBinLowEdge(iy+1);
+	  TLine *line = new TLine(x,y1,x,y2);
+	  line->SetLineColor(kRed);
+	  line->SetLineWidth(2);
+	  line->Draw();
+	  break;  // ix loop
+	}
+      }
+    }
+
+    TH1D *hSummary = new TH1D("hSummary","hSummary",
+			      nDecBins, 
+			      hLogpDec->GetYaxis()->GetXmin(),
+			      hLogpDec->GetYaxis()->GetXmax());
+			    
+    int nLastBin = hLogpDec->GetXaxis()->FindBin(log10(pThreshold));
+
+    for (int i=1; i<=nDecBins; ++i) {
+      int nTotal = 0;
+      for (int j=0; j<nLastBin; ++j) {
+	nTotal += hLogpDec->GetBinContent(j,i);
+      }
+
+      double actualPValue = double(nTotal)/nTrials;
+      hSummary->SetBinContent(i,actualPValue);
+      if (nTotal>0) {
+	hSummary->SetBinError(i, actualPValue / sqrt(nTotal) );
+      }
+    }
+    new TCanvas("c2","c2");
+    hSummary->Draw("e");
+    gPad->SetLogy();
+    TLine *tline = new TLine(hSummary->GetXaxis()->GetXmin(),pThreshold,
+			     hSummary->GetXaxis()->GetXmax(),pThreshold);
+    tline->SetLineColor(2);
+    tline->Draw();
+
+    hSummary->Draw("same");	      
+  }
+
+}

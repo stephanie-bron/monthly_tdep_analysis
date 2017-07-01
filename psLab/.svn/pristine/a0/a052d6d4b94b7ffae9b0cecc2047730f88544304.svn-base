@@ -1,0 +1,116 @@
+{
+  bool RELOAD;
+  
+  if(!RELOAD)
+    {
+      RELOAD = true;
+      
+      gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+      if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+      
+      SetPrettyStyle();
+      SetRootPalette(1);
+      
+      initialize_ran1(rs);
+      //if (0) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+      //else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+      int ranSeed = -1.0 * get_ran1_seed(); // if you want to know what the seed was
+
+      gROOT->ProcessLine(".L Ark.C");
+      
+      bool OPT_USEREALDATA = false;
+  
+      
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaled2.C+");
+      
+      gROOT->ProcessLine(".L TreeLoader_IC59_Final.C");
+      gROOT->ProcessLine(".L TreeLoader_IC40_CutA6_Fix_final.C");
+      
+      
+      I3Ark arkIC40;
+      gROOT->ProcessLine(".x load_ark_ic40.C(arkIC40, OPT_USEREALDATA)");
+      
+      I3Ark arkIC59;
+      gROOT->ProcessLine(".x load_ark_ic59_BDT.C(arkIC59, OPT_USEREALDATA)");
+      
+            
+      //gROOT->ProcessLine(".x monitor_eProb.C(arkIC40)");
+      //gROOT->ProcessLine(".x monitor_eProb.C(arkIC59)");
+
+      MultiArk mark;
+      mark.AddArk(arkIC40);
+      mark.AddArk(arkIC59);
+  
+      MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+      
+      // Llh Function
+      NewLlhEnergy newllhIC40;
+      newllhIC40.SetUseEnergy(true);
+      newllhIC40.SetOptimizeAngleDeg(10.);
+      newllhIC40.SetOptimizeTolerance(0.01);
+      //newllhIC40.SetMonitorLevel(2);
+      newllhIC40.SetAnalysisSet(arkIC40.psData);
+      newllhIC40.SetEMaxRatioWarnOnlyOnce(true);
+
+      cout << "Loading IC40" << endl;
+      
+      // Llh Function
+      NewLlhEnergy newllhIC59;
+      newllhIC59.SetUseEnergy(true);
+      newllhIC59.SetOptimizeAngleDeg(10.);
+      newllhIC59.SetOptimizeTolerance(0.01);
+      newllhIC59.SetAnalysisSet(arkIC59.psData);
+      newllhIC59.SetEMaxRatioWarnOnlyOnce(true);
+      // newllhIC59.SetMonitorLevel(2);
+
+      MultiAnalysisFn maf;
+      maf.AddAnalysisFn(&newllhIC40);
+      maf.AddAnalysisFn(&newllhIC59);
+      
+    }
+  
+  
+
+  EquatorialDeg testSearch(153.375, 11.375);
+
+  mark.SetPointSource(testSearch, PowerLawFlux(1,-2));
+  maf.SetSearchCoord(testSearch);
+
+  
+  NewLlhEnergy_ParTranslator pt;
+  pt.SetRange(1,4,31); //gamma_min, gamma_max, nBins
+  
+  
+  pt.SetTranslator(mas);
+  
+
+  maf.SetParTranslator(&pt);
+  
+  vector<MinuitParDef> pdv;
+  pdv.push_back( MinuitParDef("nSrc",1,0.1, 0,100) );
+  pdv.push_back( MinuitParDef("gamma",2,0.5, 1., 4) );
+  maf.SetParDefs(pdv);
+  
+  mark.psData->GenerateDataSet_with_nSrcEvents(0);
+  
+  cout << "AllSky Search " << endl;
+  gROOT->ProcessLine(".L AllSkyMulti.C");
+  
+  TStopwatch ts;
+
+  AllSkyMulti as;
+  
+  as.Execute(mark, maf);
+  
+  char outfile[200];
+  
+  sprintf(outfile, "/net/user/mfbaker/psLab/trunk/macro_llh/ic59/maps/integrated/mapIC59_IC40_%i.root", ranSeed);
+
+  as.Write(outfile);
+  
+  ts.Print();
+
+
+  return 1; // signal correct finish of script
+  }

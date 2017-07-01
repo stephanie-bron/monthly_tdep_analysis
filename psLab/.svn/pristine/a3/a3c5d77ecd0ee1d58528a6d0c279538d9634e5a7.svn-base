@@ -1,0 +1,7 @@
+Universe  = vanilla
+Executable = npx4-execs/npx4-10834.sh
+Log = npx4-logs/npx4-10834.log
+Output = npx4-out/npx4-10834.out
+Error = npx4-error/npx4-10834.error
+Notification = NEVER
+Queue

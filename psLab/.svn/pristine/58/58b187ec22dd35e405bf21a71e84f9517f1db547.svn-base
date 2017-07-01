@@ -1,0 +1,28 @@
+
+// Default macro, gives user instructions
+
+bool macro_AllSky_Save() {
+  cout << "To save last results of macro_AllSky to a file:\n\n";
+  cout << ".x macro_AllSky_Save.C(char* filename, char* fileoption=\"new\")\n\n";
+  cout << "(Use 'recreate' instead of 'new' to overwrite a file.)\n";
+  return false; // no file saved
+}
+
+
+bool macro_AllSky_Save(char* filename, char* fileoption="new") {
+  extern TH2D* hAllSkyCoarse;
+  extern TH2D* hAllSkyFine;
+
+  TFile *fileOutput = new TFile(filename,fileoption);
+
+  if (fileOutput->IsZombie()) {
+    cout << "Try using 'recreate' option?\n";
+    return false; // no file saved
+  }
+
+  cout << "Writing hAllSkyCoarse and hAllSkyFine to: " << filename << endl;
+  hAllSkyCoarse->Write();
+  hAllSkyFine->Write();
+  fileOutput->Close();
+  return true;  // file saved (apparently!)
+}

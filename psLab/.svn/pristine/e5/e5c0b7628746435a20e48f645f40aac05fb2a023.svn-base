@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Fresh start:
+rm -f macro_llh/trials/results.txt
+
+# loop over all logging files and parse RESULTS line to one .txt file for ntupling
+for FILE in /net/user/jdumm/testlab/npx3_indexed-out/npx3_indexed-*
+do
+
+  grep RESULTS $FILE | awk '{print $2 " " $3 " " $4 " " $5 " " $6 " " $7}' >> macro_llh/trials/results.txt
+
+done
+

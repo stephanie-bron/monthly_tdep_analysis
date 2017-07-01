@@ -1,0 +1,90 @@
+{
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+    //  TString macroPath = gROOT->GetMacroPath();
+    //  macroPath += gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh:");
+    //  gROOT->SetMacroPath(macroPath);
+
+    //initialize_ran1(rs);
+    initialize_ran1(-55);
+
+    gROOT->ProcessLine(".L ArkTime.C+");
+    bool OPT_USEREALDATA = false;
+
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/IC86-II-III_TDep/RescaledSigma_IC862plus3_SplineMPE.C+");
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/IC86-II-III_TDep/TreeLoader_IC862plus3.C");
+
+    I3Ark arkIC86II_III;
+    gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/IC86-II-III_TDep/load_ark_ic86_2plus3_tdep_lc.C(arkIC86II_III, OPT_USEREALDATA,\"SplineMPE\")");
+
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/IC86-II-III_TDep_MESE/RescaledSigma_IC79_86_I_to_IV_MESE_SplineMPE.C+");
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/IC86-II-III_TDep_MESE/TreeLoader_IC79_86_I_to_IV_MESE.C");
+
+    I3Ark arkIC86II_III_MESE;
+    gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/IC86-II-III_TDep_MESE/load_ark_IC79_86_I_to_IV_MESE_tdep.C(arkIC86II_III_MESE, OPT_USEREALDATA,\"SplineMPE\")");
+    
+    MultiArk mark;
+    mark.AddArk(arkIC86II_III);
+    mark.AddArk(arkIC86II_III_MESE);
+    MultiGaussAnalysisFn maf;
+    NewLlhGausTime_ParTranslator pt;
+
+    int monLev = 0;
+
+    NewLlhGausTime newllh86II_III;
+    newllh86II_III.SetUseEnergy(true);
+    //newllh86II_III.SetOptimizeAngleDeg(10.);
+    newllh86II_III.SetOptimizeTolerance(0.01);
+    newllh86II_III.SetMonitorLevel(0);
+    newllh86II_III.SetEMaxRatioWarnOnlyOnce(1);
+    newllh86II_III.close_ = 10.;
+    newllh86II_III.JimsTerm_ = true;
+    newllh86II_III.SpectralPenalty_ = false;
+    //newllh86II_III.ndof_ = 3.;
+    newllh86II_III.ndof_ = 4.;
+    newllh86II_III.SetLivetime(arkIC86II_III.livetime/86400.);
+    newllh86II_III.SetLocalCoordBkgProb(arkIC86II_III.lcBkgProb);
+
+    NewLlhGausTime newllh86II_III_MESE;
+    newllh86II_III_MESE.SetUseEnergy(true);
+    //newllh86II_III.SetOptimizeAngleDeg(10.);
+    newllh86II_III_MESE.SetOptimizeTolerance(0.01);
+    newllh86II_III_MESE.SetMonitorLevel(0);
+    newllh86II_III_MESE.SetEMaxRatioWarnOnlyOnce(1);
+    newllh86II_III_MESE.close_ = 10.;
+    newllh86II_III_MESE.JimsTerm_ = true;
+    newllh86II_III_MESE.SpectralPenalty_ = false;
+    //newllh86II_III.ndof_ = 3.;
+    newllh86II_III_MESE.ndof_ = 4.;
+    //the live time is kept the same as the ps sample
+    newllh86II_III_MESE.SetLivetime(arkIC86II_III.livetime/86400.);
+    newllh86II_III_MESE.SetLocalCoordBkgProb(arkIC86II_III.lcBkgProb);
+
+    maf.AddAnalysisFn(&newllh86II_III);
+    maf.AddAnalysisFn(&newllh86II_III_MESE);
+    maf.SetTimeBounds(arkIC86II_III.tmin, arkIC86II_III.tmax);
+
+    pt.SetRange(1,4,31);
+    MultiAnalysisSet* mas=dynamic_cast<MultiAnalysisSet*>(mark.psData);
+    pt.SetTranslator(mas);
+    maf.SetParTranslator(&pt);
+
+    mark.psData->GenerateDataSet_with_nSrcEvents(0);
+    mark.psData.GetSource().SetTimeAzBins( arkIC86II_III.lcBkgProb.nbAz );
+
+    gROOT->ProcessLine(".L AllSkyFlare.C");
+
+    AllSkyFlare as;
+
+    char outfile[200];
+    int ranSeed = -1.0*get_ran1_seed();
+
+    as.SetRange(0, 360, -85, 85);
+    as.Execute(mark, maf, ranSeed);
+
+    sprintf(outfile,"skymaps/flare/mapICIC86II_III_%i_ndof4.root",ranSeed);
+    as.Write(outfile);
+
+  return 1; // signal correct finish of script
+}

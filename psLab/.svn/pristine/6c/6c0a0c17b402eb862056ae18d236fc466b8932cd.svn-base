@@ -1,0 +1,330 @@
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+  //  TString macroPath = gROOT->GetMacroPath();
+  //  macroPath += gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh:");
+  //  gROOT->SetMacroPath(macroPath);
+
+
+    if (0) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic79/ArkTime.C");
+
+    bool OPT_USEREALDATA = false;
+    
+    
+    gROOT->ProcessLine(".L TreeLoader_IC79_Final.C");
+    gROOT->ProcessLine(".L TreeLoader_IC59_Final.C");
+    gROOT->ProcessLine(".L TreeLoader_IC40_CutA6_Fix_final.C");
+    
+    gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79V2.C+");
+    gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+    gROOT->ProcessLine(".L mpfSigmaDegRescaled2.C+");
+
+//    I3Ark ark22;
+//    gROOT->ProcessLine(".x load_ark_ic22.C(ark22, OPT_USEREALDATA)");
+
+    I3Ark ark40;
+    gROOT->ProcessLine(".x load_ark_ic40.C(ark40, OPT_USEREALDATA)");
+
+    I3Ark ark59;
+    //gROOT->ProcessLine(".x load_ark_ic59_IT2.C(ark59, OPT_USEREALDATA)");
+    gROOT->ProcessLine(".x load_ark_ic59_BDT.C(ark59, OPT_USEREALDATA)");
+    
+    I3Ark ark79;
+    //gROOT->ProcessLine(".x load_ark_ic59_IT2.C(ark59, OPT_USEREALDATA)");
+    gROOT->ProcessLine(".x load_ark_ic79_Final.C(ark79, OPT_USEREALDATA)");
+    
+    
+    
+    //cout<<"Testing\n";
+
+    MultiArk mark;
+    //mark.AddArk(ark22);
+    mark.AddArk(ark40);
+    mark.AddArk(ark59);
+    mark.AddArk(ark79);
+    
+    MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+    
+    double monLev = 0.;   
+    double period_[8], t0_[8];
+    
+    period_[0] = 0.199679;     t0_[0]=54896.693;
+    period_[1] = 13.08211;     t0_[1]=50023.62;
+    period_[2] = 5.5929;       t0_[2]=41874.707;
+    period_[3] = 26.498;       t0_[3]=43366.775; //(radio zero)
+    period_[4] = 30.8;         t0_[4]=53945.7;
+    period_[5] = 0.1699339;    t0_[5]=52287.9929;
+    period_[6] = 0.212140;     t0_[6]=50274.4156;
+    period_[7] = 320.;         t0_[7]=54857.0;
+    
+    int nsrc=5;
+    double period = period_[nsrc];
+    double t0 = t0_[nsrc];
+    
+    //bool jT = false; double nd = 4.; double wp = 0.0;
+    bool jT = true; double nd = 3.; 
+    double wp = 1.; //0.25;//0.83;//0.875;//0.67;1.;//1.;
+
+    //cout << "WeightPower: " << wp << endl;
+    //char hts[300];
+    //int n = sprintf(hts,".x plots/hTeststat.wp%0.3i.C",100*wp);
+    //gROOT->ProcessLine(hts);
+    
+
+    NewLlhPeriodicTime newllh40;
+    newllh40.SetUseEnergy(true);
+    //newllh40.SetOptimizeAngleDeg(6.);
+    newllh40.SetOptimizeTolerance(0.01);
+    newllh40.SetMonitorLevel(monLev);
+    newllh40.SetEMaxRatioWarnOnlyOnce(1);
+    newllh40.close_ = 10.;
+    newllh40.JimsTerm_ = jT; 
+    newllh40.ndof_ = nd;
+    newllh40.SpectralPenalty_ = false;
+    newllh40.SetLivetime(1.);
+    newllh40.SetWeightPower(wp);
+    //newllh40.SetAnalysisSet(ark40.psData);
+    newllh40.SetTimePeriodic(period,t0);
+    //newllh40.SetLocalCoordBkgProb(ark40.lcBkgProb);
+
+    NewLlhPeriodicTime newllh59;
+    newllh59.SetUseEnergy(true);
+    //newllh59.SetOptimizeAngleDeg(6.);
+    newllh59.SetOptimizeTolerance(0.01);
+    newllh59.SetMonitorLevel(monLev);
+    newllh59.SetEMaxRatioWarnOnlyOnce(1);
+    newllh59.close_ = 10.;
+    newllh59.JimsTerm_ = jT;
+    newllh59.SpectralPenalty_ = false;
+    newllh59.ndof_ = nd;
+    newllh59.SetLivetime(1.);
+    newllh59.SetWeightPower(wp);
+    //newllh59.SetAnalysisSet(ark59.psData);
+    newllh59.SetTimePeriodic(period,t0);
+    //newllh59.SetLocalCoordBkgProb(ark59.lcBkgProb);
+    
+     NewLlhPeriodicTime newllh79;
+     newllh79.SetUseEnergy(true);
+     //newllh79.SetOptimizeAngleDeg(6.);
+   newllh79.SetOptimizeTolerance(0.01);
+     newllh79.SetMonitorLevel(monLev);
+     newllh79.SetEMaxRatioWarnOnlyOnce(1);
+     newllh79.close_ = 10.;
+     newllh79.JimsTerm_ = jT;
+     newllh79.SpectralPenalty_ = false;
+     newllh79.ndof_ = nd;
+     newllh79.SetLivetime(1.);
+     newllh79.SetWeightPower(wp);
+     //newllh79.SetAnalysisSet(ark79.psData);
+     newllh79.SetTimePeriodic(period,t0);
+     //newllh79.SetLocalCoordBkgProb(ark79.lcBkgProb);
+      
+    MultiPeriodicAnalysisFn maf;
+    //maf.AddAnalysisFn(&newllh22);
+    maf.AddAnalysisFn(&newllh40);
+    maf.AddAnalysisFn(&newllh59);
+    maf.AddAnalysisFn(&newllh79);
+    maf.SetTimePeriodic(period,t0);
+    maf.seedWtMin = 200.; // (WAS 10)
+    
+      
+    //gSystem->ProcessLine(".L mqso.teststat.10k.nts.root");
+    //maf.SetNullTestStat(hTestStatistic);
+  
+    gROOT->ProcessLine(".L SimpleMultiPeriodicAnalysis.C");
+  
+  }
+  
+
+
+//EquatorialDeg testSearch(299.591,16.00); // Test
+  //EquatorialDeg testSearch(308.107,40.958); //Cyg X-3
+  //EquatorialDeg testSearch(287.957, 4.983); //SS433
+  //EquatorialDeg testSearch(299.591,35.202); // Cyg X-1
+  //EquatorialDeg testSearch( 40.132,61.229); // Lsi+61
+  //EquatorialDeg testSearch(288.798,10.946); //GRS 1915+105
+  EquatorialDeg testSearch(169.545,48.037); //XTE J1118+480
+  //EquatorialDeg testSearch( 65.428,32.907); //GRO J0422+32
+  //EquatorialDeg testSearch( 90.550, 5.80 ); //HESSJ0632+057
+
+  //EquatorialDeg testSearch(153.375, 11.375);
+  //EquatorialDeg testSearch(343.491,16.148);
+  //EquatorialDeg testSearch(90.550, 5.80);
+  
+  double meanBest[8], sigmaBest[8];
+  meanBest[0]=0.82;     sigmaBest[0]=0.0128;
+  meanBest[1]=0.554;	sigmaBest[1]=0.005;
+  meanBest[2]=0.0654;	sigmaBest[2]=1;
+  meanBest[3]=0.945;	sigmaBest[3]=0.0615;
+  meanBest[4]=0.608;	sigmaBest[4]=0.0485;
+  meanBest[5]=0.867;	sigmaBest[5]=0.208;
+  meanBest[6]=0.644;	sigmaBest[6]=0.224;
+  meanBest[7]=0.605;	sigmaBest[7]=0.196;
+  
+  TimePdf * tPdf = new PeriodicGaussianTimePdf(0., 1., meanBest[nsrc], sigmaBest[nsrc],1.);
+  
+  newllh40.SetAnalysis(ark40.psData, testSearch);
+  newllh59.SetAnalysis(ark59.psData, testSearch);
+  newllh79.SetAnalysis(ark79.psData, testSearch);
+  
+  
+  mark.SetPointSource(testSearch, PowerLawFlux(1.,-2.), tPdf);
+  maf.SetSearchCoord(testSearch);
+  
+  
+
+  cout << tPdf->GenerateEventTime().GetMJD() << endl;
+  
+  NewLlhPeriodicTime_ParTranslator pt;
+  pt.SetRange(1,4,31);
+  pt.SetTranslator(mas);
+  
+  maf.SetParTranslator(&pt);
+  
+  vector<MinuitParDef> pdv;
+  pdv.push_back( MinuitParDef("nSrc",2,0.1, -10,100.) );
+  pdv.push_back( MinuitParDef("gamma",2.5,0.5, 1., 4.) );
+  maf.SetParDefs(pdv);
+  
+
+    int nTrials = 10000;
+  cout<<"Calculating test statistics \n";
+  
+
+/*  vector<I3Event> allEvs;
+  TH1D * deltaT = new TH1D("deltaT","deltaT",200,-8,0);
+  TH1D * deltaP = new TH1D("deltaP","deltaP",200,-10,-2);
+  vector<double> evTimes;
+  vector<double> evPhases;
+
+  for (int i=0;i<nTrials;i++) {
+lists.icecube.wisc.edu/pipermail/ehe-wg/2007-August.txt.gz
+    mark.psData->GenerateDataSet_with_nSrcEvents(0);
+    maf.PrepareAnalysis();
+    vector<I3Event> allEvs = maf.GetAllEvents();
+    
+    for (int k=0;k<(int)allEvs.size();k++) {
+      evTimes.push_back( allEvs[k].GetMJD() );
+      evPhases.push_back( fmod(allEvs[k].GetMJD()-t0,period)/period );
+    }
+    
+    std::sort(evTimes.begin(),evTimes.end());
+    std::sort(evPhases.begin(),evPhases.end());
+    
+    for (int k=1;k<(int)evTimes.size();k++) {
+      deltaT->Fill( log10(evTimes[k] - evTimes[k-1]) );
+      deltaP->Fill( log10(evPhases[k] - evPhases[k-1]) );
+    }
+
+  }lists.icecube.wisc.edu/pipermail/ehe-wg/2007-August.txt.gz
+
+  TCanvas * cc = new TCanvas("cc","cc",600,800);
+  cc->Divide(1,2);
+  
+  cc.cd(1);
+  deltaT->Draw();
+
+  cc.cd(2);
+  deltaP->Draw(); //*/
+
+  SimpleMultiPeriodicAnalysis sa;
+  sa.SetNDoF(nd);
+  
+  
+  
+  TH1D hTestStatistic("hTestStatistic",";2 ln #lambda;trials",10000,-1,1);
+  
+  //cout<<"Histogram variable created\n";
+  //hTestStatistic.SetBins(100,-1,1);
+  //hTestStatistic.SetTitle(";2 ln #lambda;trials");
+  hTestStatistic.SetBit(TH1::kCanRebin);
+ 
+  //cout<<"Bit Set\n";
+  
+  ofstream outfile;
+   
+   outfile.open("TSXTEJ1118plus480null.txt");
+  
+  for (int i=0; i<nTrials; ++i) {
+ 
+    
+    //cout<<"Beginning Loop\n";
+ 
+    mark.psData->GenerateDataSet_with_nSrcEvents(0);
+    
+    outfile<<i<<"  ";
+     maf.MaximizeLlh();
+     hTestStatistic.Fill(maf.GetTestStatistic() * 2.);
+     outfile<<(maf.GetTestStatistic() * 2.)<<"\n";
+  }
+  
+outfile.close();
+  
+  //maf.SetNullTestStat(&hTestStatistic); 
+  TFile *fout = new TFile("mqso_teststat_405979_XTEJ1118plus480null.root","RECREATE");    
+  hTestStatistic.Write();    
+  fout->Close();
+//   cout << "Starting trials" << endl;
+//   sa.Execute(mark,maf,nTrials,0);
+// 
+// 
+//   /*
+//   // Disco (Discovery Potential and Sensitivity Estimator)
+//   DiscoveryPotential disco;
+//   gROOT->ProcessLine(".L SetDisco.C");
+//   // parameters:  loops, optMedianUpperLimit,  significance,  power);
+//   // SetDisco(disco, 15, false, 2.87e-7, 0.5);
+//    SetDisco(disco, 25, false, 0.5, 0.9);
+// 
+//   gROOT->ProcessLine(".L MultiBlockDetectionStudy.C");
+//  
+//   TCanvas *c = MultiPeriodicDetectionStudy(mark, maf, mas, disco); //*/
+//   //double dd = MultiPeriodicDetectionStudy_d(mark, maf, mas, disco);
+// 
+// 
+//   DiscoveryPotential disco;
+//   
+//   gROOT->ProcessLine(".L SetDisco.C");
+//   gROOT->ProcessLine(".L MultiBlockDetectionStudy.C");
+//   // parameters:  loops, optMedianUpperLimit,  significance,  power);
+//   //SetDisco(disco, 15, false, 2.87e-7, 0.5);
+//   SetDisco(disco, 25, true, 0.5, 0.9);
+//   
+//   double dsigmas[] = {1e-2, 3e-2, 5e-2, 1e-1, 3e-1, 5e-1, 1.};
+//   double n_disco[7], thTest[7], thPlot[7], ndays[7];
+//   double spectralIndex = -2.;
+// 
+//   for (int i=0;i<7;i++) {
+//        
+//     TimePdf * tPdf2 = new PeriodicGaussianTimePdf(0., 1., 0.5, dsigmas[i], 1.);
+//     
+//     mark.SetPointSource(testSearch, PowerLawFlux(1.,spectralIndex), tPdf2);
+//     maf.SetSearchCoord(testSearch);
+//   
+//     n_disco[i] = MultiPeriodicDetectionStudy_d(mark, maf, mas, disco);
+//   
+//   }
+//   
+//   TCanvas * canComp = new TCanvas("canComp","canComp",700,500);
+//  
+//   TGraph * g = new TGraph(7,dsigmas,n_disco);
+//   g->GetXaxis()->SetTitle("#sigma_{T} (1/Period)");
+//   g->GetYaxis()->SetTitle("N Events for Discovery");
+//   g->Draw("AL"); 
+//   gPad->SetLogx(1);
+//   canComp->SaveAs("sensit16deg1.png");
+//   canComp->SaveAs("sensit16deg1.root");
+//   //
+
+  return 1; // signal correct finish of script
+}

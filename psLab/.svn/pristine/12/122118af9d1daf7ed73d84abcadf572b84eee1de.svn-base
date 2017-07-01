@@ -1,0 +1,78 @@
+
+{
+  int nTrials = 1000;
+
+
+  double decMin = -85.;
+  double decMax =  85.;
+  int nBinsDec = 170;
+  
+  // size of histogram for results
+  double logpMin = -20;
+  double logpMax = 0;
+  int nBinsLogp = 400;
+
+  // written to file automatically at the end
+  TString filename = ""; // "" means not written to file (in this script)
+
+  ////////
+
+
+
+  TH2D *hLogpDec = new TH2D("hLogpDec","hLogpDec",
+			    nBinsLogp, logpMin, logpMax,
+			    nBinsDec, decMin, decMax);
+
+  // N.B. This version currently does not support source injection.
+
+
+  /*
+  psData.SetBaseEvents(baseEvents);
+
+  LlhEnergy llhEnergyFn;
+  llhEnergyFn.SetUseEnergy(optEnergy);
+  llhEnergyFn.SetOptimizeTolerance(.01);
+  llhEnergyFn.SetOptimizeAngleDeg(10.);
+  llhEnergyFn.SetMonitorLevel(0);
+  */
+
+
+  TStopwatch ts;
+  CountMonitor cm(1., nTrials);
+
+  TFile *f;
+  if (filename != "") { f = new TFile(filename,"new"); }
+  // This will print error if file already exists (isn't new)
+
+  for (int n=0; n<nTrials; ++n) {
+    cm.UpdateCount();
+
+    //    psData.GenerateDataSet_with_nSrcEvents(0);
+
+    for (int iDec = 1; iDec <= nBinsDec; ++iDec) {
+
+      // slower here, but completely avoids correlating bins
+      psData.GenerateDataSet_with_nSrcEvents(0);
+
+
+      double srcDec = hLogpDec.GetYaxis()->GetBinCenter(iDec);
+      
+      // if psData is scrambled in outer loop, then
+      // randomize r.a. so succesive dec evaluations are virtually uncorrelated
+      // (though this becomes less true at the poles, but probably tolerable)
+      EquatorialDeg srcLocation(random_uniform(0.,360.),srcDec);
+
+      llhFn.SetAnalysis(psData,srcLocation);
+      llhFn.MaximizeLlh();
+
+      double logP = log10(llhFn.GetEstProb());
+      hLogpDec->Fill(logP, srcDec, 1);
+    }
+  }
+  ts.Print();
+
+  if (filename != "") {
+    hLogpDec->Write();
+    f->Close();
+  }
+}

@@ -1,0 +1,211 @@
+class SourceListUL {
+
+public:
+  
+  
+  SourceListUL():
+    texOutputString_(""),
+    plainOutputString_("")
+  {
+    
+  }
+  ~SourceListUL() { }
+  
+  
+  void Usage();
+  void Execute(Ark& ark, MultiAnalysisFn & llh,
+	       DiscoveryPotential& disco,
+	       char* sourceFile, char *filaname);
+  
+};
+
+
+void SourceListUL::Usage() {
+  cout << "SourceListUL sl;\n";
+  cout << "  sl.Execute(Ark& ark, MultiAnalysisFn& llh,\n";
+  cout << "             DiscoveryPotential& disco,      \n";
+  cout << "             char* sourceFile, char* filename)\n";
+}
+
+
+void SourceListUL::Execute(Ark& ark, MultiAnalysisFn &llh,
+			   DiscoveryPotential& disco,
+			   char* sourceFile, char* filename) {
+  
+  llh.SetAnalysisSet(ark.psData);
+
+  gROOT->ProcessLine(".L SetDisco.C");
+    
+  FILE *fp = fopen(sourceFile,"r");
+
+  char buffer[200];
+  double raDeg, decDeg;
+
+  double pvalue[100];
+  double bkgCount[100];
+  double nSrc[100];
+  TString psNameArray[100];
+  EquatorialDeg psEqCoordArray[100];
+  
+  string strfile;
+  
+  int s1 = 0;
+  int nPsList = 0;
+  
+  while(fscanf(fp,"%s %lf %lf\n", buffer, &raDeg, &decDeg) == 3) {
+    
+    psNameArray[s1] = buffer;
+    psEqCoordArray[s1] = EquatorialDeg(raDeg, decDeg);
+    
+    
+    printf("%20s  %7.3lf  %6.3lf\n",
+	   dynamic_cast<char*>psNameArray[s1], 
+	   psEqCoordArray[s1].GetRa(),
+	   psEqCoordArray[s1].GetDec() );
+    ++s1;
+  }
+  nPsList = s1;
+
+  cout << nPsList << " total sources read.\n";
+  fclose(fp);
+   
+  string texOutputString_;
+  string plainOutputString_;
+  
+  double bestPMin = 1.;
+  int bestSource = 0;
+  
+  for (int j = 0; j < nPsList; ++j) {
+    
+    EquatorialDeg searchLocation = psEqCoordArray[j];
+    llh.SetSearchCoord(searchLocation);
+    ark.SetPointSource(searchLocation, PowerLawFlux(1.,-2.));
+    
+    
+    NewLlhEnergy_ParTranslator *pt = new NewLlhEnergy_ParTranslator;
+    pt->SetRange(1,4,31); //gamma_min, gamma_max, nBins
+    pt->SetTranslator(dynamic_cast<MultiAnalysisSet*>(ark.psData));
+    llh.SetParTranslator(pt);
+    llh.MaximizeLlh();
+    
+    double distance = 2.; // degrees
+     
+    bkgCount[j] = ark.psData->BkgNumberDensity(searchLocation)
+      * (distance)*(distance)*TMath::Pi();
+    
+    nSrc[j] = llh.GetPar(0);
+    
+    pvalue[j] = llh.GetEstProb();
+  
+
+    cout << "P-value: "<< pvalue[j] << endl;
+    
+    delete pt;
+  }
+
+  cout << "Done the pvalue calculation! " << endl;
+
+  //Two different loops since DiscoveryPotential modifies the ark.psData and changes the real p-values
+  
+  for (int j = 0; j < nPsList; ++j)
+    {
+      EquatorialDeg searchLocation = psEqCoordArray[j];
+      llh.SetSearchCoord(searchLocation);
+      ark.SetPointSource(searchLocation, PowerLawFlux(1.,-2.));
+      
+      
+      NewLlhEnergy_ParTranslator *pt = new NewLlhEnergy_ParTranslator;
+      pt->SetRange(1,4,31); //gamma_min, gamma_max, nBins
+      pt->SetTranslator(dynamic_cast<MultiAnalysisSet*>(ark.psData));
+      llh.SetParTranslator(pt);
+      llh.MaximizeLlh();
+    
+      
+      double significance = pvalue[j];
+
+      if(significance >= 0.495) significance = 0.5;
+    
+      
+      if (pvalue[j] < bestPMin) { 
+	bestPMin = pvalue[j]; 
+	bestSource = j;
+      }
+      
+      SetDisco(disco, 50, false, significance, 0.9); //Calculate UL
+      
+      cout << "Starting Disco.." << endl;
+      disco.SetAnalysisSet(ark.psData);
+      disco.SetAnalysisFn(&llh);
+      disco.AnalyzeDiscoveryPotential();
+      
+      double meanSrcEv_ForDetection = disco.MeanSrcEv_ForDetection_;
+      double fluxScale = ark.psData->GetFluxScaleForNev(meanSrcEv_ForDetection);
+      
+      double fluxUpLimit = fluxScale;
+      
+      TString sName = psNameArray[j];
+      sName.ReplaceAll("_"," ");
+      
+      char buffer[1000];
+      
+      cout << "Detection Power: " << disco.GetDetectionPower()*100 << "%\n"; 
+      cout << "Detection Significance: "<<disco.GetDetectionSignificance()<< endl;
+      cout << "Mean signal events detectable: " <<meanSrcEv_ForDetection << endl;
+      cout << "Flux scale relative to model is: " << fluxScale << endl;
+   
+      
+      
+      char pvalueChar[20];
+      if (pvalue[j] < 0.495) {
+	sprintf(pvalueChar,"%.2lg",pvalue[j]);
+      } else {
+	sprintf(pvalueChar,"--");
+      }
+      
+      sprintf(buffer,
+	      "%20s & %6.2f & %5.2f & %10.5e & %s & %3.1f & %3.1f\\\\\n",
+	      dynamic_cast<char*>(sName),
+	      searchLocation.GetRa(), searchLocation.GetDec(),
+	      fluxUpLimit,
+	      pvalueChar,
+	      nSrc[j],
+	      bkgCount[j]);
+      
+      texOutputString_ += buffer;
+      
+      sprintf(buffer,
+	      "%20s  (%7.3f , %6.3f)  :  %10.5e  %s  %3.1f   %3.1f\n",
+	      dynamic_cast<char*>psNameArray[j],
+	      searchLocation.GetRa(), searchLocation.GetDec(),
+	      fluxUpLimit,
+	      pvalueChar,
+	      nSrc[j],
+	      bkgCount[j]);
+      
+      plainOutputString_ += buffer;
+      
+      delete pt;
+    }
+  
+
+  cout << plainOutputString_ << endl;
+  
+  cout << "Best source p-value:" << bestPMin << endl;
+  cout << "Source "<<  dynamic_cast<char*>(psNameArray[bestSource]) << endl;
+
+ 
+  cout << "Writting to outputfile: " << filename << endl;
+
+  ofstream fout(filename);
+  
+  fout << texOutputString_ << endl;
+  
+  fout << "Best source p-value:" << bestPMin << endl;
+  fout << "Source "<<  dynamic_cast<char*>(psNameArray[bestSource]) << endl;
+
+  cout << "Done!" << endl;
+  
+};
+
+
+  

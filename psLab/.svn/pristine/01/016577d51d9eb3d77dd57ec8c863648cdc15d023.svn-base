@@ -1,0 +1,63 @@
+import numpy, pylab, dashi, sys
+
+zenith=sys.argv[1]
+
+decl=float(zenith.split(' = ')[1])-90
+
+file='FinalPlots/npx3-4206.txt'
+
+f=open(file)
+
+content=f.readlines()
+
+i=0
+while i < len(content):
+	if zenith in content[i]:
+		print i, content[i]
+		break
+	i+=1
+
+i+=12
+
+Gamma=[]
+Ns={}
+Ns['IC40']=[]
+Ns['IC59']=[]
+Ns['IC79']=[]
+Ns['IC86']=[]
+
+j=0
+while j < 30:
+	line=content[i+j]
+	Gamma+=[line.split('Gamma=')[1].split(':')[0]]
+	vals=line.split('Gamma=')[1]
+	Ns['IC40']+=[vals.split(' ')[1]]
+	Ns['IC59']+=[vals.split(' ')[2]]
+	Ns['IC79']+=[vals.split(' ')[3]]
+	Ns['IC86']+=[vals.split(' ')[4]]
+	j+=1
+
+for item in Ns:
+	Ns[item]=numpy.array(Ns[item],dtype=float)
+
+Ns['IC59']=Ns['IC40']+Ns['IC59']
+Ns['IC79']=Ns['IC59']+Ns['IC79']
+Ns['IC86']=Ns['IC79']+Ns['IC86']
+
+Gamma=numpy.array(Gamma,dtype=float)
+
+for item in Ns:
+	pylab.plot(Gamma, Ns[item],label='item',color='black')
+
+pylab.text(1.1,Ns['IC40'][0]-0.05,'IC40')
+pylab.text(1.1,Ns['IC59'][0]-0.05,'IC59')
+pylab.text(1.1,Ns['IC79'][0]-0.05,'IC79')
+pylab.text(1.1,Ns['IC86'][0]-0.05,'IC86')
+
+pylab.xlabel('Gamma')
+pylab.ylabel(r'Fraction of n$_{s}$')
+pylab.ylim(0,1.05)
+
+pylab.grid(True)
+pylab.savefig('ParTranslator_decl%5.2f.png' % (decl))
+pylab.clf()

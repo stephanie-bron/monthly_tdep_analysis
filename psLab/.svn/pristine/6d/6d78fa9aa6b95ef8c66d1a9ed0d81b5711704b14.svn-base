@@ -1,0 +1,71 @@
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+    
+    initialize_ran1(-55);
+
+    gROOT->ProcessLine(".L ArkTime.C");
+
+    bool OPT_USEREALDATA = false;
+
+    gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79V2.C+");
+    gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+    gROOT->ProcessLine(".L TreeLoader_IC79_Final.C");
+
+    
+    I3Ark arkIC79;
+    gROOT->ProcessLine(".x load_ark_ic79_Final.C(arkIC79, OPT_USEREALDATA)");
+    
+    int monLev = 0;
+    
+    NewLlhGausTime newllh79;
+    newllh79.SetUseEnergy(true);
+    //newllh79.SetOptimizeAngleDeg(10.);
+    newllh79.SetOptimizeTolerance(0.01);
+    newllh79.SetMonitorLevel(0);
+    newllh79.SetEMaxRatioWarnOnlyOnce(1);
+    newllh79.close_ = 10.;
+    newllh79.JimsTerm_ = false;
+    newllh79.SpectralPenalty_ = false;
+    //newllh79.ndof_ = 3.;
+    newllh79.ndof_ = 4.;
+    newllh79.SetLivetime(arkIC79.livetime/86400.);
+    newllh79.SetLocalCoordBkgProb(arkIC79.lcBkgProb);
+    
+    
+  }
+
+  EquatorialDeg testSearch(343.491,16.148);
+  double spectralIndex = -2;
+  double tmean = (arkIC79.tmax + arkIC79.tmin)/2.;  
+  
+  TimePdf * tPdf = new GaussianTimePdf(arkIC79.tmin, arkIC79.tmax, tmean, 1e-5, 1.);
+  arkIC79.SetPointSource(testSearch, PowerLawFlux(1.,spectralIndex), tPdf); 
+  arkIC79.psData.GetSource().SetTimeAzBins( arkIC79.lcBkgProb.nbAz );
+  newllh79.SetTimeBounds(tPdf);
+
+  newllh79.SetAnalysis(arkIC79.psData, testSearch);
+  TH1D hTestStatistic("hTestStatistic", "2 ln #lambda; trials", 1000,-1,1);
+  
+  int nTrials = 10000;
+
+  ofstream outfile;
+
+  outfile.open("TSHESSJ0632plus057ic79Untriggeredflare_nomarg.txt");
+
+  for (int i=0; i<nTrials; ++i) {
+    arkIC79.psData->GenerateDataSet_with_nSrcEvents(0);
+    outfile<<i<<"  ";
+    newllh79.MaximizeLlh();
+    hTestStatistic.Fill(newllh79.GetTestStatistic() * 2.);
+    outfile<<(newllh79.GetTestStatistic() * 2.)<<"\n";
+  }
+
+ 
+  return 1; // signal correct finish of script
+}

@@ -1,0 +1,107 @@
+{
+  gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+  if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+  //if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+  //else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+  int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+  gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic59/Ark.C");
+  bool OPT_USEREALDATA = false;
+
+  I3Ark ark40;
+  gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/ic59/load_ark_ic40.C(ark40, OPT_USEREALDATA)");
+  I3Ark ark59;
+  gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/ic59/load_ark_ic59.C(ark59, OPT_USEREALDATA)");
+
+  FormulaFlux formflux("1*pow(x,-2.7)"); // CR spectrum
+  FluxBase *myFluxPtr = &formflux;
+
+  EventLoader *evPtr40 = &ark40.evLoader;
+  EventLoader *evPtr59 = &ark59.evLoader;
+  ark40.evLoader.SetMonitor(false);
+  ark59.evLoader.SetMonitor(false);
+
+  I3TH2FGenerator th2gen40(*evPtr40, *myFluxPtr, ark40.livetime);
+  I3TH2FGenerator th2gen59(*evPtr59, *myFluxPtr, ark59.livetime);
+
+  gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic59/galplane/NewFermiGalDiffuse/GetObjectFromFile.C");
+  TH2F* PDF40 = (TH2F*)GetObjectFromFile("$LAB_MAIN_DIR/macro_llh/ic59/galplane/NewFermiGalDiffuse/mainPDF_ic40.root","h0");
+  TH2F* PDF59 = (TH2F*)GetObjectFromFile("$LAB_MAIN_DIR/macro_llh/ic59/galplane/NewFermiGalDiffuse/mainPDF_ic59.root","h0");
+
+  th2gen40.SetBinning(PDF59);//make sure they are the same binning
+  th2gen59.SetBinning(PDF40);//make sure they are the same binning
+
+  th2gen40.SetSrcWeightsTable(PDF40);
+  th2gen59.SetSrcWeightsTable(PDF59);
+
+  th2gen40.SetWeightSum(4488994.17730123270/5.187584);
+  th2gen59.SetWeightSum(10410460.8626929317/5.187584);
+  cout<<th2gen40.GetMeanSrcNev()<<endl;
+/*
+ * This is back when i thought the histo was normalized to 1, it's not
+ * divide by the correction factor 5.187584 (= integral of srcWeightsTable)
+ *oot [1] th2gen40.GetMeanSrcNev()
+ *const double)4.48899417730123270e+06
+ *oot [2] th2gen59.GetMeanSrcNev()
+ *const double)1.04104608626929317e+07
+ */
+
+  I3SignalGenerator *mySignalPtr40 = &th2gen40;
+  SourceModule *srcMod40 = mySignalPtr40;
+  ark40.SetSource(srcMod40);
+
+  I3SignalGenerator *mySignalPtr59 = &th2gen59;
+  SourceModule *srcMod59 = mySignalPtr59;
+  ark59.SetSource(srcMod59);
+
+  MultiArk mark;
+  mark.AddArk(ark40);
+  mark.AddArk(ark59);
+  
+  MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+
+  NewLlhTH2F newllhth2f40;
+  newllhth2f40.SetUseEnergy(true);
+  newllhth2f40.SetAnalysisSet(ark40.psData); //*/
+  newllhth2f40.LoadTH2Fpdfs("$LAB_MAIN_DIR/macro_llh/ic59/galplane/NewFermiGalDiffuse/mainPDF_ic40.root");
+
+  NewLlhTH2F newllhth2f59;
+  newllhth2f59.SetUseEnergy(true);
+  newllhth2f59.SetAnalysisSet(ark59.psData);
+  newllhth2f59.LoadTH2Fpdfs("$LAB_MAIN_DIR/macro_llh/ic59/galplane/NewFermiGalDiffuse/mainPDF_ic59.root");
+    
+  MultiAnalysisFn maf;
+  maf.AddAnalysisFn(&newllhth2f40);
+  maf.AddAnalysisFn(&newllhth2f59);
+  
+
+  NewLlhTH2F_ParTranslator pt;
+  pt.SetTranslator(mas);
+/*
+ * Weights for Datasets = 0.301286 0.698714 
+ */
+
+  maf.SetParTranslator(&pt);
+
+  vector<MinuitParDef> pdv;
+  pdv.push_back( MinuitParDef("nSrc",10.,10., 0.,1000.) );
+  pdv.push_back( MinuitParDef("gamma",2.7,0.0, 2.6, 2.8) );
+  maf.SetParDefs(pdv);
+
+  /**********
+  cout<<"looping"<<endl;
+  ofstream out;
+  out.open("scrambled_multi_gp.txt");
+  int nTrials = 10000;
+  for (int tries=0; tries<nTrials; tries++){
+      mas.GenerateDataSet_with_nSrcEvents(0);
+      maf.MaximizeLlh();
+      double maxLlh = maf.Get_logLambdaBest();
+      double bestFitNs = maf.GetPar(0);
+      double bestFitGamma = maf.GetPar(1);
+      out<<maxLlh<<" "<<bestFitNs<<" "<<bestFitGamma<<endl;
+  }
+  out.close();
+  ***********/
+}

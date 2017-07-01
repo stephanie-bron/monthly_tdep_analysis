@@ -1,0 +1,323 @@
+
+
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+  //  TString macroPath = gROOT->GetMacroPath();
+  //  macroPath += gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh:");
+  //  gROOT->SetMacroPath(macroPath);
+
+
+    if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+//    gSystem->cd("/net/user/mfbaker/testlab/branches/multi_time/macro_llh/ic59");
+//    gROOT->ProcessLine(".L /net/user/mfbaker/testlab/branches/multi_time/macro_llh/ic59/Ark.C");
+    gROOT->ProcessLine(".L Ark.C");
+
+    bool OPT_USEREALDATA = false;
+
+//    I3Ark ark22;
+//    gROOT->ProcessLine(".x load_ark_ic22.C(ark22, OPT_USEREALDATA)");
+
+    I3Ark ark40;
+    gROOT->ProcessLine(".x load_ark_ic40.C(ark40, OPT_USEREALDATA)");
+
+    I3Ark ark59;
+    //gROOT->ProcessLine(".x load_ark_ic59_IT2.C(ark59, OPT_USEREALDATA)");
+    gROOT->ProcessLine(".x load_ark_ic59_BDT.C(ark59, OPT_USEREALDATA)");
+
+  // Source 
+
+  //  ark22.SetPointSource(153.375, 11.375, 1.,-2 );
+  //  ark40.SetPointSource(153.375, 11.375, 1.,-2 );
+  //  ark59.SetPointSource(153.375, 11.375, 1.,-2 );
+ 
+  //  ark22.SetPointSource(153.375, 11.375, "1.*pow(x,-2)");
+  //  ark22.SetPointSource(EquatorialDeg(153.375, 11.375), PowerLawFlux(1, -2));
+
+  // ark40.SetPointSource(0., 61.23, 1., -2);
+
+  //gROOT->ProcessLine(".L AllSky.C");
+  //AllSky as;
+  //as.SetRange(148, 158, 5, 15);
+
+    cout << "making multiArk" << endl;
+
+    MultiArk mark;
+    //mark.AddArk(ark22);
+    mark.AddArk(ark40);
+    mark.AddArk(ark59);
+    //mark.SetSrcLocation(ark40.mySrcLocation);
+
+    //NewLlhEnergy newllh;
+    //newllh.SetUseEnergy(true);
+    //newllh.SetOptimizeAngleDeg(10.);
+    //newllh.SetOptimizeTolerance(0.01);
+
+    /*NewLlhEnergy newllh22;
+    newllh22.SetUseEnergy(true);
+    newllh22.SetOptimizeAngleDeg(10.);
+    newllh22.SetOptimizeTolerance(0.01);
+    //newllh22.SetMonitorLevel(2);
+    newllh22.SetAnalysisSet(ark22.psData); //*/
+    
+    string srcstr;
+    if (nsrc==0)  { srcstr = "3C454.3";      EquatorialDeg testSearch(343.491, 16.148); }
+    if (nsrc==1)  { srcstr = "PKS0805m07";   EquatorialDeg testSearch(122.06,  -7.85 ); }
+    if (nsrc==2)  { srcstr = "PKS2023m07";   EquatorialDeg testSearch(306.46,  -7.59 ); }
+    if (nsrc==3)  { srcstr = "PKS0244m47";   EquatorialDeg testSearch(41.5,	-46.84 ); }
+    if (nsrc==4)  { srcstr = "BLLac";        EquatorialDeg testSearch(330.68,  42.28 ); }
+    if (nsrc==5)  { srcstr = "V407Cyg";      EquatorialDeg testSearch(315.54,  45.77 ); }
+    if (nsrc==6)  { srcstr = "PKS1622m253";  EquatorialDeg testSearch(246.44,	-25.44 ); }
+    if (nsrc==7)  { srcstr = "PKS1424m418";  EquatorialDeg testSearch(216.98,	-42.09 ); }
+    if (nsrc==8)  { srcstr = "J0109p6134";   EquatorialDeg testSearch(17.25,	 61.34 ); }
+    if (nsrc==9)  { srcstr ="GB6B1310p4844"; EquatorialDeg testSearch(198.18,	 48.47 ); }
+    if (nsrc==10) { srcstr = "B31343p451";   EquatorialDeg testSearch(206.39,	 44.88 ); }
+    if (nsrc==11) { srcstr = "S51803p784";   EquatorialDeg testSearch(270.19,	 78.47 ); }
+    if (nsrc==12) { srcstr = "PKS1222p216";  EquatorialDeg testSearch(186.23,	 21.38 ); }
+    if (nsrc==13) { srcstr = "3C273";        EquatorialDeg testSearch(187.28,	  2.05 ); }
+    if (nsrc==14) { srcstr = "OJ287";        EquatorialDeg testSearch(133.70,	 20.11 ); }
+    if (nsrc==15) { srcstr = "4C38.41";      EquatorialDeg testSearch(248.81,	 38.13 ); }
+    if (nsrc==16) { srcstr = "PKS1510m089";  EquatorialDeg testSearch(228.211, -9.100); }
+    if (nsrc==17) { srcstr = "PKS1502+106";  EquatorialDeg testSearch(226.104, 10.494); }
+    if (nsrc==18) { srcstr = "PKS1454m354";  EquatorialDeg testSearch(224.361,-35.653); }
+    if (nsrc==19) { srcstr = "3C279";        EquatorialDeg testSearch(194.05,	 -5.790); }
+    if (nsrc==20) { srcstr = "3C66A";        EquatorialDeg testSearch(35.665,	 43.036); }
+    if (nsrc==21) { srcstr = "PKS0454m234";  EquatorialDeg testSearch(74.2630,-23.414); }
+    if (nsrc==22) { srcstr = "J1239p044";    EquatorialDeg testSearch(189.90,	  4.70 ); }
+
+    string blocksFile = "/net/user/mfbaker/Fermi/data/lcAll/lcAll."+srcstr+"cp.l1.txt";    
+    cout << blocksFile << endl;
+    
+    int monLevel = 0;
+    double laglimit = 0.5;    
+
+    NewLlhBlockTime newllh40;
+    newllh40.SetUseEnergy(true);
+    //newllh59.SetOptimizeAngleDeg(10.);
+    newllh40.SetOptimizeTolerance(0.01);
+    newllh40.SetMonitorLevel(monLevel);
+    newllh40.SetEMaxRatioWarnOnlyOnce(1);
+    newllh40.JimsTerm_ = false;
+    newllh40.SpectralPenalty_ = false;
+    newllh40.ndof_ = 3.;
+    newllh40.laglimit_ = laglimit;
+    newllh40.SetLivetime(410.);
+    newllh40.SetBlocks(blocksFile,0.);
+    newllh40.SetAnalysisSet(ark40.psData);
+
+    NewLlhBlockTime newllh59;
+    newllh59.SetUseEnergy(true);
+    //newllh59.SetOptimizeAngleDeg(10.);
+    newllh59.SetOptimizeTolerance(0.01);
+    newllh59.SetMonitorLevel(monLevel);
+    newllh59.SetEMaxRatioWarnOnlyOnce(1);
+    newllh59.JimsTerm_ = false;
+    newllh59.SpectralPenalty_ = false;
+    newllh59.ndof_ = 3.;
+    newllh59.laglimit_ = laglimit;
+    newllh59.SetLivetime(375.);
+    newllh59.SetBlocks(blocksFile,0.);
+    newllh59.SetAnalysisSet(ark59.psData);
+    
+    cout << "setting Time Bounds" << endl;
+    
+    newllh40.SetTimeBounds(ark40.tmin, ark40.tmax);
+    newllh59.SetTimeBounds(ark59.tmin, ark59.tmax);
+    
+    cout << "making MultiBlockAnalysisFn" << endl;
+    
+    MultiBlockAnalysisFn maf;
+    maf.AddAnalysisFn(&newllh40);
+    maf.AddAnalysisFn(&newllh59);
+    maf.blocksFile = blocksFile;
+    
+    
+    //maf.AddAnalysisFn(&newllh22);
+
+    cout << "loading SimpleMultiBlockAnalysis" << endl;  
+    gROOT->ProcessLine(".L SimpleMultiBlockAnalysis.C");
+  
+  }
+  
+
+  //EquatorialDeg testSearch(153.375, 11.375);
+  //EquatorialDeg testSearch(343.491,16.148);
+
+  double spectralIndex = -2;
+
+  TimePdf * tPdf = new BlockTimePdf1();
+  cout << "made tPdf" << endl;
+  
+  tPdf->SetBlockLevels(blocksFile,0);
+  cout << "Set Block Levels" << endl;
+    
+  tPdf->fillHisto();
+    
+  mark.SetPointSource(testSearch, PowerLawFlux(1.,spectralIndex),tPdf);
+  maf.SetSearchCoord(testSearch);
+
+  MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+  //MultiAnalysisSet* mas;// = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+  //mas->AddAnalysisSet(ark40.psData);
+  //mas->AddAnalysisSet(ark59.psData);
+  
+  NewLlhBlockTime_ParTranslator pt;
+  //NewLlhEnergy_ParTranslator pt;
+  pt.SetRange(1,4,30);
+  pt.SetUpBlocks(blocksFile);
+  pt.SetTranslator(mas);
+    
+  maf.SetParTranslator(&pt);
+
+  //double guessThresh=1e-6; 
+  //double lagGuess = 0.;//SearchForLag(llh, laglimit);
+  
+  //double threshMax = 
+  //   ( GetHighestBlock(blocksFile) + GetSecondHighestBlock(blocksFile) ) /2.;
+
+/*
+
+  SimpleMultiBlockAnalysis sa;
+  sa.SetNDoF(3);
+   
+  sa.Execute(mark,maf, blocksFile, 10, 5);
+
+//*/
+
+
+
+  //* Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  
+  gROOT->ProcessLine(".L SetDisco.C");
+  gROOT->ProcessLine(".L MultiBlockDetectionStudy.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  SetDisco(disco, 10, false, 2.87e-7, 0.5);
+  // SetDisco(disco, 30, true, 0.5, 0.9);
+  
+  double thMax = ( GetHighestBlock(blocksFile) + GetSecondHighestBlock(blocksFile) ) /2.;
+  //dsigmas[] = {1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 3e-1, 1., 3., 10, 1e2};
+  double n_disco[9], thTest[9], thPlot[9], ndays[9], frac_59[9];
+  
+  vector<double> glo;
+  vector<double> loc;
+  glo.push_back(1);
+  glo.push_back(2);
+  glo.push_back(0);//lag
+  glo.push_back(0);//threshold
+  
+//*
+  for (int i=0;i<9;i++) {
+    
+    thTest[i] = thMax * i / 8.;
+    thPlot[i] = thTest[i] * 1e6;
+    ndays[i] = BlockTimeAboveThresh(blocksFile, thTest[i],ark40.tmin,ark59.tmax);
+    cout << "Testing Threshold of: " << thTest[i] << endl;
+    
+    TimePdf * tPdf2 = new BlockTimePdf1();
+    tPdf2->SetBlockLevels(blocksFile,thTest[i]);
+    tPdf2->fillHisto();
+    
+    mark.SetPointSource(testSearch, PowerLawFlux(1.,spectralIndex), tPdf2);
+    maf.SetSearchCoord(testSearch);
+  
+    n_disco[i] = MultiBlockDetectionStudy_d(mark, maf, mas, disco);
+    
+    glo[3] = thTest[i]; // calculate frac of signal from IC59
+    loc = pt.Translate(1, glo);
+    frac_59[i] = loc[0]*n_disco[i];
+  
+  }
+  
+  TCanvas * canComp = new TCanvas("canComp","canComp",1200,500);
+  canComp->Divide(2,1);
+
+  canComp.cd(1);
+  
+  TGraph * g = new TGraph(9,thTest,n_disco);
+  g->GetXaxis()->SetTitle("Threshold for Emission (Photon cm^{-2} s^{-1})");
+  g->GetYaxis()->SetTitle("N Events for Discovery in 50% of trials");
+  g->SetLineWidth(3);
+  g->SetLineColor(4);
+  
+  TGraph * g59 = new TGraph(9,thTest,frac_59);
+  g59->SetLineWidth(3);
+  g59->SetLineStyle(2);
+  g59->SetLineColor(kGreen+4);
+    
+  g->Draw("AL"); //*/
+  g59->Draw("L")
+  
+/*  l = TLine(0,integrated_disco,thMax,integrated_disco);
+  l->SetLineWidth(3);
+  l->SetLineStyle(2);
+  l->SetLineColor(8); */
+
+  leg = new TLegend(0.25,0.75,0.95,0.99);
+  leg->AddEntry(g,"P=0.5 5#sigma discovery, Fit Threshold","l");
+  leg->AddEntry(g59,"N Events of E^{-2} signal from IC59","l");
+//  leg->AddEntry(l,"Time-Integrated Search","l");
+  leg->Draw();
+
+  canComp.cd(2);
+
+  TGraph * gd = new TGraph(9,ndays,n_disco);
+  gd->GetXaxis()->SetTitle("Time above threshold for emission (days)");
+  gd->GetYaxis()->SetTitle("N Events for Discovery in 50% of trials");
+  gd->SetLineWidth(3);
+  gd->SetLineColor(4);
+  gd->Draw("AL"); 
+  
+  TGraph * gd59 = new TGraph(9,ndays,frac_59);
+  gd59->SetLineWidth(3);
+  gd59->SetLineStyle(2);
+  gd59->SetLineColor(kGreen+4);
+  
+  gd59->Draw("L");
+  
+/*  l1 = TLine(ndays[8],integrated_disco,ndays[0],integrated_disco);
+  l1->SetLineWidth(3);
+  l1->SetLineStyle(2);
+  l1->SetLineColor(8);
+
+  l1->Draw(); */
+  
+  canComp->SetLogx();
+   
+  char grsave[200], grsave1[200], grsave2[200];
+  
+  sprintf(grsave,"/net/user/mfbaker/testlab/branches/multi_time/macro_llh/ic59/lc_disco/%s.lcdisco.root",srcstr.c_str());
+  sprintf(grsave1,"/net/user/mfbaker/testlab/branches/multi_time/macro_llh/ic59/lc_disco/%s.lcdisco.C",srcstr.c_str());
+  sprintf(grsave2,"/net/user/mfbaker/testlab/branches/multi_time/macro_llh/ic59/lc_disco/%s.lcdisco.png",srcstr.c_str());
+
+  canComp->SaveAs(grsave);
+  canComp->SaveAs(grsave1);
+  canComp->SaveAs(grsave2);
+  
+  
+  
+  //*/
+
+  /*
+  // Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+   SetDisco(disco, 5, false, 2.87e-7, 0.5);
+
+  gROOT->ProcessLine(".L MultiDetectionStudy.C");
+ 
+  TCanvas *c = MultiDetectionStudy(mark, maf, mas, disco); //*/
+
+ 
+  return 1; // signal correct finish of script
+}

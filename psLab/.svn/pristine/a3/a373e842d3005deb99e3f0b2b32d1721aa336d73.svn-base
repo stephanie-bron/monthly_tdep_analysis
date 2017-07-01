@@ -1,0 +1,756 @@
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+  //  TString macroPath = gROOT->GetMacroPath();
+  //  macroPath += gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh:");
+  //  gROOT->SetMacroPath(macroPath);
+
+
+    if (0) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic79/Ark.C");
+
+    bool OPT_USEREALDATA = false;
+      
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79V2.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaled2.C+");
+      
+      gROOT->ProcessLine(".L TreeLoader_IC79_Final.C");
+      gROOT->ProcessLine(".L TreeLoader_IC59_Final.C");
+      gROOT->ProcessLine(".L TreeLoader_IC40_CutA6_Fix_final.C");
+
+//    I3Ark ark22;
+//    gROOT->ProcessLine(".x load_ark_ic22.C(ark22, OPT_USEREALDATA)");
+
+    I3Ark ark40;
+    gROOT->ProcessLine(".x load_ark_ic40.C(ark40, OPT_USEREALDATA)");
+      //gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/ic59/load_ark_ic40.C(ark40, OPT_USEREALDATA)");
+
+    I3Ark ark59;
+    gROOT->ProcessLine(".x load_ark_ic59_BDT.C(ark59, OPT_USEREALDATA)");
+
+      
+    I3Ark ark79;
+    gROOT->ProcessLine(".x load_ark_ic79_Final.C(ark79, OPT_USEREALDATA)");
+
+  //gROOT->ProcessLine(".L AllSky.C");
+  //AllSky as;
+  //as.SetRange(148, 158, 5, 15);
+
+    MultiArk mark;
+    //mark.AddArk(ark22);
+    mark.AddArk(ark40);
+    mark.AddArk(ark59);
+    mark.AddArk(ark79);
+    
+    MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+
+    int monLev = 0;
+
+    // Specific to Clusters:
+    printf("Setting up Stacking Analysis Sources (Galaxy Clusters)...\n");
+
+    bool OPT_LOADSIGNAL = true;
+
+    I3MultiSignalGenerator msg40;
+    I3MultiSignalGenerator msg59;
+    I3MultiSignalGenerator msg79;
+    vector<I3Event> sourceEvents;
+
+    //doesn't matter for this since actual model fluxes are injected
+    double spectralIndex = 0; //for injection, for llh, this is fitted 
+    PowerLawFlux pflux(1,spectralIndex); // 1 GeV^-1 cm^-2 s^-1;  index = configurable
+
+    bool OPT_POWER_LAW = false; // defaults to false, fits used instead
+
+  //char *model;
+  char *model = "A";
+  cout << "Using CG Spatial Model: " << model << endl;
+
+  vector<double> enhancementFactors;
+  enhancementFactors.clear();
+  if (1) { // No enhancement factors (all sources inject equal flux)
+    // For the clusters, the differences in flux are built
+    //  directly into the power law fluxform or the 
+    // flux fits of Murase's simulated spectral data directly
+    // Just give 1.0 for each source..
+    enhancementFactors.push_back(1.); // Virgo
+    enhancementFactors.push_back(1.); // Coma
+    enhancementFactors.push_back(1.); // Ophiuchus
+    enhancementFactors.push_back(1.); // Perseus
+    enhancementFactors.push_back(1.); // Centaurus
+  }
+
+  vector<double> srcSigmas;
+  srcSigmas.clear();
+  if (0) { // Results of optimizing (some compromise) over models A,B,I
+    srcSigmas.push_back(3.0); // Virgo
+    srcSigmas.push_back(0.5); // Coma
+    srcSigmas.push_back(0.5); // Ophiuchus
+    srcSigmas.push_back(0.5); // Perseus
+    srcSigmas.push_back(0.5); // Centaurus
+  }
+  if (model == "A") { // Results of optimizing
+    srcSigmas.push_back(2.0); // Virgo
+    srcSigmas.push_back(0.25); // Coma
+    srcSigmas.push_back(0.0); // Ophiuchus
+    srcSigmas.push_back(0.0); // Perseus
+    srcSigmas.push_back(0.25); // Centaurus
+  }
+  if (model == "B") { // Results of optimizing
+    srcSigmas.push_back(4.0); // Virgo
+    srcSigmas.push_back(0.25); // Coma
+    srcSigmas.push_back(0.5); // Ophiuchus
+    srcSigmas.push_back(0.5); // Perseus
+    srcSigmas.push_back(0.5); // Centaurus
+  }
+  if (model == "I") { // Results of optimizing
+    srcSigmas.push_back(3.0); // Virgo
+    srcSigmas.push_back(0.25); // Coma
+    srcSigmas.push_back(0.0); // Ophiuchus
+    srcSigmas.push_back(0.0); // Perseus
+    srcSigmas.push_back(0.25); // Centaurus
+  }
+  if (model == "C") { // Results of optimizing
+    srcSigmas.push_back(0.0); // Virgo
+    srcSigmas.push_back(0.0); // Coma
+    srcSigmas.push_back(0.0); // Ophiuchus
+    srcSigmas.push_back(0.0); // Perseus
+    srcSigmas.push_back(0.0); // Centaurus
+  }
+
+  FluxBase *myFluxPtrVirgo;
+  FluxBase *myFluxPtrComa;
+  FluxBase *myFluxPtrOphiuchus;
+  FluxBase *myFluxPtrPerseus;
+  FluxBase *myFluxPtrCentaurus;
+  if (OPT_POWER_LAW) {
+    double spectralIndex; // must be set elsewhere first
+    if (spectralIndex == 0) {
+      cout << "Need to set spectralIndex first!\n";
+      exit(1);
+    }
+    cout << "Loading Power Laws for each source, spectralIndex = " << spectralIndex << endl;
+    PowerLawFlux pflux(1./5.,spectralIndex); // Normalization accounted for here!
+  // TODO: Need to add "weightVirgo" etc, doubles here!
+    myFluxPtrVirgo = &pflux;
+    myFluxPtrComa = &pflux;
+    myFluxPtrOphiuchus = &pflux;
+    myFluxPtrPerseus = &pflux;
+    myFluxPtrCentaurus = &pflux;
+  } else {
+    // Fit Models A,B,I on the fly:
+    cout << "Loading Broken Power Laws for each source, fit directly from simulated spectra sent by Murase\n";
+
+    char *source = "Virgo";
+    // Fit could be called with option "Q" to trim down verbosity
+    //gROOT->ProcessLine(".x FitMuraseSpectra.C"); // requires chars* "source" and "model" to be set
+    double params[4];
+    //fFit->GetParameters(params);
+    
+      params[0] = -1.12270e+01;
+      params[1] = -1.95487e+00;
+      params[2] = -3.63437e+00;
+      params[3] =  8.71865e+00;  
+    
+    
+      cout << "Norm: " << pow(10, params[0]) << endl;
+      cout << "gamma1: " << params[1] << endl;
+      cout << "gamma2: " << params[2] << endl;
+      cout << "Ebreak: " << pow(10,params[3]) << endl;
+    double weightVirgo = pow(10,params[0]);
+    // Params from the fit, but transfered to dN/dE instead of log10(dN/dE)
+    //  and in E, not log10(E)
+    TF1 *fVirgo = new TF1("fBreak","pow(10,(log10(x)<=[3])*([0]+[1]*log10(x))+(log10(x)>[3])*([0]+[1]*[3]-[2]*[3]+[2]*log10(x)))",1.e1,1.e11);
+    fVirgo->SetParameters(params);
+    FormulaFlux formfluxVirgo(*fVirgo);
+    myFluxPtrVirgo = &formfluxVirgo;
+
+    char *source = "Coma";
+    //gROOT->ProcessLine(".x FitMuraseSpectra.C");
+    double params[4];
+    //fFit->GetParameters(params);
+      params[0] = -1.30551e+01;
+      params[1] = -1.95249e+00;
+      params[2] = -3.60693e+00;
+      params[3] = 8.67377e+00; //2.26 x e6 TeV
+      
+      cout << "Norm: " << pow(10,params[0]) << endl;
+      cout << "gamma1: " << params[1] << endl;
+      cout << "gamma2: " << params[2] << endl;
+      cout << "Ebreak: " << pow(10,params[3]) << endl;
+    
+    double weightComa = pow(10,params[0]);
+    // Params from the fit, but transfered to dN/dE instead of log10(dN/dE)
+    //  and in E, not log10(E)
+    TF1 *fComa = new TF1("fBreak","pow(10,(log10(x)<=[3])*([0]+[1]*log10(x))+(log10(x)>[3])*([0]+[1]*[3]-[2]*[3]+[2]*log10(x)))",1.e1,1.e11);
+    fComa->SetParameters(params);
+    FormulaFlux formfluxComa(*fComa);
+    myFluxPtrComa = &formfluxComa;
+
+    char *source = "Ophiuchus";
+    //gROOT->ProcessLine(".x FitMuraseSpectra.C");
+    double params[4];
+    //fFit->GetParameters(params);
+    
+    params[0] = -1.27129e+01; 
+    params[1] = -1.95249e+00;
+    params[2] = -3.60693e+00;
+    params[3] = -8.67169e+00; //2.26 x e6 TeV
+    
+    cout << "Norm: " << pow(10, params[0]) << endl;
+    cout << "gamma1: " << params[1] << endl;
+    cout << "gamma2: " << params[2] << endl;
+    cout << "Ebreak: " << pow(10, params[3]) << endl;
+    
+    
+    double weightOphiuchus = pow(10,params[0]);
+    // Params from the fit, but transfered to dN/dE instead of log10(dN/dE)
+    //  and in E, not log10(E)
+    TF1 *fOphiuchus = new TF1("fBreak","pow(10,(log10(x)<=[3])*([0]+[1]*log10(x))+(log10(x)>[3])*([0]+[1]*[3]-[2]*[3]+[2]*log10(x)))",1.e1,1.e11);
+    fOphiuchus->SetParameters(params);
+    FormulaFlux formfluxOphiuchus(*fOphiuchus);
+    myFluxPtrOphiuchus = &formfluxOphiuchus;
+
+    char *source = "Perseus";
+    //gROOT->ProcessLine(".x FitMuraseSpectra.C");
+    double params[4];
+    //fFit->GetParameters(params);
+    
+    params[0] = -1.26265e+01;
+    params[1] = -1.95487e+00;
+    params[2] = -3.63437e+00;
+    params[3] = 8.71250e+00; //2.26 x e6 TeV
+    
+    cout << "Norm: " << pow(10, params[0]) << endl;
+    cout << "gamma1: " << params[1] << endl;
+    cout << "gamma2: " << params[2] << endl;
+    cout << "Ebreak: " << pow(10, params[3]) << endl;
+    
+    
+    double weightPerseus = pow(10,params[0]);
+    // Params from the fit, but transfered to dN/dE instead of log10(dN/dE)
+    //  and in E, not log10(E)
+    TF1 *fPerseus = new TF1("fBreak","pow(10,(log10(x)<=[3])*([0]+[1]*log10(x))+(log10(x)>[3])*([0]+[1]*[3]-[2]*[3]+[2]*log10(x)))",1.e1,1.e11);
+    fPerseus->SetParameters(params);
+    FormulaFlux formfluxPerseus(*fPerseus);
+    myFluxPtrPerseus = &formfluxPerseus;
+
+    char *source = "Centaurus";
+    //gROOT->ProcessLine(".x FitMuraseSpectra.C");
+    double params[4];
+    //fFit->GetParameters(params);
+    
+    params[0] = -1.19362e+01; 
+    params[1] = -1.95487e+00;
+    params[2] = -3.63437e+00;
+    params[3] = 8.71528e+00; //2.26 x e6 TeV
+    
+    cout << "Norm: " << pow(10, params[0]) << endl;
+    cout << "gamma1: " << params[1] << endl;
+    cout << "gamma2: " << params[2] << endl;
+    cout << "Ebreak: " << pow(10, params[3]) << endl;
+    
+    double weightCentaurus = pow(10,params[0]);
+    // Params from the fit, but transfered to dN/dE instead of log10(dN/dE)
+    //  and in E, not log10(E)
+    TF1 *fCentaurus = new TF1("fBreak","pow(10,(log10(x)<=[3])*([0]+[1]*log10(x))+(log10(x)>[3])*([0]+[1]*[3]-[2]*[3]+[2]*log10(x)))",1.e1,1.e11);
+    fCentaurus->SetParameters(params);
+    FormulaFlux formfluxCentaurus(*fCentaurus);
+    myFluxPtrCentaurus = &formfluxCentaurus;
+
+  }
+  int srcIndex = 0;
+
+  // Each Ark has its own event loader.  Each ark needs its own msg... 
+  //  (I.e. its own list of candidate source events)
+  EventLoaderExt evLoader40 = dynamic_cast<const EventLoaderExt&>(ark40.evLoader);
+  evLoader40.SetNUpSamples(20); // Default number of times each signal event is moved
+  EventLoaderExt evLoader59 = dynamic_cast<const EventLoaderExt&>(ark59.evLoader);
+  evLoader59.SetNUpSamples(20); // Default number of times each signal event is moved
+  EventLoaderExt evLoader79 = dynamic_cast<const EventLoaderExt&>(ark79.evLoader);
+  evLoader79.SetNUpSamples(20); // Default number of times each signal event is moved
+
+
+  vector<EquatorialDeg> srcLocations;
+  srcLocations.clear();
+
+
+  EquatorialDeg srcLocation0(186.63,12.72); // Virgo
+  srcLocations.push_back(srcLocation0);
+  if (model = "C") {
+    evLoader40.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+    evLoader59.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+    evLoader79.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+  } else {
+    evLoader40.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0036, 1.8, 0, 1.5e-1, 1.6, 0.42, 1.3e-2, 20, 0.47); // Virgo
+    evLoader59.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0036, 1.8, 0, 1.5e-1, 1.6, 0.42, 1.3e-2, 20, 0.47); // Virgo
+    evLoader79.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0036, 1.8, 0, 1.5e-1, 1.6, 0.42, 1.3e-2, 20, 0.47); // Virgo
+  }
+  evLoader40.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrVirgo, srcLocations[srcIndex], ark40.livetime);
+  msg40.AddSignal(i3point,enhancementFactors[srcIndex]);
+
+  evLoader59.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrVirgo, srcLocations[srcIndex], ark59.livetime);
+  msg59.AddSignal(i3point,enhancementFactors[srcIndex]);
+      
+  evLoader79.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrVirgo, srcLocations[srcIndex], ark79.livetime);
+  msg79.AddSignal(i3point,enhancementFactors[srcIndex]);
+  srcIndex++;
+
+  EquatorialDeg srcLocation1(194.9468,27.9388); // Coma
+  srcLocations.push_back(srcLocation1);
+  if (model = "C") {
+    evLoader40.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+    evLoader59.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+    evLoader79.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+  } else {
+    evLoader40.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0231, 2.30, 1, 3.4e-3, 294, 0.75, 3.4e-3, 294, 0.75); // Coma
+    evLoader59.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0231, 2.30, 1, 3.4e-3, 294, 0.75, 3.4e-3, 294, 0.75); // Coma
+    evLoader79.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0231, 2.30, 1, 3.4e-3, 294, 0.75, 3.4e-3, 294, 0.75); // Coma
+  }
+  evLoader40.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrComa, srcLocations[srcIndex], ark40.livetime);
+  msg40.AddSignal(i3point,enhancementFactors[srcIndex]);
+
+  evLoader59.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrComa, srcLocations[srcIndex], ark59.livetime);
+  msg59.AddSignal(i3point,enhancementFactors[srcIndex]);
+      
+  evLoader79.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrComa, srcLocations[srcIndex], ark79.livetime);
+  msg79.AddSignal(i3point,enhancementFactors[srcIndex]);
+  srcIndex++;
+
+  EquatorialDeg srcLocation2(258.1115,-23.3634); // Ophiuchus 
+  srcLocations.push_back(srcLocation2);
+  if (model = "C") {
+    evLoader40.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+    evLoader59.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+    evLoader79.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+  } else {
+    evLoader40.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0280, 2.74, 0, 1.71e-2, 56, 0.705, 7.47e-3, 190, 0.705);  // Ophiuchus
+    evLoader59.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0280, 2.74, 0, 1.71e-2, 56, 0.705, 7.47e-3, 190, 0.705);  // Ophiuchus
+    evLoader79.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0280, 2.74, 0, 1.71e-2, 56, 0.705, 7.47e-3, 190, 0.705);  // Ophiuchus
+  }
+  evLoader40.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrOphiuchus, srcLocations[srcIndex], ark40.livetime);
+  msg40.AddSignal(i3point,enhancementFactors[srcIndex]);
+
+  evLoader59.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrOphiuchus, srcLocations[srcIndex], ark59.livetime);
+  msg59.AddSignal(i3point,enhancementFactors[srcIndex]);
+
+  evLoader79.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrOphiuchus, srcLocations[srcIndex], ark79.livetime);
+  msg79.AddSignal(i3point,enhancementFactors[srcIndex]);
+  srcIndex++;
+
+  EquatorialDeg srcLocation3(49.9455,41.5150); // Perseus 
+  srcLocations.push_back(srcLocation3);
+  if (model = "C") {
+    evLoader40.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+    evLoader59.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+    evLoader79.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+  } else {
+    evLoader40.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0183, 1.90, 1, 4.6e-2, 57, 1.2, 4.79e-3, 200, 0.58); // Perseus
+    evLoader59.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0183, 1.90, 1, 4.6e-2, 57, 1.2, 4.79e-3, 200, 0.58); // Perseus
+    evLoader79.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0183, 1.90, 1, 4.6e-2, 57, 1.2, 4.79e-3, 200, 0.58); // Perseus
+  }
+  evLoader40.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrPerseus, srcLocations[srcIndex], ark40.livetime);
+  msg40.AddSignal(i3point,enhancementFactors[srcIndex]);
+
+  evLoader59.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrPerseus, srcLocations[srcIndex], ark59.livetime);
+  msg59.AddSignal(i3point,enhancementFactors[srcIndex]);
+      
+  evLoader79.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrPerseus, srcLocations[srcIndex], ark79.livetime);
+  msg79.AddSignal(i3point,enhancementFactors[srcIndex]);
+  srcIndex++;
+
+  EquatorialDeg srcLocation4(192.1995, -41.3087); // Centaurus
+  srcLocations.push_back(srcLocation4);
+  if (model = "C") {
+    evLoader40.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+    evLoader59.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+    evLoader79.LoadSourcePdf_Kent(srcLocations[srcIndex], 0.0);
+  } else {
+    evLoader40.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0114, 1.34, 0, 8.05e-2, 8.6, 0.569, 3.65e-3, 99, 0.569); // Centaurus
+    evLoader59.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0114, 1.34, 0, 8.05e-2, 8.6, 0.569, 3.65e-3, 99, 0.569); // Centaurus
+    evLoader79.LoadSourcePdf_CG_ABI(model, srcLocations[srcIndex], 0.0114, 1.34, 0, 8.05e-2, 8.6, 0.569, 3.65e-3, 99, 0.569); // Centaurus
+  }
+  evLoader40.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrCentaurus, srcLocations[srcIndex], ark40.livetime);
+  msg40.AddSignal(i3point,enhancementFactors[srcIndex]);
+
+  evLoader59.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrCentaurus, srcLocations[srcIndex], ark59.livetime);
+  msg59.AddSignal(i3point,enhancementFactors[srcIndex]);
+  
+  evLoader79.LoadSourceEvents(sourceEvents);
+  I3PointGenerator i3point(sourceEvents, *myFluxPtrCentaurus, srcLocations[srcIndex], ark79.livetime);
+  msg79.AddSignal(i3point,enhancementFactors[srcIndex]);
+  srcIndex++;
+
+
+  vector<double> pdfEnhancement;
+  pdfEnhancement.clear();
+  if (0) { // No enhancements in search pdf
+    pdfEnhancement.push_back(1./5.); // Virgo
+    pdfEnhancement.push_back(1./5.); // Coma
+    pdfEnhancement.push_back(1./5.); // Ophiuchus
+    pdfEnhancement.push_back(1./5.); // Perseus
+    pdfEnhancement.push_back(1./5.); // Centaurus
+  }
+  // Try norms from Isobaric model (10^[0] from fit params)
+  if (0) { // No enhancements in search pdf
+    pdfEnhancement.push_back(4.55e-10/1.284e-09); // Virgo
+    pdfEnhancement.push_back(1.05e-10/1.284e-09); // Coma
+    pdfEnhancement.push_back(3.06e-10/1.284e-09); // Ophiuchus
+    pdfEnhancement.push_back(3.54e-10/1.284e-09); // Perseus
+    pdfEnhancement.push_back(6.39e-11/1.284e-09); // Centaurus
+  }
+  if (1) { // Get norms from fits
+    double weightSum = weightVirgo + weightComa + weightOphiuchus +
+                       weightPerseus + weightCentaurus;
+    pdfEnhancement.push_back(weightVirgo/weightSum); // Virgo
+    pdfEnhancement.push_back(weightComa/weightSum); // Coma
+    pdfEnhancement.push_back(weightOphiuchus/weightSum); // Ophiuchus
+    pdfEnhancement.push_back(weightPerseus/weightSum); // Perseus
+    pdfEnhancement.push_back(weightCentaurus/weightSum); // Centaurus
+  }
+
+  // At least make sure these are the same length as number of sources
+  assert ( srcSigmas.size() == srcLocations.size() ); // else misconfigured
+  assert ( enhancementFactors.size() == srcLocations.size() ); // else misconfigured
+  assert ( pdfEnhancement.size() == srcLocations.size() ); // else misconfigured
+
+    I3SignalGenerator *mySignalPtr40 = &msg40;
+    SourceModule *srcMod40 = mySignalPtr40; // one more base class deep
+ 
+    I3SignalGenerator *mySignalPtr59 = &msg59;
+    SourceModule *srcMod59 = mySignalPtr59;
+      
+    I3SignalGenerator *mySignalPtr79 = &msg79;
+    SourceModule *srcMod79 = mySignalPtr79;
+ 
+ 
+    // CALCULATE STACKING WEIGHTS VS GAMMA TABLE
+    // Set theoretical bias, i.e. if you have reason to believe one source emits 
+    //  a higher flux, add that enhancement factor here and the stacking search
+    //  will use that enhancement factor to construct the signal spatial pdfs
+    //  e.g., if you believe one source emits twice as much flux as another, the 
+    //  srcWeightsArray will scale that source pdf up by a factor of 2 if set here.
+    //  (It will not inject more flux, such as setting the enhancement factor
+    //   of the I3PointGenerator)
+ 
+    // At least make sure these are the same length as number of sources
+    assert ( srcSigmas.size() == srcLocations.size() ); // else misconfigured
+    assert ( enhancementFactors.size() == srcLocations.size() ); // else misconfigured
+    assert ( pdfEnhancement.size() == srcLocations.size() ); // else misconfigured
+
+    cout << "\nCalculating Stacking Weight vs Gamma Tables...\n ";
+ 
+    double gammaMin = -4;
+    double gammaMax = -1;
+    int nGammaBins  = 30;
+ 
+ 
+    vector<vector<double> > srcWeightsArray40;
+    int vSize = srcLocations.size();
+    srcWeightsArray40.resize( vSize );
+    double srcWeight=0, testGamma=0;
+    for (int srcIndex=0; srcIndex < srcLocations.size(); srcIndex++) {
+ 
+      evLoader40.LoadSourceEvents(sourceEvents, srcLocations[srcIndex]);
+ 
+      for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+        double testGamma = (gammaIndex+0.5)*(gammaMax-gammaMin)/nGammaBins + gammaMin;
+        PowerLawFlux testFlux(1,testGamma);  //  1 GeV^-1 cm^-2 s^-1;  index = testGamma
+        FluxBase *myFluxPtr = &testFlux;
+ 
+        I3PointGenerator i3point(sourceEvents, *myFluxPtr, srcLocations[srcIndex], ark40.livetime);
+        srcWeight = i3point->GetMeanSrcNev();
+        //srcWeight = 1;
+        //cout <<srcIndex<<"  "<<gammaIndex<<"  "
+        //     <<testGamma<<"  "<<srcWeight*pdfEnhancement[srcIndex]<< endl;
+        srcWeightsArray40[srcIndex].push_back(srcWeight*pdfEnhancement[srcIndex]);
+      }
+ 
+    }
+
+    // Normalize each row for sanity's sake (stacking method does not require this)
+    cout << endl;
+    cout << "Normalized table of Src Weights for different gamma:" << endl;
+    cout << "x-axis = Source Index, y-axis = gamma index (soft to hard)"<<endl;
+    cout << endl;
+    for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+      printf("%02d:  ",gammaIndex);
+      //cout << gammaIndex << ": ";
+      double sumRow = 0;
+      // Find norm constant
+      for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+        sumRow += srcWeightsArray40[srcIndex][gammaIndex];
+      }
+      // And normalize
+      for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+        srcWeightsArray40[srcIndex][gammaIndex]/=sumRow;
+        printf("%.4f ",srcWeightsArray40[srcIndex][gammaIndex]);
+      }
+ 
+      cout << endl;
+ 
+    }
+    vector<vector<double> > srcWeightsArray59;
+    int vSize = srcLocations.size();
+    srcWeightsArray59.resize( vSize );
+    double srcWeight=0, testGamma=0;
+    for (int srcIndex=0; srcIndex < srcLocations.size(); srcIndex++) {
+ 
+      evLoader59.LoadSourceEvents(sourceEvents, srcLocations[srcIndex]);
+ 
+      for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+        double testGamma = (gammaIndex+0.5)*(gammaMax-gammaMin)/nGammaBins + gammaMin;
+        PowerLawFlux testFlux(1,testGamma);  //  1 GeV^-1 cm^-2 s^-1;  index = testGamma
+        FluxBase *myFluxPtr = &testFlux;
+ 
+        I3PointGenerator i3point(sourceEvents, *myFluxPtr, srcLocations[srcIndex], ark59.livetime);
+        srcWeight = i3point->GetMeanSrcNev();
+        //srcWeight = 1;
+        //cout <<srcIndex<<"  "<<gammaIndex<<"  "
+        //     <<testGamma<<"  "<<srcWeight*pdfEnhancement[srcIndex]<< endl;
+        srcWeightsArray59[srcIndex].push_back(srcWeight*pdfEnhancement[srcIndex]);
+      }
+ 
+    }
+
+    // Normalize each row for sanity's sake (stacking method does not require this)
+    cout << endl;
+    cout << "Normalized table of Src Weights for different gamma:" << endl;
+    cout << "x-axis = Source Index, y-axis = gamma index (soft to hard)"<<endl;
+    cout << endl;
+    for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+      printf("%02d:  ",gammaIndex);
+      //cout << gammaIndex << ": ";
+      double sumRow = 0;
+      // Find norm constant
+      for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+        sumRow += srcWeightsArray59[srcIndex][gammaIndex];
+      }
+      // And normalize
+      for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+        srcWeightsArray59[srcIndex][gammaIndex]/=sumRow;
+        printf("%.4f ",srcWeightsArray59[srcIndex][gammaIndex]);
+      }
+ 
+      cout << endl;
+ 
+    }
+      vector<vector<double> > srcWeightsArray79;
+      int vSize = srcLocations.size();
+      srcWeightsArray79.resize( vSize );
+      double srcWeight=0, testGamma=0;
+      for (int srcIndex=0; srcIndex < srcLocations.size(); srcIndex++) {
+          
+          evLoader79.LoadSourceEvents(sourceEvents, srcLocations[srcIndex]);
+          
+          for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+              double testGamma = (gammaIndex+0.5)*(gammaMax-gammaMin)/nGammaBins + gammaMin;
+              PowerLawFlux testFlux(1,testGamma);  //  1 GeV^-1 cm^-2 s^-1;  index = testGamma
+              FluxBase *myFluxPtr = &testFlux;
+              
+              I3PointGenerator i3point(sourceEvents, *myFluxPtr, srcLocations[srcIndex], ark79.livetime);
+              srcWeight = i3point->GetMeanSrcNev();
+              //srcWeight = 1;
+              //cout <<srcIndex<<"  "<<gammaIndex<<"  "
+              //     <<testGamma<<"  "<<srcWeight*pdfEnhancement[srcIndex]<< endl;
+              srcWeightsArray79[srcIndex].push_back(srcWeight*pdfEnhancement[srcIndex]);
+          }
+          
+      }
+      
+      // Normalize each row for sanity's sake (stacking method does not require this)
+      cout << endl;
+      cout << "Normalized table of Src Weights for different gamma:" << endl;
+      cout << "x-axis = Source Index, y-axis = gamma index (soft to hard)"<<endl;
+      cout << endl;
+      for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+          printf("%02d:  ",gammaIndex);
+          //cout << gammaIndex << ": ";
+          double sumRow = 0;
+          // Find norm constant
+          for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+              sumRow += srcWeightsArray79[srcIndex][gammaIndex];
+          }
+          // And normalize
+          for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+              srcWeightsArray79[srcIndex][gammaIndex]/=sumRow;
+              printf("%.4f ",srcWeightsArray79[srcIndex][gammaIndex]);
+          }
+          
+          cout << endl;
+          
+      }
+ 
+    NewLlhStack newllhstack40;
+    newllhstack40.SetUseEnergy(true);
+    newllhstack40.SetOptimizeTolerance(0.00);
+    newllhstack40.SetMonitorLevel(monLev);
+
+    // NEW FOR STACKING
+    newllhstack40.SetAnalysisSet(ark40.psData);
+    newllhstack40.SetSourceCoords(srcLocations);
+    newllhstack40.SetStackedWeightTable(srcWeightsArray40);
+    // NEW FOR EXT 
+    newllhstack40.SetSourceSigmas(srcSigmas);
+
+    NewLlhStack newllhstack59;
+    newllhstack59.SetUseEnergy(true);
+    newllhstack59.SetOptimizeTolerance(0.00);
+    newllhstack59.SetMonitorLevel(monLev);
+
+    // NEW FOR STACKING
+    newllhstack59.SetAnalysisSet(ark59.psData);
+    newllhstack59.SetSourceCoords(srcLocations);
+    newllhstack59.SetStackedWeightTable(srcWeightsArray59);
+    // NEW FOR EXT 
+    newllhstack59.SetSourceSigmas(srcSigmas);
+
+    NewLlhStack newllhstack79;
+    newllhstack79.SetUseEnergy(true);
+    newllhstack79.SetOptimizeTolerance(0.00);
+    newllhstack79.SetMonitorLevel(monLev);
+      
+    // NEW FOR STACKING
+    newllhstack79.SetAnalysisSet(ark79.psData);
+    newllhstack79.SetSourceCoords(srcLocations);
+    newllhstack79.SetStackedWeightTable(srcWeightsArray79);
+    // NEW FOR EXT
+    newllhstack79.SetSourceSigmas(srcSigmas);
+      
+    MultiAnalysisFn maf;
+    //maf.AddAnalysisFn(&newllh22);
+    maf.AddAnalysisFn(&newllhstack40);
+    maf.AddAnalysisFn(&newllhstack59);
+    maf.AddAnalysisFn(&newllhstack79);
+  
+    //gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic59/SimpleMultiAnalysis.C");
+  
+  }
+
+  //EquatorialDeg testSearch(153.375, 11.375);
+  //EquatorialDeg testSearch(343.491,16.148);
+
+  //mark.SetSource(mySignalPtr);
+  ark40.SetSource(srcMod40);
+  ark59.SetSource(srcMod59);
+  ark79.SetSource(srcMod79);
+  //maf.SetSearchCoord(testSearch); // Not needed for stacking
+
+  //MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData); //already defined
+  
+  NewLlhEnergy_ParTranslator pt;
+  pt.SetRange(1,4,31);
+  pt.SetTranslator(mas);
+  
+  maf.SetParTranslator(&pt);
+
+  vector<MinuitParDef> pdv;
+  pdv.push_back( MinuitParDef("nSrc",2,0.1, 0.,100.) );
+  pdv.push_back( MinuitParDef("gamma",2.5,0.5, 1., 4.) );
+  maf.SetParDefs(pdv);
+
+  //SimpleMultiAnalysis sa;
+  //sa.SetNDoF(2);
+   
+  //cout << "Starting trials" << endl;
+  //sa.Execute(mark,maf,1000,0);
+
+
+  // Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  //SetDisco(disco, 15, false, 2.87e-7, 0.5);
+  SetDisco(disco, 25, true, 0.48196, 0.9);
+
+  gROOT->ProcessLine(".L MultiDetectionStudy.C");
+ 
+  TCanvas *c = MultiDetectionStudy(mark, maf, mas, disco); //
+
+  c->SaveAs("ModelAsensitcorrectfit.png");
+  c->SaveAs("ModelAsensitcorrectfit.root");
+
+
+  /*   Previous Tries 
+
+  ark_SetDisco:
+  !! disco set with:
+   Loops: 30
+   Setting for Median Upper Limit with nBkgTrials: 1500
+   Significance: T.B.D.   Power: 0.9
+  Mean Number of Source events expected for source model: 0.0439356
+  Calculating Median Bkg. p-value (1500 trials):
+  10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+  Set Detection Significance to median bkg p-value: 0.48196
+  Detection Power: 0.9
+
+  try2
+  SetDisco(disco, 2, false, 0.5, 0.9);
+!! disco set with:
+   Loops: 2
+   Significance: 0.5   Power: 0.9
+ Mean Number of Source events expected for source model: 0.0439356
+ Detection Significance: 0.5  Detection Power: 0.9
+ Mean: 1   Power: 75.4747% +/-27.777%
+Info in <Minuit2>: MnGlobalCorrelationCoeff: inversion of matrix fails.
+ Mean: 5   Power: 87.8384% +/-24.3362%
+Poisson Mean nSrcEv for 90+/-20.3266 % detection probability: 6
+Threshold significance for detection: 0.5
+  Flux scale relative to model is: 136.564
+
+  */
+
+  /*
+  Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  // SetDisco(disco, 20, false, 2.87e-7, 0.5);
+   SetDisco(disco, 30, true, 0.5, 0.9);
+  
+  gROOT->ProcessLine(".L DetectionZenith.C");
+
+  DetectionZenith dz;
+  dz.searchDecDegMin = -85.;   //(skip any bins beyond this range);
+  dz.searchDecDegMax = +85.;   //(skip any bins beyond this range);
+  dz.nBins = 40;
+
+//  dz.Execute(ark59, newllh59, disco, PowerLawFlux(1,-2));
+  dz.Execute(mark, maf, disco, PowerLawFlux(1,-2));
+  
+  
+//  dz.Write("IC59_SC_Zenith.root","recreate");
+  dz.Write("IC59_SC_IT2B_Zenith_sensEm2.root","recreate");
+//  dz.Write("Multi_BDT_Zenith_sensEm2.root","recreate");
+
+  //dz.Write("IC59_discovery.root","recreate"); //
+  */
+
+ 
+//  return 1; // signal correct finish of script
+}

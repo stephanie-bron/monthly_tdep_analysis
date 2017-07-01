@@ -1,0 +1,14 @@
+
+void macro_EvaluateLlh(EquatorialDeg searchLocation) {
+  extern AnalysisLlh* llhPtr;
+  extern I3Analysis psData;
+  
+  llhPtr->SetAnalysis(psData, searchLocation);
+  llhPtr->MaximizeLlh();
+
+  cout << " logLambda = " << llhPtr->Get_logLambdaBest() << endl;
+  cout << " -log10(p) = " << -log10(llhPtr->GetEstProb())<< endl;
+
+  cout << "        ns = " << llhPtr->GetPar(0) << endl;
+  cout << "     gamma = " << llhPtr->GetPar(1) << endl;
+}

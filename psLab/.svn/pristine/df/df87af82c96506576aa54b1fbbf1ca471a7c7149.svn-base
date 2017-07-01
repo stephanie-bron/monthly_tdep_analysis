@@ -1,0 +1,96 @@
+import matplotlib.pyplot as plt
+from pylab import *
+import sys
+
+#CRAB MODELS AND SENSITIVITIES FOR IC79+IC59+IC40
+
+x = arange(2, 7, 0.01)
+
+j2019 = pow(10,x)*pow(10,x)*pow(10,-8.43862-2.13987*x-pow(10,x)/pow(10,5.76691)*log10(exp(1)))
+f1908 = pow(10,x)*pow(10,x)*pow(10,-8.46417-2.13987*x-pow(10,x)/pow(10,5.76692)*log10(exp(1)))
+f2031 = pow(10,x)*pow(10,x)*pow(10,-8.6052-2.13987*x-pow(10,x)/pow(10,5.76691)*log10(exp(1)))
+f2043 = pow(10,x)*pow(10,x)*pow(10,-8.75264-2.13987*x-pow(10,x)/pow(10,5.76691)*log10(exp(1)))
+f2032 = pow(10,x)*pow(10,x)*pow(10,-8.86801-2.13987*x-pow(10,x)/pow(10,5.76691)*log10(exp(1)))
+f1852 = pow(10,x)*pow(10,x)*pow(10,-8.04067-2.13987*x-pow(10,x)/pow(10,5.76692)*log10(exp(1)))
+
+
+def MilagroFluxCalculator_nu(fluxNorm_g, energyNorm_g, alpha_g, energyCut_g, x):
+  k_g = fluxNorm_g / ( pow(energyNorm_g,-alpha_g) )
+  k_nu = (0.694 - 0.16*alpha_g) * k_g
+  alpha_nu = alpha_g
+  energyCut_nu = 0.59 * energyCut_g
+  k_nu_GeV = k_nu * pow(10, -3 + 3*alpha_nu)
+  energyCut_nu_GeV = energyCut_nu * 1000
+  result = k_nu_GeV*pow(x,-1*alpha_nu)*exp(-sqrt(x/energyCut_nu_GeV))
+  return result
+
+#j2019 = MilagroFluxCalculator_nu(8.7e-15, 20., 2., 29., pow(10, x1)) for x1 in x
+#f1908 = MilagroFluxCalculator_nu(8.8e-15, 20., 2., 24., pow(10, x1)) for x1 in x
+#f2031 = MilagroFluxCalculator_nu(9.8e-15, 20., 2.7, 44., pow(10, x1)) for x1 in x
+#f2043 = MilagroFluxCalculator_nu(3.1e-15, 20., 2., 31., pow(10, x1)) for x1 in x
+#f2032 = MilagroFluxCalculator_nu(3.4e-15, 20., 2., 31., pow(10, x1)) for x1 in x
+#f1852 = MilagroFluxCalculator_nu(5.7e-14, 12., 2., 31., pow(10, x1)) for x1 in x
+
+
+    
+total = f1908 + f2031 + f2043 + f2032 + f1852
+upperlimit = 1.84 * total
+upperlimlowbound = 1.84*0.91*total
+upperlimuppbound = 1.84*1.09*total
+
+ax = subplot(111)
+
+ax.plot(x, total, 'k', lw=2, label="Total Predicted Flux")
+#ax.fill_between(x, upperlimlowbound, upperlimuppbound,alpha=0.5, facecolor='red', interpolate=True)
+ax.plot(x, upperlimit,'red',alpha = 0.5, lw=2, label="Upper Limit (90 % C.L.)")
+ax.plot(x, j2019, 'g:', lw=3, label="MGRO J2019+37")
+ax.plot(x, f1908, 'b:', lw=3, label="MGRO J1908+06")
+ax.plot(x, f2031, 'r:', lw=3, label="MGRO J2031+42")
+ax.plot(x, f2043, 'y:', lw=3, label="MGRO J2043+36")
+ax.plot(x, f2032, 'b:', lw=3, label="MGRO J2032+37")
+ax.plot(x, f1852, 'c:', lw=3, label="MGRO J1852+01")
+
+
+"""
+flux = ax.plot(x, blasi, color='black', lw=2, label = "Flux prediction ") 
+limit = ax.plot(x, blasilimit, 'k--', color='black', lw=2, label= "IC79+IC59+IC40 Upper Limit (90% C.L.)")
+
+#plt.plot(x, burgio, color='red', lw=2)
+#plt.plot(x, burgiolimit, 'k--', color='red', lw=2)
+
+ax.plot(x, burgioq, color='blue', lw=2)
+ax.plot(x, burgioqlimit, 'k--', color='blue', lw=2)
+"""
+
+
+ax.set_xlabel("${\log}_{10}$ [$E_{\\"+"nu}$ (GeV)]", fontsize=15)
+ax.set_ylabel("E$^{2}$dN/dE (TeV cm$^{-2}$ s$^{-1}$)", fontsize=15)
+
+ax.set_yscale('log')
+ax.set_ylim(1e-11, 5e-7)
+legend(loc="upper left",ncol=2)
+grid()
+
+
+"""
+hess = text(3.0, 4e-11, 'Kappes et al.')
+setp(hess, size='large', color='g', style='italic')
+
+
+#b = text(4.9, 6e-11, 'Link & Burgio (1)')
+#setp(b, size='large', color='r', style='italic')
+
+
+b2 = text(4.9, 1.5e-11, 'Link & Burgio')
+setp(b2, size='large', color='blue', style='italic')
+
+bl = text(5.0, 0.5e-12, 'Amato et al.')
+setp(bl, size='large', color='black', style='italic')
+
+grid()
+
+legend(loc='upper right', scatterpoints=1)
+
+"""
+savefig("Milagro6_Sensitivity.png")
+show()

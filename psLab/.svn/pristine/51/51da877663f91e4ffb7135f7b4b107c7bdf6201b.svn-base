@@ -1,0 +1,412 @@
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+  //  TString macroPath = gROOT->GetMacroPath();
+  //  macroPath += gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh:");
+  //  gROOT->SetMacroPath(macroPath);
+
+
+    if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic59/Ark.C");
+
+    bool OPT_USEREALDATA = true;
+
+//    I3Ark ark22;
+//    gROOT->ProcessLine(".x load_ark_ic22.C(ark22, OPT_USEREALDATA)");
+
+    I3Ark ark40;
+    gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/ic59/load_ark_ic40_2075.C(ark40, OPT_USEREALDATA)");
+    //gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/ic59/load_ark_ic40.C(ark40, OPT_USEREALDATA)");
+
+  // Source 
+
+  //  ark22.SetPointSource(153.375, 11.375, 1.,-2 );
+  //  ark40.SetPointSource(153.375, 11.375, 1.,-2 );
+  //  ark59.SetPointSource(153.375, 11.375, 1.,-2 );
+ 
+  //  ark22.SetPointSource(153.375, 11.375, "1.*pow(x,-2)");
+  //  ark22.SetPointSource(EquatorialDeg(153.375, 11.375), PowerLawFlux(1, -2));
+
+  // ark40.SetPointSource(0., 61.23, 1., -2);
+
+  //gROOT->ProcessLine(".L AllSky.C");
+  //AllSky as;
+  //as.SetRange(148, 158, 5, 15);
+
+    MultiArk mark;
+    //mark.AddArk(ark22);
+    mark.AddArk(ark40);
+    
+    MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+
+    int monLev = 0;
+
+    // Specific to Milagro6:
+    printf("Setting up Stacking Analysis Sources (6 Milagro SNR Sources)...\n");
+    printf("Spectra are fit on the fly from Halzen, Kappes, O'Murchada (2008)\n");
+
+
+    bool OPT_LOADSIGNAL = true;
+    I3MultiSignalGenerator msg;
+    vector<I3Event> sourceEvents;
+    if (OPT_LOADSIGNAL) {
+      vector<double> enhancementFactors;
+      enhancementFactors.clear();
+      // Set theoretical flux enhancment factors from gamma flux 
+      //  for signal generation.
+      // E.g. an enhancment factor of 2 will inject twice as much flux from that 
+      //  source as from any other source.
+
+      for (int i=0; i<6; i++) {
+        // For the theoretical spectra, the differences in flux are built
+        //  directly into the flux fits of Halzen, Kappes, O'Murchada's 
+        //  simulated spectral data directly.
+        // Just give 1.0 for each source here.
+        enhancementFactors.push_back(1.);
+      }
+    }
+
+    // Set source sizes, used both for signal generation and spatial pdf
+    vector<double> srcSigmas;
+    srcSigmas.clear();
+    for (int i=0; i<6; i++) { // Treat most as point sources
+      srcSigmas.push_back(0.0); // Exceptions follow...
+    }
+    // Exceptions: ("Extent Diameter" taken as sigma to 2D circular Gaussian)
+    srcSigmas[0] = 1.1; // MGRO J2019+37
+    srcSigmas[2] = 3.0; // MGRO J2031+41
+
+    vector<EquatorialDeg> srcLocations;
+    srcLocations.clear();
+
+
+    // Each Ark has its own event loader.  Each ark needs its own msg... 
+    //  (its own list of candidate source events)
+    EventLoaderExt evLoader = dynamic_cast<const EventLoaderExt&>(ark40.evLoader);
+    evLoader.SetNUpSamples(20); // Default number of times each signal event is moved
+    int srcIndex = 0;
+
+  // Source 0
+  //                         r.a.,  dec.
+  //EquatorialDeg srcLocation14(305.22,36.83);  // Fermi position
+  //EquatorialDeg srcLocation0(305.03,36.72);  // MGRO J2019+37, Original
+  EquatorialDeg srcLocation0(304.68,36.70);  // MGRO J2019+37, Updated
+  srcLocations.push_back(srcLocation0);
+  char *sourceName = "MGRO J2019+37"; // required in "FitMilagroSpectra"
+  gROOT->Macro("$LAB_MAIN_DIR/macro_llh/ic59/stacking/Milagro6/FitMilagroSpectra.C");
+  double params[3];
+  fCutoffLog->GetParameters(params); // from "FitMilagroSpectra"
+  TF1 *f2019 = new TF1("fCutoff","pow(10,[0]+[1]*log10(x)-pow(10,log10(x))/pow(10,[2])*log10(exp(1)))",1.e3,1.e6);
+  f2019->SetParameters(params);
+  double weight2019 = pow(10,params[0]); // params[0] is log(norm)
+  if (OPT_LOADSIGNAL) {
+    evLoader.LoadSourcePdf_Kent(srcLocations[srcIndex], srcSigmas[srcIndex]);
+    evLoader.LoadSourceEvents(sourceEvents);
+    FormulaFlux formflux2019(*f2019);
+    FluxBase *myFluxPtr2019 = &formflux2019;
+    I3PointGenerator i3point(sourceEvents, *myFluxPtr2019, srcLocation0, ark40.livetime);
+    msg.AddSignal(i3point,enhancementFactors[srcIndex]);
+  }
+  srcIndex++;
+
+  // Source 1
+  //EquatorialDeg srcLocation1(286.89,6.03);  // Fermi position
+  //EquatorialDeg srcLocation1(287.27,6.18);  // MGRO J1908+06, Original
+  EquatorialDeg srcLocation1(286.68,5.83);  // MGRO J1908+06, Updated
+  srcLocations.push_back(srcLocation1);
+  char *sourceName = "MGRO J1908+06";
+  gROOT->Macro("$LAB_MAIN_DIR/macro_llh/ic59/stacking/Milagro6/FitMilagroSpectra.C");
+  double params[3];
+  fCutoffLog->GetParameters(params); // from "FitMilagroSpectra"
+  TF1 *f1908 = new TF1("fCutoff","pow(10,[0]+[1]*log10(x)-pow(10,log10(x))/pow(10,[2])*log10(exp(1)))",1.e3,1.e6);
+  f1908->SetParameters(params);
+  double weight1908 = pow(10,params[0]); // params[0] is log(norm)
+  if (OPT_LOADSIGNAL) {
+    evLoader.LoadSourcePdf_Kent(srcLocations[srcIndex], srcSigmas[srcIndex]);
+    evLoader.LoadSourceEvents(sourceEvents);
+    FormulaFlux formflux1908(*f1908);
+    FluxBase *myFluxPtr1908 = &formflux1908;
+    I3PointGenerator i3point(sourceEvents, *myFluxPtr1908, srcLocation1, ark40.livetime);
+    msg.AddSignal(i3point,enhancementFactors[srcIndex]);
+  }
+  srcIndex++;
+
+  // Source 2
+//???? MGRO J2034+41 on Jim's page
+  //EquatorialDeg srcLocation2(308.06,41.38);  // TeV 2032+41 (assoc with J2031+42)
+  //EquatorialDeg srcLocation2(308.04,41.57);  // MGRO J2031+41, Original
+  EquatorialDeg srcLocation2(307.93,40.67);  // MGRO J2031+41, Updated
+  srcLocations.push_back(srcLocation2);
+  char *sourceName = "MGRO J2031+42"; // 41 some places?
+  gROOT->Macro("$LAB_MAIN_DIR/macro_llh/ic59/stacking/Milagro6/FitMilagroSpectra.C");
+  double params[3];
+  fCutoffLog->GetParameters(params); // from "FitMilagroSpectra"
+  TF1 *f2031 = new TF1("fCutoff","pow(10,[0]+[1]*log10(x)-pow(10,log10(x))/pow(10,[2])*log10(exp(1)))",1.e3,1.e6);
+  f2031->SetParameters(params);
+  double weight2031 = pow(10,params[0]); // params[0] is log(norm)
+  if (OPT_LOADSIGNAL) {
+    evLoader.LoadSourcePdf_Kent(srcLocations[srcIndex], srcSigmas[srcIndex]);
+    evLoader.LoadSourceEvents(sourceEvents);
+    FormulaFlux formflux2031(*f2031);
+    FluxBase *myFluxPtr2031 = &formflux2031;
+    I3PointGenerator i3point(sourceEvents, *myFluxPtr2031, srcLocation2, ark40.livetime);
+    msg.AddSignal(i3point,enhancementFactors[srcIndex]);
+  }
+  srcIndex++;
+
+  // Source 3
+  EquatorialDeg srcLocation3(310.98,36.3);  // C1 (MGRO J2043+36)
+  srcLocations.push_back(srcLocation3);
+  char *sourceName = "MGRO J2043+36";
+  gROOT->Macro("$LAB_MAIN_DIR/macro_llh/ic59/stacking/Milagro6/FitMilagroSpectra.C");
+  double params[3];
+  fCutoffLog->GetParameters(params); // from "FitMilagroSpectra"
+  TF1 *f2043= new TF1("fCutoff","pow(10,[0]+[1]*log10(x)-pow(10,log10(x))/pow(10,[2])*log10(exp(1)))",1.e3,1.e6);
+  f2043->SetParameters(params);
+  double weight2043 = pow(10,params[0]); // params[0] is log(norm)
+  if (OPT_LOADSIGNAL) {
+    evLoader.LoadSourcePdf_Kent(srcLocations[srcIndex], srcSigmas[srcIndex]);
+    evLoader.LoadSourceEvents(sourceEvents);
+    FormulaFlux formflux2043(*f2043);
+    FluxBase *myFluxPtr2043 = &formflux2043;
+    I3PointGenerator i3point(sourceEvents, *myFluxPtr2043, srcLocation3, ark40.livetime);
+    msg.AddSignal(i3point,enhancementFactors[srcIndex]);
+  }
+  srcIndex++;
+
+  // Source 4
+  EquatorialDeg srcLocation4(307.75,36.52);  // C2 (MGRO J2032+37)
+  srcLocations.push_back(srcLocation4);
+  char *sourceName = "MGRO J2032+37";
+  gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/ic59/stacking/Milagro6/FitMilagroSpectra.C");
+  double params[3];
+  fCutoffLog->GetParameters(params); // from "FitMilagroSpectra"
+  TF1 *f2032= new TF1("fCutoff","pow(10,[0]+[1]*log10(x)-pow(10,log10(x))/pow(10,[2])*log10(exp(1)))",1.e3,1.e6);
+  f2032->SetParameters(params);
+  double weight2032 = pow(10,params[0]); // params[0] is log(norm)
+  if (OPT_LOADSIGNAL) {
+    evLoader.LoadSourcePdf_Kent(srcLocations[srcIndex], srcSigmas[srcIndex]);
+    evLoader.LoadSourceEvents(sourceEvents);
+    FormulaFlux formflux2032(*f2032);
+    FluxBase *myFluxPtr2032= &formflux2032;
+    I3PointGenerator i3point(sourceEvents, *myFluxPtr2032, srcLocation4, ark40.livetime);
+    msg.AddSignal(i3point,enhancementFactors[srcIndex]);
+  }
+  srcIndex++;
+
+  // Source 5, added to v2 of Francis's paper, in the text it states that 
+  //  it has a flux about 2.5 times that of J2019+37 (next-brightest)
+  EquatorialDeg srcLocation5(283.12,0.51);  // MGRO J1852+01
+  srcLocations.push_back(srcLocation5);
+  char *sourceName = "MGRO J1852+01";
+  gROOT->Macro("$LAB_MAIN_DIR/macro_llh/ic59/stacking/Milagro6/FitMilagroSpectra.C");
+  double params[3];
+  fCutoffLog->GetParameters(params); // from "FitMilagroSpectra"
+  TF1 *f1852= new TF1("fCutoff","pow(10,[0]+[1]*log10(x)-pow(10,log10(x))/pow(10,[2])*log10(exp(1)))",1.e3,1.e6);
+  f1852->SetParameters(params);
+  double weight1852 = pow(10,params[0]); // params[0] is log(norm)
+  if (OPT_LOADSIGNAL) {
+    evLoader.LoadSourcePdf_Kent(srcLocations[srcIndex], srcSigmas[srcIndex]);
+    evLoader.LoadSourceEvents(sourceEvents);
+    FormulaFlux formflux1852(*f1852);
+    FluxBase *myFluxPtr1852= &formflux1852;
+    I3PointGenerator i3point(sourceEvents, *myFluxPtr1852, srcLocation5, ark40.livetime);
+    msg.AddSignal(i3point,enhancementFactors[srcIndex]);
+  }
+  srcIndex++;
+
+  // ... finished adding sources
+
+  I3SignalGenerator *mySignalPtr = &msg;
+  SourceModule *srcMod = mySignalPtr; // one more base class deep
+
+
+  // CALCULATE STACKING WEIGHTS VS GAMMA TABLE
+  // Set theoretical bias, i.e. if you have reason to believe one source emits 
+  //  a higher flux, add that enhancement factor here and the stacking search
+  //  will use that enhancement factor to construct the signal spatial pdfs
+  //  e.g., if you believe one source emits twice as much flux as another, the 
+  //  srcWeightsArray will scale that source pdf up by a factor of 2 if set here.
+  //  (It will not inject more flux, such as setting the enhancement factor
+  //   of the I3PointGenerator)
+
+  vector<double> pdfEnhancement;
+  pdfEnhancement.clear();
+  if (0) { // For equal weights 
+    for (int i=0; i<6; i++) {
+      pdfEnhancement.push_back(1./6.); // Identical, i.e. no src enhancments
+    }
+  }
+  if (1) { // Use norms from fits to theoretical spectra
+    double weightSum = weight2019 + weight1908 + weight2031 + weight2043 +
+                       weight2032 + weight1852;
+    pdfEnhancement.push_back(weight2019/weightSum);
+    pdfEnhancement.push_back(weight1908/weightSum);
+    pdfEnhancement.push_back(weight2031/weightSum);
+    pdfEnhancement.push_back(weight2043/weightSum);
+    pdfEnhancement.push_back(weight2032/weightSum);
+    pdfEnhancement.push_back(weight1852/weightSum);
+  }
+
+  // At least make sure these are the same length as number of sources
+  assert ( srcSigmas.size() == srcLocations.size() ); // else misconfigured
+  assert ( enhancementFactors.size() == srcLocations.size() ); // else misconfigured
+  assert ( pdfEnhancement.size() == srcLocations.size() ); // else misconfigured
+
+  cout << "\nCalculating Stacking Weight vs Gamma Table...\n ";
+
+  double gammaMin = -4;
+  double gammaMax = -1;
+  int nGammaBins  = 30;
+
+
+  vector<vector<double> > srcWeightsArray;
+  int vSize = srcLocations.size();
+  srcWeightsArray.resize( vSize );
+  double srcWeight=0, testGamma=0;
+  for (int srcIndex=0; srcIndex < srcLocations.size(); srcIndex++) {
+
+    evLoader.LoadSourceEvents(sourceEvents, srcLocations[srcIndex]);
+
+    for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+      double testGamma = (gammaIndex+0.5)*(gammaMax-gammaMin)/nGammaBins + gammaMin;
+      PowerLawFlux testFlux(1,testGamma);  //  1 GeV^-1 cm^-2 s^-1;  index = testGamma
+      FluxBase *myFluxPtr = &testFlux;
+
+      I3PointGenerator i3point(sourceEvents, *myFluxPtr, srcLocations[srcIndex], ark40.livetime);
+      srcWeight = i3point->GetMeanSrcNev();
+      //srcWeight = 1;
+      //cout <<srcIndex<<"  "<<gammaIndex<<"  "
+      //     <<testGamma<<"  "<<srcWeight*pdfEnhancement[srcIndex]<< endl;
+      srcWeightsArray[srcIndex].push_back(srcWeight*pdfEnhancement[srcIndex]);
+    }
+
+  }
+
+  // Normalize each row for sanity's sake (stacking method does not require this)
+  cout << endl;
+  cout << "Normalized table of Src Weights for different gamma:" << endl;
+  cout << "x-axis = Source Index, y-axis = gamma index (soft to hard)"<<endl;
+  cout << endl;
+  for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+    printf("%02d:  ",gammaIndex);
+    //cout << gammaIndex << ": ";
+    double sumRow = 0;
+    // Find norm constant
+    for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+      sumRow += srcWeightsArray[srcIndex][gammaIndex];
+    }
+    // And normalize
+    for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+      srcWeightsArray[srcIndex][gammaIndex]/=sumRow;
+      printf("%.4f ",srcWeightsArray[srcIndex][gammaIndex]);
+    }
+
+    cout << endl;
+
+  }
+
+    
+    NewLlhStack newllhstack40;
+    newllhstack40.SetUseEnergy(true);
+    //newllhstack40.SetOptimizeAngleDeg(10.);
+    newllhstack40.SetOptimizeTolerance(0.01);
+    newllhstack40.SetMonitorLevel(monLev);
+    newllhstack40.SetAnalysisSet(ark40.psData); 
+
+    // NEW FOR STACKING
+    //newllhstack40.SetAnalysis(ark40.psData,srcLocations);
+    newllhstack40.SetAnalysisSet(ark40.psData);
+    newllhstack40.SetSourceCoords(srcLocations);
+    newllhstack40.SetStackedWeightTable(srcWeightsArray);
+    // NEW FOR EXT 
+    newllhstack40.SetSourceSigmas(srcSigmas);
+
+
+    MultiAnalysisFn maf;
+    //maf.AddAnalysisFn(&newllh22);
+    maf.AddAnalysisFn(&newllhstack40);
+    //maf.AddAnalysisFn(&newllh59);
+  
+    //gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic59/SimpleMultiAnalysis.C");
+  
+  }
+
+  //EquatorialDeg testSearch(153.375, 11.375);
+  //EquatorialDeg testSearch(343.491,16.148);
+
+  //mark.SetSource(mySignalPtr);
+  ark40.SetSource(srcMod); // set for each ark.  too complex for mark -JD
+  //maf.SetSearchCoord(testSearch); // Not needed for stacking
+
+  //MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+  
+  NewLlhEnergy_ParTranslator pt;
+  pt.SetRange(1,4,31);
+  pt.SetTranslator(mas);
+  
+  maf.SetParTranslator(&pt);
+
+  vector<MinuitParDef> pdv;
+  pdv.push_back( MinuitParDef("nSrc",2,0.1, 0.,100.) );
+  pdv.push_back( MinuitParDef("gamma",2.5,0.5, 1., 4.) );
+  maf.SetParDefs(pdv);
+
+  //SimpleMultiAnalysis sa;
+  //sa.SetNDoF(2);
+   
+  //cout << "Starting trials" << endl;
+  //sa.Execute(mark,maf,1000,0);
+
+
+/*
+  // Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+   SetDisco(disco, 15, false, 2.87e-7, 0.5);
+
+  gROOT->ProcessLine(".L MultiDetectionStudy.C");
+ 
+  TCanvas *c = MultiDetectionStudy(mark, maf, mas, disco); //
+*/
+
+  /*
+  Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  // SetDisco(disco, 20, false, 2.87e-7, 0.5);
+   SetDisco(disco, 30, true, 0.5, 0.9);
+  
+  gROOT->ProcessLine(".L DetectionZenith.C");
+
+  DetectionZenith dz;
+  dz.searchDecDegMin = -85.;   //(skip any bins beyond this range);
+  dz.searchDecDegMax = +85.;   //(skip any bins beyond this range);
+  dz.nBins = 40;
+
+//  dz.Execute(ark59, newllh59, disco, PowerLawFlux(1,-2));
+  dz.Execute(mark, maf, disco, PowerLawFlux(1,-2));
+  
+  
+//  dz.Write("IC59_SC_Zenith.root","recreate");
+  dz.Write("IC59_SC_IT2B_Zenith_sensEm2.root","recreate");
+//  dz.Write("Multi_BDT_Zenith_sensEm2.root","recreate");
+
+  //dz.Write("IC59_discovery.root","recreate"); //
+  */
+
+ 
+//  return 1; // signal correct finish of script
+}

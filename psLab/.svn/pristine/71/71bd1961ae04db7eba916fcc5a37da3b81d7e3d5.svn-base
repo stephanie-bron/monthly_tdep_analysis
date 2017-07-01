@@ -1,0 +1,156 @@
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+  //  TString macroPath = gROOT->GetMacroPath();
+  //  macroPath += gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh:");
+  //  gROOT->SetMacroPath(macroPath);
+
+
+    if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+    gROOT->ProcessLine(".L Ark.C");
+
+    bool OPT_USEREALDATA = false;
+
+//    I3Ark ark22;
+//    gROOT->ProcessLine(".x load_ark_ic22.C(ark22, OPT_USEREALDATA)");
+
+    I3Ark ark40;
+    gROOT->ProcessLine(".x load_ark_ic40.C(ark40, OPT_USEREALDATA)");
+
+    I3Ark ark59;
+    //gROOT->ProcessLine(".x load_ark_ic59_IT2.C(ark59, OPT_USEREALDATA)");
+    gROOT->ProcessLine(".x load_ark_ic59_BDT.C(ark59, OPT_USEREALDATA)");
+
+  // Source 
+
+  //  ark22.SetPointSource(153.375, 11.375, 1.,-2 );
+  //  ark40.SetPointSource(153.375, 11.375, 1.,-2 );
+  //  ark59.SetPointSource(153.375, 11.375, 1.,-2 );
+ 
+  //  ark22.SetPointSource(153.375, 11.375, "1.*pow(x,-2)");
+  //  ark22.SetPointSource(EquatorialDeg(153.375, 11.375), PowerLawFlux(1, -2));
+
+  // ark40.SetPointSource(0., 61.23, 1., -2);
+
+  //gROOT->ProcessLine(".L AllSky.C");
+  //AllSky as;
+  //as.SetRange(148, 158, 5, 15);
+
+    MultiArk mark;
+    //mark.AddArk(ark22);
+    mark.AddArk(ark40);
+    mark.AddArk(ark59);
+    
+    MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+
+    //NewLlhEnergy newllh;
+    //newllh.SetUseEnergy(true);
+    //newllh.SetOptimizeAngleDeg(10.);
+    //newllh.SetOptimizeTolerance(0.01);
+
+    /*NewLlhEnergy newllh22;
+    newllh22.SetUseEnergy(true);
+    newllh22.SetOptimizeAngleDeg(10.);
+    newllh22.SetOptimizeTolerance(0.01);
+    //newllh22.SetMonitorLevel(2);
+    newllh22.SetAnalysisSet(ark22.psData); //*/
+    
+    int monLev = 0;
+    
+    NewLlhEnergy newllh40;
+    newllh40.SetUseEnergy(true);
+    newllh40.SetOptimizeAngleDeg(10.);
+    newllh40.SetOptimizeTolerance(0.01);
+    newllh40.SetMonitorLevel(monLev);
+    newllh40.SetAnalysisSet(ark40.psData); //*/
+
+    NewLlhEnergy newllh59;
+    newllh59.SetUseEnergy(true);
+    newllh59.SetOptimizeAngleDeg(10.);
+    newllh59.SetOptimizeTolerance(0.01);
+    newllh59.SetMonitorLevel(monLev);
+    newllh59.SetAnalysisSet(ark59.psData);
+      
+    MultiAnalysisFn maf;
+    //maf.AddAnalysisFn(&newllh22);
+    maf.AddAnalysisFn(&newllh40);
+    maf.AddAnalysisFn(&newllh59);
+  
+    gROOT->ProcessLine(".L SimpleMultiAnalysis.C");
+  
+  }
+
+  //EquatorialDeg testSearch(153.375, 11.375);
+  EquatorialDeg testSearch(343.491,16.148);
+
+  mark.SetPointSource(testSearch, PowerLawFlux(1.,-2.));
+  maf.SetSearchCoord(testSearch);
+
+  //MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+  
+  NewLlhEnergy_ParTranslator pt;
+  pt.SetRange(1,4,31);
+  pt.SetTranslator(mas);
+  
+  maf.SetParTranslator(&pt);
+
+  vector<MinuitParDef> pdv;
+  pdv.push_back( MinuitParDef("nSrc",2,0.1, 0.,100.) );
+  pdv.push_back( MinuitParDef("gamma",2.5,0.5, 1., 4.) );
+  maf.SetParDefs(pdv);
+
+  SimpleMultiAnalysis sa;
+  sa.SetNDoF(2);
+   
+  //cout << "Starting trials" << endl;
+  //sa.Execute(mark,maf,1000,0);
+
+
+  //*
+  // Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+   SetDisco(disco, 15, false, 2.87e-7, 0.5);
+
+  gROOT->ProcessLine(".L MultiDetectionStudy.C");
+ 
+  TCanvas *c = MultiDetectionStudy(mark, maf, mas, disco); //*/
+
+  /* Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  // SetDisco(disco, 20, false, 2.87e-7, 0.5);
+   SetDisco(disco, 30, true, 0.5, 0.9);
+  
+  gROOT->ProcessLine(".L DetectionZenith.C");
+
+  DetectionZenith dz;
+  dz.searchDecDegMin = -85.;   //(skip any bins beyond this range);
+  dz.searchDecDegMax = +85.;   //(skip any bins beyond this range);
+  dz.nBins = 40;
+
+//  dz.Execute(ark59, newllh59, disco, PowerLawFlux(1,-2));
+  dz.Execute(mark, maf, disco, PowerLawFlux(1,-2));
+  
+  
+//  dz.Write("IC59_SC_Zenith.root","recreate");
+  dz.Write("IC59_SC_IT2B_Zenith_sensEm2.root","recreate");
+//  dz.Write("Multi_BDT_Zenith_sensEm2.root","recreate");
+
+  //dz.Write("IC59_discovery.root","recreate"); //*/
+
+ 
+  return 1; // signal correct finish of script
+}

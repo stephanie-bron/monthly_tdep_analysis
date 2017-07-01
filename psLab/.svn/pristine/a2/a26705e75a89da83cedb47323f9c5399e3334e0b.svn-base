@@ -1,0 +1,141 @@
+
+TTree* LoadTree_finalCuts_mayIC22_nugen651_extuple() {
+    TFile *f = new TFile("/net/user/cfinley/data/extuple/finalCuts_mayIC22_nugen651_extuple.root");
+  //TFile *f = new TFile("$LAB_DATA_DIR/ic22ps/finalCuts_mayIC22_nugen651_extuple.root");
+  TTree *tree = dynamic_cast<TTree*> (f->Get("ntuple"));  // name in file
+
+  int nFiles = 4971 - 5; // 29 files were missing, 5 files with no tree
+  int generatedEventsPerFile = 2000; // NuMu + NuMuBar per file
+  int mcTotalGeneratedEvents = nFiles * generatedEventsPerFile;
+
+  // SET HANDLES:
+  // These aliases provide consistent handles across different 
+  // types root files (analysis-tree, flat-ntuple, simple-extractor),
+  // so set accordingly:
+
+  tree->SetAlias("mcPrimary_Zenith_rad",  "mcZr");
+  tree->SetAlias("mcPrimary_Azimuth_rad", "mcAr");
+  tree->SetAlias("mcPrimary_Energy_GeV",  "mcEn");
+  tree->SetAlias("mcOneWeight",           "OneWeight");
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("mcTotalGeneratedEvents", TStringify(mcTotalGeneratedEvents));
+
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+
+  tree->SetAlias("g32Zr","g32Zd*TMath::DegToRad()");
+  tree->SetAlias("g32Ar","g32Ad*TMath::DegToRad()");
+
+  return tree;
+}
+
+
+
+
+TTree* LoadTree_mayIC22_nugen651_extuple() {
+    TFile *f = new TFile("/net/user/cfinley/data/extuple/mayIC22_nugen651_extuple.root");
+  //TFile *f = new TFile("$LAB_DATA_DIR/ic22ps/mayIC22_nugen651_extuple.root");
+  TTree *tree = dynamic_cast<TTree*> (f->Get("ntuple"));  // name in file
+  // tree->SetTitle("mayIC22_nugen651_extuple");  // ...if not already set
+
+
+  int nFiles = 4971 - 5; // 29 files were missing, 5 files with no tree
+  int generatedEventsPerFile = 2000; // NuMu + NuMuBar per file
+  int mcTotalGeneratedEvents = nFiles * generatedEventsPerFile;
+
+
+  // SET HANDLES:
+  // These aliases provide consistent handles across different 
+  // types root files (analysis-tree, flat-ntuple, simple-extractor),
+  // so set accordingly:
+
+  tree->SetAlias("mcPrimary_Zenith_rad",  "mcZr");
+  tree->SetAlias("mcPrimary_Azimuth_rad", "mcAr");
+  tree->SetAlias("mcPrimary_Energy_GeV",  "mcEn");
+  tree->SetAlias("mcOneWeight",           "OneWeight");
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("mcTotalGeneratedEvents", TStringify(mcTotalGeneratedEvents));
+
+
+  //--------------------//
+
+
+  // OTHER, EXTRA ALIASES:
+
+  tree->SetAlias("g32Zr","g32Zd*TMath::DegToRad()");
+  tree->SetAlias("g32Ar","g32Ad*TMath::DegToRad()");
+
+
+  return tree;
+}
+
+
+
+
+// DATA : 1 TREE
+
+
+TTree* LoadTree_sepIC22_finalCutData_extuple() {
+    TFile *f = new TFile("/net/user/cfinley/data/IC22final/finalCuts_5114ev_extuple.root");
+  //TFile *f = new TFile("$LAB_DATA_DIR/ic22ps/finalCuts_5114ev_extuple.root");
+  TTree *tree = dynamic_cast<TTree*> (f->Get("ntuple"));  // name in file
+  // tree->SetTitle("sepIC22_finalCutData_extuple");  // ...if not already set
+
+  double livetimeTotal = 275.70 * 86400.; // seconds
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("livetimeTotal", TStringify(livetimeTotal));
+
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("timeMJD","MJday+(MJsec+MJns*1e-9)/86400.");
+  tree->SetAlias("g32Zr","g32Zd*TMath::DegToRad()");
+  tree->SetAlias("g32Ar","g32Ad*TMath::DegToRad()");
+
+  return tree;
+}
+
+
+// DATA : CHAIN
+
+/*
+
+TTree* LoadTree_mayIC22_data30day_extuple() {
+  TChain *chain = new TChain("ntuple"); // name of the tree in the files
+
+  chain->Add("/net/user/cfinley/data/extuple/mayIC22_data13days_extuple.root");
+  chain->Add("/net/user/cfinley/data/extuple/mayIC22_data2days_extuple.root");
+  chain->Add("/net/user/cfinley/data/extuple/mayIC22_data15days_extuple.root");
+
+  double livetimeTotal = 1.09313e+06 + 181453 + 1.15317e+06; // seconds
+
+  chain->GetEntries();  // MUST DO THIS TO FINISH INITIALIZING CHAIN
+
+  TTree *tree = chain;  // TTree is base class for TChain, so this works ok
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("livetimeTotal", TStringify(livetimeTotal));
+
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("timeMJD","MJday+(MJsec+MJns*1e-9)/86400.");
+  tree->SetAlias("g32Zr","g32Zd*TMath::DegToRad()");
+  tree->SetAlias("g32Ar","g32Ad*TMath::DegToRad()");
+
+  return tree;
+}
+
+*/

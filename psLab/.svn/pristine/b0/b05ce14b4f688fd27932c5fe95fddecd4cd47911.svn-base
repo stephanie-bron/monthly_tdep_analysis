@@ -1,0 +1,331 @@
+
+TTree* LoadTree_IC59_CutB4_GoodRuns_small() {
+
+  char *files = "/net/user/mfbaker/data/IC59/PS/pruned/IC59_grl_small_CutB4.root";
+  TChain *tree = new TChain("Level3");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+  double livetimeTotal = 348.138 * 86400.; // seconds
+  
+  double tmin = 54971.154549; //in MJD
+  double tmax = 55347.284392;
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("livetimeTotal", TStringify(livetimeTotal));
+  tree->SetAlias("tmin", TStringify(tmin));
+  tree->SetAlias("tmax", TStringify(tmax));
+
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("timeMJD","MJDay+(MJSec+MJNanoSec*1e-9)/86400.");
+
+  tree->SetAlias("NChan","NCh");
+  tree->SetAlias("mueEn","mmueEn");
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+  tree->SetAlias("z","cos(mZd*TMath::DegToRad())");
+
+  return tree;
+}
+
+TTree* LoadTree_IC59_CutB4_nugen4175_small() {
+
+  char *files = "/net/user/mfbaker/data/IC59/PS/pruned/prunedNugen4175_cutB4_small.root";
+  TChain *tree = new TChain("Level3");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+
+  int nFiles = 9600; // 
+  int generatedEventsPerFile = 5000; // NuMu + NuMuBar per file
+  int mcTotalGeneratedEvents = nFiles * generatedEventsPerFile;
+
+
+  // SET HANDLES:
+  // These aliases provide consistent handles across different 
+  // types root files (analysis-tree, flat-ntuple, simple-extractor),
+  // so set accordingly:
+
+  tree->SetAlias("mcPrimary_Zenith_rad",  "mcZr");
+  tree->SetAlias("mcPrimary_Azimuth_rad", "mcAr");
+  tree->SetAlias("mcPrimary_Energy_GeV",  "mcEn");
+  tree->SetAlias("mcOneWeight",           "OW");
+  tree->SetAlias("mueEn",                 "mmueEn");
+  tree->SetAlias("NChan",                 "NCh");
+//  tree->SetAlias("Run",                   "RunID");
+
+  tree->SetAlias("z",                     "cos(mZd*TMath::DegToRad())");
+
+  tree->SetAlias("BartolFluxWeight",      "BartolFluxWeightForOneFile");
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("mcTotalGeneratedEvents", TStringify(mcTotalGeneratedEvents));
+
+
+  //--------------------//
+
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+
+  return tree;
+}
+
+/////TREES NOT APPLYING IT VETO CUT
+
+TTree* LoadTree_IC59_CutB4_noIT_GoodRuns_small() {
+
+  char *files = "/net/user/mfbaker/data/IC59/PS/pruned/IC59_grl_small_CutB4_noIT.root";
+  TChain *tree = new TChain("Level3");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+  double livetimeTotal = 348.138 * 86400.; // seconds
+  
+  double tmin = 54971.154549; //in MJD
+  double tmax = 55347.284392;
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("livetimeTotal", TStringify(livetimeTotal));
+  tree->SetAlias("tmin", TStringify(tmin));
+  tree->SetAlias("tmax", TStringify(tmax));
+
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("timeMJD","MJDay+(MJSec+MJNanoSec*1e-9)/86400.");
+
+  tree->SetAlias("NChan","NCh");
+  tree->SetAlias("mueEn","mmueEn");
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+  tree->SetAlias("z","cos(mZd*TMath::DegToRad())");
+
+  return tree;
+}
+
+TTree* LoadTree_IC59_CutB4_noIT_nugen4175_small() {
+
+  char *files = "/net/user/mfbaker/data/IC59/PS/pruned/prunedNugen4175_cutB4_noIT_small.root";
+  TChain *tree = new TChain("Level3");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+
+  int nFiles = 9600; // 
+  int generatedEventsPerFile = 5000; // NuMu + NuMuBar per file
+  int mcTotalGeneratedEvents = nFiles * generatedEventsPerFile;
+
+
+  // SET HANDLES:
+  // These aliases provide consistent handles across different 
+  // types root files (analysis-tree, flat-ntuple, simple-extractor),
+  // so set accordingly:
+
+  tree->SetAlias("mcPrimary_Zenith_rad",  "mcZr");
+  tree->SetAlias("mcPrimary_Azimuth_rad", "mcAr");
+  tree->SetAlias("mcPrimary_Energy_GeV",  "mcEn");
+  tree->SetAlias("mcOneWeight",           "OW");
+  tree->SetAlias("mueEn",                 "mmueEn");
+  tree->SetAlias("NChan",                 "NCh");
+
+  tree->SetAlias("z",                     "cos(mZd*TMath::DegToRad())");
+
+  tree->SetAlias("BartolFluxWeight",      "BartolFluxWeightForOneFile");
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("mcTotalGeneratedEvents", TStringify(mcTotalGeneratedEvents));
+
+
+  //--------------------//
+
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+
+  return tree;
+}
+
+/// TREES WITH IT<2 veto
+
+TTree* LoadTree_IC59_CutB4_IT2_GoodRuns_small() {
+
+  char *files = "/net/user/mfbaker/data/IC59/PS/pruned/IC59_grl_small_CutB4_IT2.root";
+  TChain *tree = new TChain("Level3");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+  double livetimeTotal = 348.138 * 86400.; // seconds
+  
+  double tmin = 54971.154549; //in MJD
+  double tmax = 55347.284392;
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("livetimeTotal", TStringify(livetimeTotal));
+  tree->SetAlias("tmin", TStringify(tmin));
+  tree->SetAlias("tmax", TStringify(tmax));
+
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("timeMJD","MJDay+(MJSec+MJNanoSec*1e-9)/86400.");
+
+  tree->SetAlias("NChan","NCh");
+  tree->SetAlias("mueEn","mmueEn");
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+//  tree->SetAlias("Run",                   "RunID");
+
+  tree->SetAlias("z","cos(mZd*TMath::DegToRad())");
+
+  return tree;
+}
+
+TTree* LoadTree_IC59_CutB4_IT2_nugen4175_small() {
+
+  char *files = "/net/user/mfbaker/data/IC59/PS/pruned/prunedNugen4175_cutB4_IT2_small.root";
+  TChain *tree = new TChain("Level3");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+
+  int nFiles = 9850; // 
+  int generatedEventsPerFile = 5000; // NuMu + NuMuBar per file
+  int mcTotalGeneratedEvents = nFiles * generatedEventsPerFile;
+
+
+  // SET HANDLES:
+  // These aliases provide consistent handles across different 
+  // types root files (analysis-tree, flat-ntuple, simple-extractor),
+  // so set accordingly:
+
+  tree->SetAlias("mcPrimary_Zenith_rad",  "mcZr");
+  tree->SetAlias("mcPrimary_Azimuth_rad", "mcAr");
+  tree->SetAlias("mcPrimary_Energy_GeV",  "mcEn");
+  tree->SetAlias("mcOneWeight",           "OW");
+  tree->SetAlias("mueEn",                 "mmueEn");
+  tree->SetAlias("NChan",                 "NCh");
+//  tree->SetAlias("Run",                   "RunID");
+
+  tree->SetAlias("z",                     "cos(mZd*TMath::DegToRad())");
+
+  tree->SetAlias("BartolFluxWeight",      "BartolFluxWeightForOneFile");
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("mcTotalGeneratedEvents", TStringify(mcTotalGeneratedEvents));
+
+
+  //--------------------//
+
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+
+  return tree;
+}
+
+
+/// TREES WITH ITB<2 veto
+
+TTree* LoadTree_IC59_CutB4_IT2B_GoodRuns_small() {
+
+  char *files = "/net/user/mfbaker/data/IC59/PS/pruned/IC59_grl_small_CutB4_IT2B.root";
+  TChain *tree = new TChain("Level3");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+  double livetimeTotal = 348.138 * 86400.; // seconds
+  
+  double tmin = 54971.154549; //in MJD
+  double tmax = 55347.284392;
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("livetimeTotal", TStringify(livetimeTotal));
+  tree->SetAlias("tmin", TStringify(tmin));
+  tree->SetAlias("tmax", TStringify(tmax));
+
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("timeMJD","MJDay+(MJSec+MJNanoSec*1e-9)/86400.");
+
+  tree->SetAlias("NChan","NCh");
+  tree->SetAlias("mueEn","mmueEn");
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+  tree->SetAlias("z","cos(mZd*TMath::DegToRad())");
+
+  return tree;
+}
+
+TTree* LoadTree_IC59_CutB4_IT2B_nugen4175_small() {
+
+  char *files = "/net/user/mfbaker/data/IC59/PS/pruned/prunedNugen4175_cutB4_IT2B_small.root";
+  TChain *tree = new TChain("Level3");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+
+  int nFiles = 9850; // 
+  int generatedEventsPerFile = 5000; // NuMu + NuMuBar per file
+  int mcTotalGeneratedEvents = nFiles * generatedEventsPerFile;
+
+
+  // SET HANDLES:
+  // These aliases provide consistent handles across different 
+  // types root files (analysis-tree, flat-ntuple, simple-extractor),
+  // so set accordingly:
+
+  tree->SetAlias("mcPrimary_Zenith_rad",  "mcZr");
+  tree->SetAlias("mcPrimary_Azimuth_rad", "mcAr");
+  tree->SetAlias("mcPrimary_Energy_GeV",  "mcEn");
+  tree->SetAlias("mcOneWeight",           "OW");
+  tree->SetAlias("mueEn",                 "mmueEn");
+  tree->SetAlias("NChan",                 "NCh");
+//  tree->SetAlias("Run",                   "RunID");
+
+  tree->SetAlias("z",                     "cos(mZd*TMath::DegToRad())");
+
+  tree->SetAlias("BartolFluxWeight",      "BartolFluxWeightForOneFile");
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("mcTotalGeneratedEvents", TStringify(mcTotalGeneratedEvents));
+
+
+  //--------------------//
+
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+
+  return tree;
+}

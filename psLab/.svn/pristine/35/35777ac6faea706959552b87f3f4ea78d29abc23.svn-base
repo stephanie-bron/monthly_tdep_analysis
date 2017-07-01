@@ -1,0 +1,165 @@
+//
+// Create a new file with e.g.:
+//
+//   spectral_index_study(13., "myStudy_at_dec_13.root","new")
+//
+// and plot it afterwards with:
+//
+//   spectral_index_plot("myStudy_at_dec_13.root","Src Declination: +13#circ") 
+//
+
+
+void spectral_index_study(double srcDecDeg, 
+			  char* outputFilename, char* option = "NEW") {
+  TFile *file = new TFile(outputFilename, option);
+  if (file->IsZombie()) { return; } // could not successfully open file
+
+  vector<I3Event> sourceEvents;
+
+  int nsMin = 0;
+  int nsMax = 24;
+  int nsBins = 12;
+  int nTrials = 100;
+
+  TCanvas *canmain = new TCanvas("canmain","canmain");
+
+  EquatorialDeg srcLocation(90.,srcDecDeg);
+  evLoader.LoadSourceEvents(sourceEvents, srcLocation);
+
+  for (int i=0; i<3; ++i) {
+    double spectralIndex;
+    int color;
+    if (i==0) { spectralIndex = -2.;  color = 51; }
+    if (i==1) { spectralIndex = -1.5; color = kRed; }
+    if (i==2) { spectralIndex = -3.;  color = kBlue; }
+
+    PowerLawFlux pflux(1,spectralIndex);  //  1 GeV^-1 cm^-2 s^-1;  index = -2
+    I3PointGenerator i3point(sourceEvents, pflux, srcLocation, livetime);
+    psData.SetSource(i3point);
+
+    // OPTIONAL: DETERMINE WHAT DISCOVERY POTENTIAL WOULD BE
+    /*
+    DiscoveryPotential disco;
+    disco.monitor_ = true;
+    disco.SetLogLikelihood(*llhPtr);
+    disco.method_ = 2;
+    disco.loops_ = 20;
+    cout << "Configuring Disco:\n Loops: " << disco.loops_ << endl;
+    cout << " Setting for discovery:\n";
+    disco.SetForDiscovery();
+    disco.detectionSignificance_ = 2.87e-7; // one-sided p-value for 5sigma
+    disco.detectionPower_ = 0.5;
+    disco.AnalyzeDiscoveryPotential(&psData,srcLocation);
+    cout << "For spectral Index = " << spectralIndex;
+    cout << "  Mean Src Events for Detection: ";
+    cout << disco.MeanSrcEv_ForDetection_ << endl;
+    */
+    // THIS WAS OPTIONAL    
+
+    TH2D* hIndex = new TH2D(TString("hIndex_")+TStringify(spectralIndex),
+			    "hIndex",
+			    nsBins, nsMin, nsMax, 30, 1, 4);
+    hIndex->SetMarkerColor(color);
+    // hIndex will be used to set color of hProfile
+    TProfile *hProfile = new TProfile(TString("hProfile_")+
+				      TStringify(spectralIndex),"hProfile",
+				      nsBins, nsMin, nsMax);
+
+    spectral_index_loop(hIndex, hProfile, nTrials);
+
+    canmain->cd();
+    if (i==0) { 
+      hIndex->SetTitle(";N Signal Events;Spectral Index");
+hIndex->Draw(); } 
+    else { hIndex->Draw("same"); }
+    hProfile->Draw("same");
+    canmain->Update();
+
+    hIndex->Write();
+    hProfile->Write();
+  }
+  canmain->DrawClone();
+
+  file->Close();
+}
+
+
+void spectral_index_loop(TH2D *hIndex, TProfile *hProfile, int nTrials) 
+{
+  hIndex->SetMarkerStyle(6);
+
+  hProfile->SetErrorOption("s");  // spread option, rather than error on mean
+  hProfile->SetLineWidth(2);
+  hProfile->SetLineColor(hIndex->GetMarkerColor());
+  hProfile->SetFillColor(hIndex->GetMarkerColor());
+  
+  TCanvas *cansub = new TCanvas("cansub","cansub");
+
+  EquatorialDeg srcLocation = 
+    ((I3PointGenerator*)psData.GetSource())->GetSourceCoord();
+
+  for (int ix=1; ix<=hIndex->GetNbinsX(); ++ix) {
+    int ns = int(hIndex->GetXaxis()->GetBinCenter(ix));
+
+    for (int i=0; i<nTrials; ++i) {
+      psData.GenerateDataSet_with_nSrcEvents(ns);
+      llhPtr->SetAnalysis(psData, srcLocation);
+      llhPtr->MaximizeLlh();
+
+      double gamma = llhPtr->GetPar(1);
+      hIndex->Fill(ns,gamma);
+      hProfile->Fill(ns,gamma);
+    }
+
+    hIndex->Draw();
+    hProfile->Draw("same");
+    cansub->Update();
+  }
+}
+
+
+
+
+void spectral_index_plot(char *inputFilename, char *title="") {
+  gROOT->SetStyle("Plain");
+  gStyle->SetOptStat(0);
+  gStyle->SetTitleBorderSize(0);
+  gStyle->SetTitleX(0.1);
+  gStyle->SetTitleW(0.8);
+  gStyle->SetTitleY(0.98);
+
+  TFile *file = new TFile(inputFilename);
+
+  TCanvas *can = new TCanvas("can1","can1",1000,400);
+  can->Divide(2,1,0.001,0.001);
+
+  for (int i=0; i<3; ++i) {
+    TString stringIndex;
+    int fillstyle;
+    if (i==0) { stringIndex = "-3"; fillstyle = 3005; }
+    if (i==1) { stringIndex = "-1.5"; fillstyle = 3004; }
+    if (i==2) { stringIndex = "-2"; fillstyle = 3002; }
+
+    TH2D *hIndex = (TH2D*) 
+      gDirectory->Get(TString("hIndex_")+stringIndex);
+    TProfile *hProfile = (TProfile*) 
+      gDirectory->Get(TString("hProfile_")+stringIndex);
+
+    hProfile->SetFillStyle(fillstyle);
+
+    hIndex->SetTitle(title);
+
+    can->cd(1);
+    if (i==0) { hIndex->Draw(""); }
+    else { hIndex->Draw("same"); }
+    hProfile->Draw("same");
+
+    can->cd(2);
+    if (i==0) { hIndex->Draw("AXIS"); }
+    hProfile->Draw("e3same");
+  }    
+
+  can->DrawClone();
+
+  file->Close();
+}

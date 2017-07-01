@@ -1,0 +1,232 @@
+
+class AllSky {
+ public:
+  TH2D hAllSkyCoarse;
+  TH2D hAllSkyFine;
+  TCanvas *canAllSkyCoarse;
+  TCanvas *canAllSkyFine;
+  EquatorialDeg searchLocation; // persistent, since llh references it
+  double decDegMax;
+  double raDegMax;
+  double resultMax;
+  double nsBest;
+  double gammaBest;
+  double llhBest;
+
+  double raLow;
+  double raHigh;
+  double decLow;
+  double decHigh;
+
+  bool optBatch;   // if set to true, will skip drawing plots
+  double resultThreshold;  // -LOG_P VALUE FOR FINE-BINNED FOLLOW-UP
+
+
+  AllSky() : 
+    canAllSkyCoarse(NULL),
+    canAllSkyFine(NULL),
+    optBatch(false),
+    resultThreshold(1.5) 
+  { 
+    SetRange(0, 360, -85, 85);
+  }
+  ~AllSky() { }
+
+  void SetRange(double ra_low, double ra_high, double dec_low, double dec_high)
+  {
+    raLow   = ra_low;
+    raHigh  = ra_high;
+    decLow  = dec_low;
+    decHigh = dec_high;
+  }
+
+  void Usage();
+  void Execute(Ark& ark, AnalysisFn& llh,
+	       int coarseBinsPerDeg = 2, int fineBinsPerDeg = 10);
+  bool Write(char*filename, char* fileoption="new");
+
+};
+
+
+void AllSky::Usage() {
+  cout << "AllSky as;\n";
+  cout << "  as.SetRange(0, 360, -85, 85);    [default ra, dec ranges]\n";
+  cout << "  as.Execute(Ark& ark, Analysis& llh,\n";
+  cout << "             int coarseBinsPerDeg = 2, int fineBinsPerDeg = 10)\n";
+  cout << "  as.Write(char*filename, char* fileoption=\"new\")\n";
+}
+
+
+void AllSky::Execute(Ark& ark, AnalysisFn& llh,
+		     int coarseBinsPerDeg, int fineBinsPerDeg) {
+  llh.SetAnalysisSet(ark.psData);
+
+  gStyle->SetPalette(1);
+  //  CreatePalette(5);
+
+  // SET COARSE BINNING
+  int nBinsCoarseRa = (raHigh-raLow)*coarseBinsPerDeg;
+  int nBinsCoarseDec = (decHigh-decLow)*coarseBinsPerDeg;
+
+  // SET FINE BINNING
+  int nBinsFineRa = (raHigh-raLow)*fineBinsPerDeg;
+  int nBinsFineDec = (decHigh-decLow)*fineBinsPerDeg;
+
+
+  decDegMax = 0.;
+  raDegMax = 0.;
+  resultMax = 0.;
+  nsBest = 0.;
+  gammaBest = 0.;
+  llhBest = 0.;
+
+  hAllSkyCoarse.Reset();
+  hAllSkyFine.Reset();
+
+  hAllSkyCoarse.SetBins(nBinsCoarseRa,raLow,raHigh,
+			nBinsCoarseDec,decLow,decHigh);
+  hAllSkyCoarse.SetTitle("hAllSkyCoarse");
+  cout << "Coarse Grid: RA Bins: " << nBinsCoarseRa;
+  cout << "   Dec Bins: " << nBinsCoarseDec << endl;
+
+  hAllSkyFine.SetBins(nBinsFineRa,raLow,raHigh,
+			nBinsFineDec,decLow,decHigh);
+  hAllSkyFine.SetTitle("hAllSkyFine");
+  cout << "Fine Grid: RA Bins: " << nBinsFineRa;
+  cout << "   Dec Bins: " << nBinsFineDec << endl;
+
+  cout << "\nResult Threshold for fine-grid follow-up: " << resultThreshold;
+  cout << "\n";
+
+
+  //
+  // COARSE GRID
+  //
+
+  resultMax = 0.;
+  for (int iDec=1; iDec<=nBinsCoarseDec; ++iDec) {
+    double decDeg = hAllSkyCoarse.GetYaxis()->GetBinCenter(iDec);      
+    if (!optBatch) { cout << decDeg << "  " << flush; }
+
+    for (int iRa=1; iRa<=nBinsCoarseRa; ++iRa) {
+      double raDeg = hAllSkyCoarse.GetXaxis()->GetBinCenter(iRa);
+
+      searchLocation.SetCoords(raDeg, decDeg);
+      llh.SetSearchCoord(searchLocation);
+      llh.MaximizeLlh();
+
+      double result = -log10(llh.GetEstProb());
+      hAllSkyCoarse.SetBinContent(iRa, iDec, result);
+
+      if (result>resultMax) { 
+	resultMax = result;
+	decDegMax = decDeg;
+	raDegMax = raDeg;
+	nsBest = llh.GetPar(0);
+	gammaBest = llh.GetPar(1);
+	llhBest = llh.Get_logLambdaBest();
+      }
+    }
+  }
+  cout << endl;
+
+  if (!optBatch) {
+    // only make new canvas if it didn't already exist:
+    if ( !canAllSkyCoarse ) {
+      canAllSkyCoarse =
+	new TCanvas("canAllSkyCoarse","canAllSkyCoarse",800,400);
+    }
+    canAllSkyCoarse->cd();
+    hAllSkyCoarse.Draw("colz");
+    canAllSkyCoarse->Update();
+  }  
+
+  cout << "Coarse Grid Hottest Spot:\n";
+  cout << "   Ra: " << raDegMax << " , Dec: " << decDegMax << endl;
+  cout << "   logLambda =  " << llhBest << "      ";
+  cout << "   -log10(p) =  " << resultMax << endl;
+  cout << "          ns = " << nsBest << endl;
+  cout << "       gamma = " << gammaBest << "\n\n";
+
+
+  //
+  // FINE GRID
+  //
+
+  // keep same resultMax from above:
+  // in case no coarse bin is over threshold, the max results from above
+  // still apply
+
+  resultMax = 0.;
+  for (int iDec=1; iDec<=nBinsFineDec; ++iDec) {
+    double decDeg = hAllSkyFine.GetYaxis()->GetBinCenter(iDec);
+    if (!optBatch) { cout << decDeg << "  " << flush; }
+
+    for (int iRa=1; iRa<=nBinsFineRa; ++iRa) {
+      double raDeg = hAllSkyFine.GetXaxis()->GetBinCenter(iRa);
+
+      double result;
+
+      // Check if follow-up required
+      double coarseResult = 
+	hAllSkyCoarse.GetBinContent( hAllSkyCoarse.FindBin(raDeg,decDeg) );
+
+      if (coarseResult > resultThreshold) {
+	searchLocation.SetCoords(raDeg, decDeg);
+	llh.SetSearchCoord(searchLocation);
+	llh.MaximizeLlh();
+	result = -log10(llh.GetEstProb());
+
+	if (result>resultMax) { 
+	  resultMax = result;
+	  decDegMax = decDeg;
+	  raDegMax = raDeg;
+	  nsBest = llh.GetPar(0);
+	  gammaBest = llh.GetPar(1);
+	  llhBest = llh.Get_logLambdaBest();
+	}
+      } else {
+	result = coarseResult;
+      }
+
+      hAllSkyFine.SetBinContent(iRa, iDec, result);
+
+    }
+  }
+
+  cout << endl;
+
+  if (!optBatch) {
+    // only make new canvas if it didn't already exist:
+    if ( !canAllSkyFine ) {
+      canAllSkyFine = 
+	new TCanvas("canAllSkyFine","canAllSkyFine",20,40,800,400);
+    }
+
+    canAllSkyFine->cd();
+    hAllSkyFine.Draw("colz");
+    canAllSkyFine->Update();
+  }
+
+  cout << "Fine Grid Hottest Spot:\n";
+  cout << "   Ra: " << raDegMax << " , Dec: " << decDegMax << endl;
+  cout << "   logLambda =  " << llhBest << "      ";
+  cout << "   -log10(p) =  " << resultMax << endl;
+  cout << "          ns = " << nsBest << endl;
+  cout << "       gamma = " << gammaBest << "\n\n";
+}
+
+
+bool AllSky::Write(char*filename, char* fileoption) {
+  TFile *fileOutput = new TFile(filename, fileoption);
+  if (fileOutput->IsZombie()) {
+    cout << "Try using 'recreate' option?\n";
+    return false; // no file saved
+  }
+
+  cout << "Writing hAllSkyCoarse and hAllSkyFine to: " << filename << endl;
+  hAllSkyCoarse.Write("hAllSkyCoarse");
+  hAllSkyFine.Write("hAllSkyFine");
+  fileOutput->Close();
+  return true;  // file saved (apparently!)
+}

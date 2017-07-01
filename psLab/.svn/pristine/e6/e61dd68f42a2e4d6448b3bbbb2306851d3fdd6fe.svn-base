@@ -1,0 +1,316 @@
+
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+    if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic79/ArkTime.C");
+
+    bool OPT_USEREALDATA = false;
+    
+    gROOT->ProcessLine(".L TreeLoader_IC79_Final.C");
+    gROOT->ProcessLine(".L TreeLoader_IC59_Final.C");
+    gROOT->ProcessLine(".L TreeLoader_IC40_CutA6_Fix_final.C");
+    
+    gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79V2.C+");
+    gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+    gROOT->ProcessLine(".L mpfSigmaDegRescaled2.C+");
+    
+
+    I3Ark ark40;
+    gROOT->ProcessLine(".x load_ark_ic40.C(ark40, OPT_USEREALDATA)");
+
+    I3Ark ark59;
+    //gROOT->ProcessLine(".x load_ark_ic59_IT2.C(ark59, OPT_USEREALDATA)");
+    gROOT->ProcessLine(".x load_ark_ic59_BDT.C(ark59, OPT_USEREALDATA)");
+    
+    I3Ark ark79;
+    //gROOT->ProcessLine(".x load_ark_ic59_IT2.C(ark59, OPT_USEREALDATA)");
+    gROOT->ProcessLine(".x load_ark_ic79_Final.C(ark79, OPT_USEREALDATA)");
+    
+    
+    MultiArk mark;
+    mark.AddArk(ark40);
+    mark.AddArk(ark59);
+    mark.AddArk(ark79);
+  }
+
+  string srcstr[8];
+  EquatorialDeg testSearch[8];
+  double period[8], t0[8];
+       
+    testSearch[0].SetCoords(308.107,40.958); //Cyg X-3
+    testSearch[1].SetCoords(287.957, 4.983); //SS433
+    testSearch[2].SetCoords(299.591,35.202); // Cyg X-1
+    testSearch[3].SetCoords( 40.132,61.229); // Lsi+61
+    testSearch[4].SetCoords(288.798,10.946); //GRS 1915+105
+    testSearch[5].SetCoords(169.545,48.037); //XTE J1118+480
+    testSearch[6].SetCoords( 65.428,32.907); //GRO J0422+32
+    testSearch[7].SetCoords( 90.550, 5.80 ); //HESSJ0632+057
+
+    period[0] = 0.199679;     srcstr[0] = "Cygnus X3     "; t0[0]=54896.693;
+    period[1] = 13.08211;     srcstr[1] = "SS433         "; t0[1]=50023.62;
+    period[2] = 5.5929;       srcstr[2] = "Cygnus X1     "; t0[2]=41874.707;
+    period[3] = 26.498;       srcstr[3] = "LSI+61 303  "; t0[3]=43366.775; //(radio zero)
+    period[4] = 30.8;         srcstr[4] = "GRS1915+105  "; t0[4]=53945.7;
+    period[5] = 0.1699339;    srcstr[5] = "XTEJ1118+480 "; t0[5]=52287.9929;
+    period[6] = 0.212140;     srcstr[6] = "GROJ0422+32  "; t0[6]=50274.4156;
+    period[7] = 320.;         srcstr[7] = "HESSJ0632+057";  t0[7]=54857.0;
+    
+
+
+  NewLlhPeriodicTime newllh40[8];
+  NewLlhPeriodicTime newllh59[8];
+  NewLlhPeriodicTime newllh79[8];
+  MultiPeriodicAnalysisFn maf[8];
+  NewLlhPeriodicTime_ParTranslator pt[8];
+
+  //MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+
+  bool useE = true;
+  int monLev = 0;
+  
+    //bool jT = false; double nd = 4.; double wp = 0.0;
+    bool jT = true; double nd = 3.; 
+    double wp = 1.; //0.25;//0.83;//0.875;//0.67;1.;//1.;
+
+  //  cout << "WeightPower: " << wp << endl;
+  //  char hts[300];
+  //  int n = sprintf(hts,".x plots/hTeststat.wp%0.3i.C",100*wp);
+  //  gROOT->ProcessLine(hts);
+  
+  TimePdf * tPdf[8];
+
+  for (int i=0;i<8;i++) {
+  
+    newllh40[i].SetUseEnergy(true);
+    //newllh40.SetOptimizeAngleDeg(6.);
+    newllh40[i].SetOptimizeTolerance(0.01);
+    newllh40[i].SetMonitorLevel(monLev);
+    newllh40[i].SetEMaxRatioWarnOnlyOnce(1);
+    newllh40[i].close_ = 10.;
+    newllh40[i].JimsTerm_ = jT; newllh40[i].ndof_ = nd;
+    newllh40[i].SpectralPenalty_ = false;
+    newllh40[i].SetLivetime(1.);
+    newllh40[i].SetWeightPower(wp);
+    //    newllh40.SetAnalysisSet(ark40.psData);
+    //    newllh40[i].SetTimePeriodic(period[i],t0[i]);
+    //newllh40.SetLocalCoordBkgProb(ark40.lcBkgProb);
+
+    newllh59[i].SetUseEnergy(true);
+    //newllh59.SetOptimizeAngleDeg(6.);
+    newllh59[i].SetOptimizeTolerance(0.01);
+    newllh59[i].SetMonitorLevel(monLev);
+    newllh59[i].SetEMaxRatioWarnOnlyOnce(1);
+    newllh59[i].close_ = 10.;
+    newllh59[i].JimsTerm_ = jT; newllh59[i].ndof_ = nd;
+    newllh59[i].SpectralPenalty_ = false;
+    newllh59[i].SetLivetime(1.);
+    newllh59[i].SetWeightPower(wp);
+    //    newllh59.SetAnalysisSet(ark59.psData);
+    //    newllh59[i].SetTimePeriodic(period[i],t0[i]);
+    //newllh59.SetLocalCoordBkgProb(ark59.lcBkgProb);
+    
+    newllh79[i].SetUseEnergy(true);
+    //newllh79.SetOptimizeAngleDeg(6.);
+    newllh79[i].SetOptimizeTolerance(0.01);
+    newllh79[i].SetMonitorLevel(monLev);
+    newllh79[i].SetEMaxRatioWarnOnlyOnce(1);
+    newllh79[i].close_ = 10.;
+    newllh79[i].JimsTerm_ = jT; newllh79[i].ndof_ = nd;
+    newllh79[i].SpectralPenalty_ = false;
+    newllh79[i].SetLivetime(1.);
+    newllh79[i].SetWeightPower(wp);
+    //    newllh79.SetAnalysisSet(ark79.psData);
+    //    newllh79[i].SetTimePeriodic(period[i],t0[i]);
+    //newllh79.SetLocalCoordBkgProb(ark79.lcBkgProb);
+    
+      
+    //maf[i].AddAnalysisFn(&newllh22[i]);
+    maf[i].AddAnalysisFn(&newllh40[i]);
+    maf[i].AddAnalysisFn(&newllh59[i]);
+    maf[i].AddAnalysisFn(&newllh79[i]);
+    maf[i].SetTimePeriodic(period[i],t0[i]);
+    maf[i].seedWtMin = 200.; // (WAS 10)
+    maf[i].SetSearchCoord(testSearch[i]);
+        
+    //gSystem->ProcessLine(".L mqso.teststat.10k.nts.root");
+    //maf[i].SetNullTestStat(hTestStatistic);
+  
+    //EquatorialDeg testSearch(153.375, 11.375);
+    //EquatorialDeg testSearch(343.491,16.148);
+
+    TimePdf * tPdf[i] = new PeriodicGaussianTimePdf(0., 1., 0.5,1e-1,1.);
+    cout << tPdf[i]->GenerateEventTime().GetMJD() << endl;
+      
+    newllh40[i].SetAnalysis(ark40.psData, testSearch[i]);
+    newllh59[i].SetAnalysis(ark59.psData, testSearch[i]);
+    newllh79[i].SetAnalysis(ark79.psData, testSearch[i]);
+  
+    mark.SetPointSource(testSearch[i], PowerLawFlux(1.,-2.), tPdf[i]);
+    
+
+ 
+//    NewLlhPeriodicTime_ParTranslator pt[i];
+    pt[i].SetRange(1,4,31);
+//    pt[i].SetTranslator(mas[i]);
+// cout << "setting translator psData " << i << endl;
+    pt[i].SetTranslator(dynamic_cast<MultiAnalysisSet*>(mark.psData));
+// cout << "setting translator to maf " << i << endl;  
+    maf[i].SetParTranslator(&pt[i]);  
+  
+ } // end of AnalysisFn Load Loop
+  
+  int nTrials = 1000;
+  int nSrcEvents = 0;
+
+  //TStopwatch ts;
+  double pmin=1.;
+  double pvalue[9];
+  int bestSource;
+  
+  double nsrc_best, gamma, eweight;
+  vector<Time> tvect;
+  double sRatio;
+  vector<I3Event> eventVector;
+
+  TH1D hPmin("hPmin",";log_{10} ProbMin;trials",100,-1.,1.);
+  hPmin.SetBit(TH1::kCanRebin);
+
+  TH1D hSBest("hLogProb",";source;trials",9,0.,9.);
+  TH2D h2d("h2d",";log_{10} Prob;source",9,0.,9.,100,-8.,1.);
+  TH2D h2ds("h2ds",";log_{10} Prob;source",9,0.,9.,100,-8.,1.);
+  TH1D hTestStatistic("hTestStatistic",";2 ln #lambda;trials",100,-1,1);
+//  EquatorialDeg searchLocation;
+
+  CountMonitor countMon(1., nTrials);
+  TStopwatch ts;
+
+    ofstream outfile;
+   
+    ofstream alloutfile;
+    
+    
+   outfile.open("mqso_posttrial_TS.txt");
+  
+  alloutfile.open("mqso_posttrial_TS_all.txt");
+   
+   
+cout << "heading into trials" << endl;
+
+  for (int k=0;k<nTrials;k++) {
+
+
+    if (OPT_USEREALDATA) { 
+      mark.psData.UseRealData(); 
+      nTrials=1;
+    } else { 
+      mark.psData->GenerateDataSet_with_nSrcEvents(0);
+    }
+
+
+    //TimePdf * a = new BlockTimePdf1();
+    pmin=1.;
+
+    for (int i=0;i<8;i++) {
+
+      //maf[i].SetAnalysis( dynamic_cast<MultiAnalysisSet*>(mark.psData), testSearch[i] );
+      //maf[i].SetSearchCoord( testSearch[i] );
+      //cout << srcstr[i] << endl;
+      maf[i].MaximizeLlh();
+
+      pvalue[i] = maf[i].GetEstProb();
+
+      //cout << maf[i].Get_sigmaBest() << " " << flush;
+
+      if (pvalue[i] < pmin) {
+        pmin = pvalue[i]; 
+        bestSource = i;
+      }
+
+      if (OPT_USEREALDATA) {
+        cout.precision(3);
+        cout << srcstr[i] << "| (" << testSearch[i].GetRa() << "," << testSearch[i].GetDec() << ") " << maf[i].GetEstProb() << " | " << maf[i].GetTestStatistic() << " " << maf[i].GetPar(0) << " " << maf[i].GetPar(1) << " " << maf[i].Get_meanBest() << " " << maf[i].Get_sigmaBest() << endl;
+      }
+      
+     h2ds->Fill( i+0.5, log10(maf[i].GetEstProb()) );
+
+//*
+     nsrc_best = maf[i].GetPar(0);
+     gamma = maf[i].GetPar(1);
+
+     //tvect = maf[i].GetEventTimes();
+     //sRatio = maf[i].GetProbPairRatios();
+//      cout << "going for events" << endl;
+//      eventVector = maf[i].GetAllEvents();
+//      cout << "done?" << endl;
+
+//     bkgTimes->Fill(tvect[i].GetTime());
+//     eweight = eProb->GetEnergyProbGamma(eventVector[i],gamma)/eProb->GetEnergyProbBkg(eventVector[i]);
+  
+//       TimePdf * a = new PeriodicGaussianTimePdf(0., 1., 0.5,1e-1,1.); 
+//     weightTimes->Fill(tvect[i].GetTime(),sRatio[i]*eweight);
+
+//        for (unsigned int j=0;j<eventVector.size();j++){
+//          eweight = 1.;
+//          sRatio = eventVector[j].ProbFrom(testSearch[i]) / eventVector[j].GetBkgSpaceProbFn()->GetBkgProbDensity(eventVector[j]);
+//          if (gamma>=1.) { eweight = eventVector[j].GetEnergyProbFn()->GetEnergyProbGamma(eventVector[j],gamma)/eventVector[j].GetEnergyProbFn()->GetEnergyProbBkg(eventVector[j]); }
+//          if (sRatio*eweight > 10.){
+//            cout.precision(4);
+//            cout << "    " << sRatio << " " << eventVector[j].GetParams().energyValue << " " << eweight << " " << eweight*sRatio << " " << eventVector[j].GetParams().runID << " " << eventVector[j].GetParams().eventID << " " << eventVector[j].GetParams().parafitSigmaDeg << " " << eventVector[j].GetEquatorialDeg().GetRa() << " " << eventVector[j].GetEquatorialDeg().GetDec() << " " << eventVector[j].GetEquatorialDeg().DistanceTo(testSearch[i]) << " ";
+//            
+// //           cout.precision(12);
+// //           if(!blockfile[i].Length()) { cout << tPdf[i]->GetPdfValue(eventVector[j].GetTime()) << " "; }
+// //           else { cout << a->GetPdfValue(eventVector[j].GetTime(),llhEnergyFn[i].GetPar(2)) << " "; }
+//            cout << fmod(eventVector[j].GetMJD() - t0[i],period[i])/period[i] << " ";
+//            cout.precision(12);
+//            cout << eventVector[j].GetMJD() << endl; cout.precision(6);
+//          }
+//        }//*/
+
+       alloutfile<<k<<" "<<i<<" "<<srcstr[i]<<" "<<"GetEstProb:  "<<maf[i].GetEstProb()<<"GetTestStat: "<<maf[i].GetTestStatistic()<<"Get Ns:      "<<maf[i].GetPar(0)<<"Get gamma:   "<<maf[i].GetPar(1)<<"Get mean:   "<<maf[i].GetPar(2)<<"Get Sigma:   "<<pow(10, maf[i].GetPar(3))<<endl;
+       
+    }
+     
+    hPmin->Fill( log10(pmin) );
+    hSBest->Fill( bestSource+0.5 );
+    h2d->Fill( bestSource+0.5, log10(pmin) );
+    hTestStatistic.Fill(maf[bestSource].GetTestStatistic() * 2.);
+    cout << endl << "Minimum P-value: "<< pmin << " Best Source: " << srcstr[bestSource] << endl;
+    
+    outfile<<k<<"  ";
+    outfile<<(maf[bestSource].GetTestStatistic() * 2.)<<endl;
+
+    countMon.UpdateCount();
+
+  }
+  
+  TFile *fout = new TFile("posttrial_teststat.root","RECREATE");    
+  hTestStatistic.Write();    
+  fout->Close();
+  
+  outfile.close();
+  alloutfile.close();
+  
+  cout << endl;
+  ts.Print();  
+
+  TCanvas *CanDist = new TCanvas("Dist","Dist",200,200,900,750);
+  CanDist->Divide(2,2,0.005,0.005);
+  CanDist->cd(1);
+  hPmin->Draw();
+  CanDist->cd(2);
+  hSBest->Draw();
+  CanDist->cd(3);
+  h2d->Draw("colz");
+  CanDist->cd(4);
+  h2ds->Draw("colz");
+
+}

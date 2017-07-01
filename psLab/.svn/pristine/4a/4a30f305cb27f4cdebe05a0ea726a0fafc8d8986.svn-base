@@ -1,0 +1,337 @@
+// Here is a macro for plotting the light curves and event distributions
+// for the Fermi MWL search. It has all of the sources and best-fit parameters
+// hard-coded here for tons of plotting fun.
+
+// This requires you to have already loaded the data + signal (ark40+ark59) and
+// the source you want to plot (nsrc).
+
+{
+
+  bool optEnergy = true;
+
+//int nsrc=0;
+
+
+
+string nstring;
+int n;
+
+double dist;
+double mjd;
+double tmin = ark40.tmin;
+double tmax = ark59.tmax;
+int tbins = max(100.,(tmax-tmin)*1000.);
+
+double nsrc_best, g, eweight, w, w1;
+int ntimes;
+vector<double> dvect;
+const Coord *cc;
+EquatorialDeg *cceq;
+
+    vector<I3Event> eventVector40 = ark40.baseEvents;
+    vector<I3Event> eventVector59 = ark59.baseEvents;
+    
+    vector<I3Event> eventVector;
+    for (int i=0;i<eventVector40.size();i++) {
+      eventVector.push_back(eventVector40[i]);
+    }
+    
+    for (int i=0;i<eventVector59.size();i++) {
+      eventVector.push_back(eventVector59[i]);
+    }
+
+
+TH1D * weightTimes = new TH1D("weightTimes","weightTimes",tbins,tmin,tmax);
+TH1D * bkgTimes = new TH1D("bkgTimes","bkgTimes",tbins,tmin,tmax);
+TH1D * srcTimes = new TH1D("srcTimes","srcTimes",tbins,tmin,tmax);
+
+srcTimes->SetLineColor(2);
+
+double gamma[23];
+double thresh[23];
+double lag[23];
+
+  string srcstr[23];
+  EquatorialDeg testSearch1[23];
+    
+    // Hard-coded fun!
+    srcstr[0] = "3C454.3";        testSearch1[0].SetCoords(343.491,  16.148);
+    srcstr[1] = "PKS0805m07";     testSearch1[1].SetCoords(122.06,   -7.85 );
+    srcstr[2] = "PKS2023m07";     testSearch1[2].SetCoords(306.46,   -7.59 );
+    srcstr[3] = "PKS0244m47";     testSearch1[3].SetCoords(  41.5,   -46.84 );
+    srcstr[4] = "BLLac";          testSearch1[4].SetCoords(330.68,   42.28 );
+    srcstr[5] = "V407Cyg";        testSearch1[5].SetCoords(315.54,   45.77 );
+    srcstr[6] = "PKS1622m253";    testSearch1[6].SetCoords(246.44,	-25.44 );
+    srcstr[7] = "PKS1424m418";    testSearch1[7].SetCoords(216.98,	-42.09 );
+    srcstr[8] = "J0109p6134";     testSearch1[8].SetCoords( 17.25,	61.34 );
+    srcstr[9] ="GB6B1310p4844";   testSearch1[9].SetCoords( 198.18,	48.47 );
+    srcstr[10] = "B31343p451";    testSearch1[10].SetCoords(206.39,	44.88 );
+    srcstr[11] = "S51803p784";    testSearch1[11].SetCoords(270.19,	78.47 );
+    srcstr[12] = "PKS1222p216";   testSearch1[12].SetCoords(186.23,	21.38 );
+    srcstr[13] = "3C273";         testSearch1[13].SetCoords(187.28,	2.05 );
+    srcstr[14] = "OJ287";         testSearch1[14].SetCoords(133.70,	20.11 );
+    srcstr[15] = "4C38.41";       testSearch1[15].SetCoords(248.81,	38.13 );
+    srcstr[16] = "PKS1510m089";   testSearch1[16].SetCoords(228.211, -9.100);
+    srcstr[17] = "PKS1502+106";   testSearch1[17].SetCoords(226.104, 10.494);
+    srcstr[18] = "PKS1454m354";   testSearch1[18].SetCoords(224.361, -35.653);
+    srcstr[19] = "3C279";         testSearch1[19].SetCoords(194.05,	-5.790);
+    srcstr[20] = "3C66A";         testSearch1[20].SetCoords(35.665,	43.036);    
+    srcstr[21] = "PKS0454m234";   testSearch1[21].SetCoords(74.2630, -23.414);
+    srcstr[22] = "J1239p044";     testSearch1[22].SetCoords(189.90,  4.70);
+
+  TString blocksFile[23];
+  for (int i=0;i<23;i++) { 
+    blocksFile[i] = "/net/user/mfbaker/Fermi/data/lcAll/lcAll."+srcstr[i]+"cp.l1.txt";
+  } 
+
+//THE RESULTS
+gamma[0]=2.15;          lag[0]=-0.2278747; 	    thresh[0]=1.772315e-05;
+gamma[1]=3.94965; 	    lag[1]=-0.3742493; 	    thresh[1]=0;
+gamma[2]=2.546593; 	    lag[2]=-0.499999; 	    thresh[2]=0;
+gamma[3]=3.85005; 	    lag[3]=-0.2492791; 	    thresh[3]=4.048852e-07;
+gamma[4]=3.008892; 	    lag[4]=0.08989607; 	    thresh[4]=6.067262e-07;
+gamma[5]=0;       	    lag[5]=-0.1; 		    thresh[5]=0;
+gamma[6]=2.849982; 	    lag[6]=0.4985239; 	    thresh[6]=2.297346e-06;
+gamma[7]=0;       	    lag[7]=0.35; 		    thresh[7]=0;
+gamma[8]=1.810606; 	    lag[8]=-0.4342233; 	    thresh[8]=0;
+gamma[9]=0;       	    lag[9]=-0.25; 		    thresh[9]=0;
+gamma[10]=2.649411; 	lag[10]=-0.05203955;    thresh[10]=1.546204e-07;
+gamma[11]=3.949147; 	lag[11]=-0.499999; 	    thresh[11]=0;
+gamma[12]=0;       	    lag[12]=-0.4959025; 	thresh[12]=0;
+gamma[13]=1.850001; 	lag[13]=0.499999; 	    thresh[13]=1.370575e-06;
+gamma[14]=2.72462; 	    lag[14]=0.2469345; 	    thresh[14]=3.438222e-07;
+gamma[15]=2.04999; 	    lag[15]=-0.1675737; 	thresh[15]=7.892663e-07;
+gamma[16]=3.949894; 	lag[16]=-0.3299768; 	thresh[16]=7.243491e-07;
+gamma[17]=0;       	    lag[17]=-0.1000002; 	thresh[17]=4.304152e-07;
+gamma[18]=3.949984; 	lag[18]=0.1880792; 	    thresh[18]=3.297667e-10;
+gamma[19]=3.650002; 	lag[19]=0.4; 	        thresh[19]=2.331009e-06;
+gamma[20]=3.949639; 	lag[20]=-0.3550113; 	thresh[20]=5.792962e-07;
+gamma[21]=3.949986; 	lag[21]=0.0131888; 	    thresh[21]=1.290213e-10;
+gamma[22]=0;       	    lag[22]=-0.1026701; 	thresh[22]=0;
+
+//TimePdf * tPdfsrc;
+
+cout << blocksFile[nsrc].Length() << endl;
+
+//if ( blocksFile[nsrc].Length() ) {
+  BlockTimePdf1 tPdfsrc;
+  tPdfsrc.SetBlockLevels(blocksFile[nsrc].Data(),0);
+  //tPdfsrc->SetBlockLevels(blocksFile[nsrc].Data(),thresh[nsrc]);
+  tPdfsrc.CheckTimeBounds(tmin,tmax);
+//}
+
+
+cout << srcstr[nsrc] << endl;
+tPdfsrc.fillHisto();
+//tPdfsrc.livetimeTotal = livetime/86400.;
+
+
+//  for (vector<I3Event>::iterator * ev = eventVector.begin();
+//       ev != eventVector.end(); ++ev) 
+I3Event e;
+
+//double nsrc_bast = llhEnergyFn->GetPar(0);
+double gammasrc = gamma[nsrc];//1.64;//2.15;//llhEnergyFn->GetPar(1);
+
+double eweight, rDeg;
+EquatorialDeg pos;
+
+TCanvas* c1 = new TCanvas("c1","c1",1000,500);
+//TCanvas* c1 = new TCanvas("c1","c1");
+c1.SetLogy(1);
+c1.SetGridx();
+weightTimes->SetTitle("");
+weightTimes->GetYaxis()->SetTitle("Event Weight");
+weightTimes->GetXaxis()->SetTitle("Event Time (MJD)");
+weightTimes->GetYaxis()->SetRangeUser(10.,2e5);
+//weightTimes->GetYaxis()->SetRangeUser(0.,5.3);
+//weightTimes->GetYaxis()->SetMaximum(1e4);
+weightTimes->Draw();
+double soverb;
+double spaceang;
+
+ark40.decBkgProb.FixToBase();
+ark59.decBkgProb.FixToBase();
+
+//*
+for (int i=0;i<eventVector40.size();i++) {
+//  bkgTimes->Fill( eventVector[i].GetTime().GetTime() );
+  eweight = ark40.eProb->GetEnergyMaxRatio(eventVector40[i]);
+  if (gammasrc) eweight = ark40.eProb->GetEnergyProbGamma(eventVector40[i],gammasrc)/ark40.eProb->GetEnergyProbBkg(eventVector40[i]);
+ 
+  soverb = eventVector40[i].ProbFrom(testSearch1[nsrc])*eweight/ark40.decBkgProb.GetBkgProbDensity(eventVector40[i]);
+
+  if (soverb>10){
+    spaceang = eventVector40[i].GetCoord().DistanceTo(testSearch1[nsrc]);
+    //cout << soverb << " " << eventVector[i].GetTime().GetTime() << " " << eventVector[i].GetParams().runID << " " << eventVector[i].GetParams().eventID << " " << eventVector[i].GetEquatorialDeg().GetRa() << " " << eventVector[i].GetEquatorialDeg().GetDec() << " " << spaceang << endl;
+    l = new TLine(eventVector40[i].GetTime().GetTime(), 0., eventVector40[i].GetTime().GetTime(), soverb);  
+    
+    l->SetLineWidth(1);
+    l->SetLineColor(4);
+    //if ( fabs(eventVector[i].GetTime().GetTime()-54874.7) < 0.1 ) { l->SetLineColor(2); }
+    l->Draw();
+  }
+}
+
+for (int i=0;i<eventVector59.size();i++) {
+//  bkgTimes->Fill( eventVector[i].GetTime().GetTime() );
+  eweight = ark59.eProb->GetEnergyMaxRatio(eventVector59[i]);
+  if (gammasrc) eweight = ark59.eProb->GetEnergyProbGamma(eventVector59[i],gammasrc)/ark59.eProb->GetEnergyProbBkg(eventVector59[i]);
+ 
+  soverb = eventVector59[i].ProbFrom(testSearch1[nsrc])*eweight/ark59.decBkgProb.GetBkgProbDensity(eventVector59[i]);
+                                               //eventVector59[i].GetBkgSpaceProbFn()->GetBkgProbDensity(eventVector59[i]);
+
+  if ( (soverb)>10){
+    spaceang = eventVector59[i].GetCoord().DistanceTo(testSearch1[nsrc]);
+    cout << soverb << " " << soverb/eweight << " " << eventVector59[i].GetTime().GetTime() << " " << eventVector59[i].GetParams().runID << " " << eventVector59[i].GetParams().eventID << " " << eventVector59[i].GetEquatorialDeg().GetRa() << " " << eventVector59[i].GetEquatorialDeg().GetDec() << " " << spaceang << endl;
+    l = new TLine(eventVector59[i].GetTime().GetTime(), 0., eventVector59[i].GetTime().GetTime(), soverb);
+    //l = new TLine(eventVector[i].GetTime().GetTime(), 1., eventVector[i].GetTime().GetTime(), log10(soverb) );
+
+    
+    
+    l->SetLineWidth(1);
+    l->SetLineColor(4);
+    //if ( fabs(eventVector[i].GetTime().GetTime()-54874.7) < 0.1 ) { l->SetLineColor(2); }
+    l->Draw();
+  }
+}
+
+double norm = tPdfsrc.GetNorm();
+tPdfsrc->GetHisto()->Scale(1e8*norm);
+tPdfsrc->GetHisto()->SetLineWidth(2);
+tPdfsrc->GetHisto()->SetLineColor(2);
+tPdfsrc->GetHisto()->Draw("same");
+
+
+
+
+if (1){
+
+  c1->Update();
+  double fluxmax = GetHighestBlock(blocksFile[nsrc].Data());
+
+  TGaxis* yaxis;
+//yaxis = new TGaxis(0.95, 0, 1, 0.95, 0, 1.5, 505, "");
+//TGaxis* yaxis = new TGaxis(gPad->GetUxmax(), gPad->GetUymin(), gPad->GetUxmax(), gPad->GetUymax(), 0, fluxmax, 505, "");
+  TGaxis* yaxis = new TGaxis(gPad->GetUxmax(), 10., gPad->GetUxmax(), 5e3, 1e-7, 5e-5, 505, "+G");
+  yaxis->SetTitle("GeV Flux (photon/cm^{2}/s)");
+
+  yaxis->SetLineColor(2);
+  yaxis->SetTextColor(2);
+  yaxis->SetLabelColor(2);
+  yaxis->SetLabelOffset(0.05);
+//  yaxis->SetLabelSize(0.04);
+
+ll = new TLine(tmin, thresh[nsrc]*1e8, tmax, thresh[nsrc]*1e8);
+ll->SetLineStyle(2);
+ll->SetLineColor(2);
+ll->Draw();
+
+
+  //cout << gPad->GetUymin() << " " << gPad->GetUymax() << " " << fluxmax << " " << norm << endl;
+
+  yaxis->Draw();
+}
+
+  TLine * l40 = new TLine(54971.154549,10.,54971.154549,2e5);
+  l40->SetLineStyle(2);
+  l40->SetLineColor(16);
+  l40->SetLineWidth(2);
+  l40->Draw();
+
+leg = new TLegend(0.45,0.75,0.85,0.88);
+leg->AddEntry(l,"Background Events","l");
+leg->AddEntry(tPdfsrc->GetHisto(),"Denoised Fermi LC","l");
+leg->AddEntry(ll,"Best-Fit Threshold","l");
+leg->Draw();
+
+
+TString savestr = "flare/"+ srcstr[nsrc] + "_unblindresult.eps";
+
+//DateAxis_forPaper(c1);
+
+c1->SaveAs(savestr);
+
+
+/*
+for (int i=0;i<srcVector.size();i++) {
+
+  eweight = eProb->GetEnergyMaxRatio(srcVector[i]);
+//  eweight = eProb->GetEnergyProbGamma(eventVector[i],gammasrc)/eProb->GetEnergyProbBkg(eventVector[i]);
+ 
+  soverb = srcVector[i].ProbFrom(*srcCoord)*eweight/DataSet->GetDecMap().GetProbDensity(srcVector[i].GetCoord());
+
+  if (soverb>10){
+    cout << soverb << " " << eventVector[i].GetTime().GetTime() << endl;
+    l = new TLine(srcVector[i].GetTime().GetTime(), 0., srcVector[i].GetTime().GetTime(), soverb);
+    l->SetLineWidth(1);
+    l->SetLineColor(2);
+    l->Draw();
+  }
+}*/
+
+//bkgTimes->Draw("same");
+
+Time u;
+double weight;
+/*
+    for (int i=0;i<nEvents;i++) {
+      e = aSet->GetEvent(i);
+      u = e->GetTime(); //tvect[i];
+      dist = e->GetCoord().DistanceTo(sCoord);
+//      weight = e->ProbFrom(sCoord);
+//      cout << weight << " ";
+      if (dist <= 5.) {
+//        cout << dist << endl;
+        mjd = u.GetTime();
+        if ( mjd > 1. ) {
+          mjd = fmod(mjd,period)/period;
+          bkgTimes->Fill(mjd);
+        } else {
+          srcTimes->Fill(mjd);
+        }
+//        cout << mjd << endl;
+      }
+    }
+//    cout << endl;
+/*
+    for (vector<I3Event>::iterator ev = eVector.begin();
+	     ev != eVector.end(); ++ev)
+    {
+      dist = ev->GetCoord().DistanceTo(srcCoord);
+      if (dist <= 3.) {
+        mjd = ev->GetTime()->GetTime();
+        evTimes->Fill(mjd);
+      }
+    }
+//*/
+
+//TCanvas* c1 = new TCanvas("c1","c1");
+//c1->Divide(1,2);
+//c1->cd(1);
+//nullteststat->Draw();
+//nteststat->Draw();
+
+//c1->cd(2);
+//nullestprob->Draw();
+//nsrcestprob->Draw("same");
+
+//TCanvas* c2 = new TCanvas("c2","c2");
+//c2->Divide(2,1);
+//c2->cd(1);
+//Plot_I3Events(eVector, -10., 90.);
+
+//c2->cd(2);
+//srcTimes->SetLineColor(4);
+//weightTimes->SetLineColor(6);
+//weightTimes->Draw();
+//bkgTimes->Draw("same");
+//mySource->GetTimePdf()->GetHisto()->SetLineColor(2);
+//mySource->GetTimePdf()->GetHisto()->Scale(5.);
+//mySource->GetTimePdf()->GetHisto()->Draw("same");
+//srcTimes->Draw("same");
+
+// srcTimes->Fit("gaus","","",0.65,0.8)
+// gaus->GetParameter(2)
+
+}

@@ -1,0 +1,249 @@
+
+class DetectionOptimization {
+ public:
+  
+  vector<TH1D> hDetectFlux;
+
+  // will skip bins if they involve search outside this range:
+  double searchDecDegMin;
+  double searchDecDegMax;
+  
+  // how histograms will span declination range
+  bool optSinDec;
+  int nBins;
+  double xMin;
+  double xMax;
+  
+  DetectionOptimization() : can(NULL),
+			    searchDecDegMin(-85.),
+			    searchDecDegMax(+85.),
+			    optSinDec(true),
+			    nBins(20),
+			    xMin(-1),
+			    xMax(1)
+  { }
+
+
+  ~DetectionOptimization() { }
+
+  void Usage();
+  void Execute(MultiArk& ark, AnalysisFn& llh, 
+	       DiscoveryPotential& disco, FluxBase& flux, vector<TString> Cuts, vector<TString> CutTitles);
+  
+  void Write(char* filename, char* fileoption="new");
+};
+
+
+void DetectionOptimization::Usage() {
+  cout << "DetectionOptimization dz;\n";
+  cout << "  dz.Execute(Ark& ark, AnalysisFn& llh,\n"; 
+  cout << "             DiscoveryPotential& disco, FluxBase& flux, vector<TString> Cuts, vector<TString> CutTitles)\n";
+  cout << "\n";
+  cout << "Configurable options (default settings shown):\n";
+  cout << "  dz.searchDecDegMin = -85.;   (skip any bins beyond this range)\n";
+  cout << "  dz.searchDecDegMax = +85.;   (skip any bins beyond this range)\n";
+  cout << "  dz.optSinDec = true;         (bin in sin(Dec) or just Dec)\n";
+  cout << "  dz.nBins = 20;          (histogram bins)\n";
+  cout << "  dz.xMin = -1.;          (typically -1 for sinDec, -90 for Dec)\n";
+  cout << "  dz.xMax = +1.;          (typically +1 for sinDec, +90 for Dec)\n";
+  cout << "\n";
+  cout << "  dz.Write(char*filename, char* fileoption=\"new\")\n";
+}
+
+
+void DetectionOptimization::Execute(MultiArk& ark, AnalysisFn& llh, 
+				    DiscoveryPotential& disco, FluxBase& flux, 
+				    vector<TString> Cuts, vector<TString> CutTitles) {
+  
+  
+  cout << " Number of Cuts: " << Cuts.size() << endl;
+  
+  EventLoader ev = ark.evLoader;
+  ev.ResetCuts();
+  
+  //LOOP of Cuts
+
+  for(int iCut = 0; iCut < Cuts.size(); iCut++)
+    {
+      cout << "** CUT " << iCut << ": " << Cuts[iCut] << " with title " <<  CutTitles[iCut] << " **" << endl;
+      
+      ark.evLoader.ResetCuts();
+      
+      ark.evLoader.AddCut(Cuts[c]);
+     
+      //
+      // LOAD EVENTS, SET UP ENERGY PDFs
+      // 
+      
+      // Variable names needed for eProb below
+      TString recoZenRadName = "mZr"; 
+      TString energyVar = "log10(mueEn)";
+
+      
+      cout << "Loading Background Events: " 
+	   << ark.evLoader.GetBkgTree()->GetTitle() << endl;
+      cout << "Using cut: " << ark.evLoader.GetCuts().GetTitle() << endl;
+      ark.evLoader.SetMonitor(true);
+      ark.evLoader.LoadBkgEvents(ark.baseEvents);
+      
+
+      ZenithEnergyProb* zen_eProb = new ZenithEnergyProb();
+      
+      cout << "Filling Energy PDFs:\n";
+      zen_eProb->SetSourceZenWidthDeg( ark.sourceZenWidthDeg);
+      zen_eProb->SetName_recoZenith_rad(recoZenRadName);
+      
+      vector<double> zenMinDegVect;
+      
+      // Fill vector with bin edges that match "CutDMS" bin edges
+      // 0 - 90  zen added
+      double tempBot=1;
+      for(int i = 0; i < 21; i++){
+	//  for(int i=0; i<19;i++){
+	//cout << tempBot << " " << acos(tempBot)*TMath::RadToDeg() << endl;
+	zenMinDegVect.push_back(acos(tempBot)*TMath::RadToDeg());
+	tempBot-=0.05;
+      }
+      
+
+      //zenMinDegVect.push_back(105.00); //? Follow Chad's example
+      zenMinDegVect.push_back(110.00); // ~acos(-0.33)
+      zenMinDegVect.push_back(132.00); // ~acos(-0.67)
+      zenMinDegVect.push_back(180.);
+      
+      zen_eProb->SetZenithBandsDeg(zenMinDegVect);
+      
+      zen_eProb->SetLoadModeNew(true); // true is now faster
+      
+      if (energyVar == "log10(mueEn)") {
+	int nBackFill = 35; // don't backfill previous bins
+	zen_eProb->SetEnergyGammaRangeAndBackFill(40,2.,9., 30,1.,4., nBackFill);
+      }
+
+      zen_eProb->SetTableBkg(ark.baseEvents);
+
+
+      TStopwatch ts;
+      zen_eProb->SetTableGamma(ark.evLoader.GetSourceTree(), ark.evLoader.GetCuts(), energyVar);
+      ts.Print();
+      
+      
+      ark.eProb = zen_eProb;
+      
+      // This seems to be okay for ~ 5000 events or more:
+      // 1. deg smoothing and 180 declination maps (e.g. 1 deg binning)
+      
+      //ark.decBkgProb.Initialize(180, 1);
+      ark.decBkgProb.SetBaseDecMap(ark.baseEvents);
+      
+      psData = new I3Analysis();
+      
+      psData->SetBkgSpaceProb(ark.decBkgProb);
+      psData->SetBaseEvents(ark.baseEvents);
+      psData->SetEnergyProb(*(ark.eProb));
+      
+      psData->GenerateDataSet_with_nSrcEvents(0);
+	
+      ark.psData = psData;
+      
+        // Set Up Histograms
+  
+      TString xLabel;
+      if (optSinDec) { xLabel = "sin(Dec.)"; }
+      else { xLabel = "Declination [#circ]"; }
+      
+      
+      TH1D *hDet = NULL;
+      
+
+      hDet->SetBins(nBins, xMin, xMax);
+      hDet->SetTitle(CutTitles[iCut]+" ;"+xLabel);
+      
+      //
+      // MAIN LOOP
+      //
+      
+      for (int iDec=1; iDec<=nBins; ++iDec) {
+	
+	// determine what the next source declination is, depending on how
+	// we constructed our histogram
+	double srcDecDeg;
+	if (optSinDec) {
+	  srcDecDeg = asin(hDet->GetBinCenter(iDec))*TMath::RadToDeg();
+	} else {
+	  srcDecDeg = hDet->GetBinCenter(iDec);
+	}
+
+	if (srcDecDeg < searchDecDegMin) { 
+	  cout << "Skipping srcDec=" << srcDecDeg;
+	  cout << " < searchDecDegMin=" << searchDecDegMin << endl;
+	  continue;
+	}
+	if (srcDecDeg > searchDecDegMax) { 
+	  cout << "Skipping srcDec=" << srcDecDeg;
+	  cout << " > searchDecDegMax=" << searchDecDegMax << endl;
+	  continue; 
+	}
+	
+
+	// Set up source simulation for this declination (use r.a. = 0)
+	ark.SetPointSource(EquatorialDeg(0., srcDecDeg), flux);
+	
+	cout << "Source Declination: " << ark.mySrcLocation.GetDec() << " deg\n";
+	double meanSrcEv_ForInitialFlux = ark.psData->GetMeanSrcNev();
+	cout << "  Mean Src Events for Init. Flux: ";
+	cout << meanSrcEv_ForInitialFlux << endl;
+	
+	ark.psData->GenerateDataSet_with_nSrcEvents(0); 
+	
+	
+	llh.SetAnalysisSet(ark.psData);
+	llh.SetSearchCoord(ark.mySrcLocation);
+	
+	disco.SetAnalysisSet(ark.psData);
+	disco.SetAnalysisFn(&llh);
+	
+	disco.AnalyzeDiscoveryPotential();
+	
+	double meanSrcEv_ForDetection = disco.MeanSrcEv_ForDetection_;
+	double fluxScale = 
+	  ark.psData->GetFluxScaleForNev(meanSrcEv_ForDetection);
+	
+	
+	hDet->SetBinContent(iDec, fluxScale);
+
+	cout << "Detection Power " << disco.GetDetectionPower()*100 << "%\n"; 
+	cout << "Detection Significance "<<disco.GetDetectionSignificance()<< endl;
+	cout << "Mean signal events detectable: " <<meanSrcEv_ForDetection << endl;
+	cout << "Flux scale relative to model is: " << fluxScale << endl;
+	cout << "Running average fluxScale: "<< hDet->GetSum()/iDec << endl;
+      }
+
+      
+      hDetectFlux.push_back(*hDet);
+      
+      delete hDet;
+      
+    }
+
+}
+
+
+bool DetectionOptimization::Write(char* filename, char* fileoption) {
+  TFile *fileOutput = new TFile(filename, fileoption);
+  if (fileOutput->IsZombie()) {
+    cout << "Try using 'recreate' option?\n";
+    return false; // no file saved
+  }
+
+  cout << "Writing to " << filename << endl;
+  cout << "  hDetectFlux for different cuts\n";
+  
+  for (int iH = 0; iH < hDetectFlux.size(); iH++)
+    {
+      hDetectFlux[iH].Write("hDetectFlux_"+TStringify(iH));
+    }
+
+  fileOutput->Close();
+  return true;  // file saved (apparently!)
+}

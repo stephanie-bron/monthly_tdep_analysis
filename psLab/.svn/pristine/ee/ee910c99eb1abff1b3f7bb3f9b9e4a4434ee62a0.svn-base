@@ -1,0 +1,173 @@
+{
+
+  double dec_arr[4] = {-7,-24,-42,-72};
+
+  bool RELOAD;
+  
+  if(!RELOAD)
+    {
+      RELOAD = true;
+      
+      gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+      if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+      
+      SetPrettyStyle();
+      SetRootPalette(1);
+      
+      if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+      else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+      int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+      gROOT->ProcessLine(".L Ark.C");
+      
+      bool OPT_USEREALDATA = false;
+  
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MuEX.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_SplineMPE.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MPE.C+");
+      gROOT->ProcessLine(".L DownFn1.C+");
+      gROOT->ProcessLine(".L DownFn2.C+");
+      gROOT->ProcessLine(".L TreeLoader_IC86.C");
+
+    }
+
+  gROOT->ProcessLine(".L SetDisco.C");
+  
+
+  //TCut All = "CRSigmaDeg==CRSigmaDeg";
+  TCut Down = "(SplineMPEZr.value*TMath::RadToDeg() <= 85.0)&&(BDT_Downgoing.value > 0.07)";
+  TCut Down1a = "(SplineMPEZr.value > 1.31811607)&&(SplineMPEZr.value*TMath::RadToDeg() <= 85.0)&&(log10(muexEn)>DownFn1(SplineMPEZr.value)+0.2)";
+  TCut Down1b = "(SplineMPEZr.value <= 1.31811607)&&(log10(muexEn)>DownFn2(SplineMPEZr.value)+0.2)";
+  TCut Down2a = "(SplineMPEZr.value > 1.31811607)&&(SplineMPEZr.value*TMath::RadToDeg() <= 85.0)&&(log10(muexEn)>DownFn1(SplineMPEZr.value)+0.1)";
+  TCut Down2b = "(SplineMPEZr.value <= 1.31811607)&&(log10(muexEn)>DownFn2(SplineMPEZr.value)+0.1)";
+  TCut Down3a = "(SplineMPEZr.value > 1.31811607)&&(SplineMPEZr.value*TMath::RadToDeg() <= 85.0)&&(log10(muexEn)>DownFn1(SplineMPEZr.value))";
+  TCut Down3b = "(SplineMPEZr.value <= 1.31811607)&&(log10(muexEn)>DownFn2(SplineMPEZr.value))";
+  TCut Down4a = "(SplineMPEZr.value > 1.31811607)&&(SplineMPEZr.value*TMath::RadToDeg() <= 85.0)&&(log10(muexEn)>DownFn1(SplineMPEZr.value-0.1))";
+  TCut Down4b = "(SplineMPEZr.value <= 1.31811607)&&(log10(muexEn)>DownFn2(SplineMPEZr.value-0.1))";
+  TCut Down5a = "(SplineMPEZr.value > 1.31811607)&&(SplineMPEZr.value*TMath::RadToDeg() <= 85.0)&&(log10(muexEn)>DownFn1(SplineMPEZr.value)-0.2)";
+  TCut Down5b = "(SplineMPEZr.value <= 1.31811607)&&(log10(muexEn)>DownFn2(SplineMPEZr.value)-0.2)";
+  
+  TCut Hard1 = (Down&&(Down1a||Down1b));
+  TCut Hard2 = (Down&&(Down2a||Down2b));
+  TCut Hard3 = (Down&&(Down3a||Down3b));
+  TCut Hard4 = (Down&&(Down4a||Down4b));
+  TCut Hard5 = (Down&&(Down5a||Down5b));
+
+  vector<TString> Cuts;
+  vector<TString> CutTitles;
+  vector<double> CutBDT;
+
+  Cuts.push_back(Hard1.GetTitle());   CutBDT.push_back(0.2);
+  Cuts.push_back(Hard2.GetTitle());   CutBDT.push_back(0.1);
+  Cuts.push_back(Hard3.GetTitle());   CutBDT.push_back(0.0);
+  Cuts.push_back(Hard4.GetTitle());   CutBDT.push_back(-0.1);
+  Cuts.push_back(Hard5.GetTitle());   CutBDT.push_back(-0.2);
+  
+  TGraph gflux(Cuts.size());
+  TGraph gmean(Cuts.size());
+  
+  //LOOP of Cuts
+  
+  I3Ark *arkIC86 = NULL;
+  for(int iDec=3; iDec<4; iDec++)
+  {
+  cout << "Working on dec: " << dec_arr[iDec] << "\n";
+
+  for(int iCut = 0; iCut < Cuts.size(); iCut++)
+    {
+      
+     arkIC86 = new I3Ark;
+
+     //char processline[300];
+     
+     TString processline = ".x load_ark_ic86_BDT_wCut.C(*arkIC86, OPT_USEREALDATA,\""+ Cuts[iCut]+"\")";
+     cout << processline << endl;
+
+     gROOT->ProcessLine(processline.Data());
+     
+      MultiArk mark;
+      mark.AddArk(*arkIC86);
+  
+      MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+      
+      
+      
+      // Llh Function
+      NewLlhEnergy newllhIC86;
+      newllhIC86.SetUseEnergy(true);
+      newllhIC86.SetOptimizeAngleDeg(10.);
+      newllhIC86.SetOptimizeTolerance(0.01);
+      newllhIC86.SetAnalysisSet(arkIC86->psData);
+      // newllhIC86.SetMonitorLevel(2);
+      newllhIC86.SetEMaxRatioWarnOnlyOnce(true);
+
+      MultiAnalysisFn maf;
+      maf.AddAnalysisFn(&newllhIC86);
+     
+      double srcDecDeg = dec_arr[iDec];      
+      
+      
+      
+      // Set up source simulation for this declination (use r.a. = 0)
+      mark.SetPointSource(EquatorialDeg(0., srcDecDeg),  PowerLawFlux(1,-2.0));
+      maf.SetSearchCoord(EquatorialDeg(0., srcDecDeg));
+      
+      cout << "Source Set" << endl;
+      
+      
+      vector<MinuitParDef> pdv;
+      pdv.push_back( MinuitParDef("nSrc",1,0.1, 0,100) );
+      pdv.push_back( MinuitParDef("gamma",2,0.5, 1., 4) );
+      maf.SetParDefs(pdv);
+      
+      
+      DiscoveryPotential disco;
+      
+      maf.SetAnalysisSet(mark.psData);
+      
+      NewLlhEnergy_ParTranslator *pt = new NewLlhEnergy_ParTranslator;
+      pt->SetRange(1,4,31); //gamma_min, gamma_max, nBins
+      pt->SetTranslator(dynamic_cast<MultiAnalysisSet*>(mark.psData));
+      maf.SetParTranslator(pt);
+      
+      cout << "Starting Disco" << endl;
+      
+      SetDisco(disco, 15, false, 2.87e-7, 0.5);
+      
+      disco.SetAnalysisSet(arkIC86->psData);
+      disco.SetAnalysisFn(&maf);
+      disco.AnalyzeDiscoveryPotential();
+      
+      double meanSrcEv_ForDetection = disco.MeanSrcEv_ForDetection_;
+      double fluxScale = mark.psData->GetFluxScaleForNev(meanSrcEv_ForDetection);
+      //cout << "FluxScale "<< fluxScale << endl;
+      
+      cout << " Mean Src Events for Discovery: ";
+      cout << meanSrcEv_ForDetection << endl;
+      
+      cout << " Flux for Discovery: ";
+      cout << fluxScale << endl;
+
+      gflux.SetPoint(iCut, CutBDT[iCut], fluxScale);
+      gmean.SetPoint(iCut, CutBDT[iCut], meanSrcEv_ForDetection);
+      
+      
+      delete arkIC86;
+      
+
+   }
+  
+  TString filename = Form("IC86_DiscoOptimization_DownNewE2.0_%f.root",srcDecDeg);
+  TFile fout(filename,"RECREATE");
+  gflux.Write("gFlux");
+  gmean.Write("gMean");
+  
+  fout.Close();
+}
+  
+  return 1;
+  
+
+}
+
+

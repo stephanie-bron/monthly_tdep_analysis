@@ -1,0 +1,12 @@
+#include "vector"
+#ifdef __CINT__ 
+#pragma link C++ nestedclasses;
+#pragma link C++ nestedtypedefs;
+#pragma link C++ class vector<I3Event>+;
+#pragma link C++ class vector<I3Event>::*;
+#ifdef G__VECTOR_HAS_CLASS_ITERATOR
+#pragma link C++ operators vector<I3Event>::iterator;
+#pragma link C++ operators vector<I3Event>::const_iterator;
+#pragma link C++ operators vector<I3Event>::reverse_iterator;
+#endif
+#endif

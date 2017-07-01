@@ -1,0 +1,41 @@
+{
+
+
+  gROOT->ProcessLine(".L /net/user/jdumm/llh_IC40_v2/llh6_Ext/convolve_tables/ConvolveTH2F.C");
+  gStyle->SetOptStat("");
+  gStyle->SetPalette(1);
+
+  //TH2F *hFermi = new TH2F("hFermi","hFermi",90,0,360,10,-10,10);
+  //TH2F *hFermi = new TH2F("hFermi","hFermi",20,0,360,5,-10,10);
+  //TH2F *hFermi = new TH2F("hFermi","hFermi",720,0,360,30,-15,15);
+  //chain->Draw("b:l>>hFermi","en>800","colz");
+  //chain->Project("hFermi","b:l","en>800");
+
+  //TFile fIn("/net/user/jdumm/llh_IC40_v2/llh6_Ext/convolve_tables/FermiGalDiffuse.root","READ");
+  //TFile fIn("$LAB_MAIN_DIR/macro_llh/ic59/fermibubble/FermiGalDiffuse.root","READ");
+  //TH2F *hFermi = (TH2F*)fIn.Get("hFermiGalDiffuse");
+  //fIn.Close();
+  gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/ic59/fermibubble/fermi_haze_TH2F.C");
+  
+  TFile fOut("$LAB_MAIN_DIR/macro_llh/ic59/fermibubble/FermiBubble_conv_30sigmabins.root","RECREATE");
+
+  double sigmaMin = 0;
+  double sigmaMax = 3;
+  const int sigmaNbins = 30;
+  TH2F hConv[sigmaNbins];
+  char nameBuf[30];
+  for (int i=0; i<sigmaNbins; i++){
+    double sigma = sigmaMin + (sigmaMax-sigmaMin)/sigmaNbins/2. + (sigmaMax-sigmaMin)/sigmaNbins*i;
+    sprintf(nameBuf,"h%d",i);
+    string sBuf = nameBuf;
+    cout << "sigma: " << sigma << ", nameBuf: " << sBuf << endl;
+    hConv[i] = ConvolveTH2F(hFermiBubble,sigma,nameBuf);
+  }
+
+  fOut.Write();
+  fOut.Close();
+  //TH2F *hSmear = hFermiBubble; // unconvolved
+  //hSmear->Draw("colz");
+
+}
+

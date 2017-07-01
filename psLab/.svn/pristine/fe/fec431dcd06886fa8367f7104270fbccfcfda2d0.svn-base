@@ -1,0 +1,32 @@
+
+// Default macro, gives user instructions
+
+bool macro_DetectionZenith_Save() {
+  cout << "To save last results of macro_DetectionZenith to a file:\n\n";
+  cout << ".x macro_DetectionZenith_Save.C(char* filename, char* fileoption=\"new\")\n\n";
+  cout << "(Use 'recreate' instead of 'new' to overwrite a file.)\n";
+  return false; // no file saved
+}
+
+
+bool macro_DetectionZenith_Save(char* filename, char* fileoption="new") {
+  extern TH1D *hBkgEvents;
+  extern TH1D *hFixedFluxEvents;
+  extern TH1D *hDetectEvents;
+  extern TH1D *hDetectFlux;
+
+  TFile *fileOutput = new TFile(filename,fileoption);
+
+  if (fileOutput->IsZombie()) {
+    cout << "Try using 'recreate' option?\n";
+    return false; // no file saved
+  }
+
+  cout << "Writing hBkgEvents, hFixedFluxEvents, hDetectEvents, and hDetectFlux to: " << filename << endl;
+  hBkgEvents->Write();
+  hFixedFluxEvents->Write();
+  hDetectEvents->Write();
+  hDetectFlux->Write();
+  fileOutput->Close();
+  return true;  // file saved (apparently!)
+}

@@ -1,0 +1,359 @@
+
+class SimpleMultiPeriodicAnalysis {
+ public:
+  TH1D hTestStatistic;
+  TH1D hLogProb;
+  TH1D hPar;
+  TH2D hGammaNs;
+  TH2D hMeanSig;
+  TH1D hLogPInt;
+  TCanvas* can;
+  int ndof_;
+
+  SimpleAnalysis() : can(NULL) , ndof_(2) { }
+  ~SimpleAnalysis() { }
+
+  void Usage();
+  void SetNDoF(int ndof) { ndof_ = ndof; }
+  void Execute(Ark& ark, AnalysisFn& llh, int nTrials, int nSrcEvents);
+  void Execute(MultiArk& ark, MultiPeriodicAnalysisFn& llh, int nTrials, int nSrcEvents);
+  void Execute(I3Ark& ark, NewLlhPeriodicTime& llh, int nTrials, int nSrcEvents);
+};
+
+
+void SimpleMultiPeriodicAnalysis::Usage() {
+  cout << "SimpleAnalysis sa;\n";
+  cout << "sa.SetNDoF(int ndof);   // default degrees of freedom is 2\n";
+  cout << "sa.Execute(Ark& ark, Analysis& llh,\n"
+          "           int nTrials, int nSrcEvents = 0)\n";
+}
+
+
+void SimpleMultiPeriodicAnalysis::Execute(MultiArk& ark, MultiPeriodicAnalysisFn& llh, 
+			     int nTrials, int nSrcEvents)
+{
+
+// I think the easiest way to do this is to set everything before
+//  llh.SetAnalysisSet(ark.psData);
+//  llh.SetSearchCoord(ark.mySrcLocation);
+
+  // find out if energy is being used (changes # of degrees of freedom)
+  //if (ndof_<1 || ndof_>2) {
+  //  cout << "ndof==" << ndof_ << " not allowed right now.  Setting to 1.\n";
+  //  ndof_ = 1;
+  //}
+
+  hTestStatistic.Reset();
+  hLogProb.Reset();
+  hPar.Reset();
+  hGammaNs.Reset();
+  hLogPInt.Reset();
+  hMeanSig.Reset();
+
+  hTestStatistic.SetBins(100,-1,1);
+  hTestStatistic.SetTitle(";2 ln #lambda;trials");
+  hLogProb.SetBins(100,-1,1);
+  hLogProb.SetTitle(";log_{10} Prob;trials");
+  hPar.SetBins(100,-1,1);
+  hPar.SetTitle(";nSrcBest; trials");
+  hGammaNs.SetBins(90,0,30,60,-5.,1.);
+  //hGammaNs.SetBins(50,0,30,70,-6,1);
+  //hGammaNs.SetTitle(";nSrcBest;gammaBest");
+
+  hMeanSig.SetBins(60,-5.,1.,60,-5.,1.);
+  //hMeanSig.SetBins(50,0,1,70,-6,1);
+  hMeanSig.SetTitle(";log_{10} (#sigma_{T} Seed);log_{10} (#sigma_{T} Best)");
+
+  // Let Root figure out how to extend the bin range automatically
+  hTestStatistic.SetBit(TH1::kCanRebin);
+  hLogProb.SetBit(TH1::kCanRebin);
+  hPar.SetBit(TH1::kCanRebin);
+  hGammaNs.SetBit(TH1::kCanRebin);
+
+  //
+  // MAIN LOOP
+  //
+
+  //cout << "starting trials" << endl;
+
+  CountMonitor countMon(10.,nTrials);
+  cout << "going for " << nTrials << endl;
+
+  double llh03;
+  
+  for (int i=0; i<nTrials; ++i) {
+  
+    // cout << "First trial... " << endl;
+    ark.psData->GenerateDataSet_with_nSrcEvents(nSrcEvents);
+    llh.MaximizeLlh();
+
+    if(i==0) cout << "Got one!" << endl;
+
+    hTestStatistic.Fill(llh.GetTestStatistic() * 2.);
+    //cout << "teststat..." << flush;
+    hLogProb.Fill(log10(llh.GetEstProb()));
+    //cout << " estp... " << flush;
+    //hPar.Fill(llh.GetPar(0));
+    hPar.Fill( llh.Get_meanBest() );
+    //cout << " ns..." << flush;
+    
+    //if (llh.GetPar(3) < 0.021) { 
+    //  llh03 = llh.EvaluateLlh(llh.GetPar(0),llh.GetPar(1),llh.GetPar(2),0.03);
+    hGammaNs.Fill(llh.GetPar(0), llh.GetPar(3));
+    //}
+    
+    if (ndof_>=2) {
+      //hLogProb.Fill( llh.GetPar(3) );
+      //hGammaNs.Fill(llh.GetTestStatistic() * 2.,llh.GetPar(3));
+      //cout << "teststat:sigma... " << flush;
+      hMeanSig.Fill(log10(llh.GetSigmaGuess()),llh.GetPar(3));
+      //cout << "mean:sigma... " << flush;
+    }
+    //if(i==0) cout << "Filling histos once" << endl;
+    //cout  << "done." << endl;
+    countMon.UpdateCount();
+  } //*/
+
+  //
+  // PLOT OUTPUT
+  //
+
+  // only make new canvas if it didn't already exist:
+  //
+    can = dynamic_cast<TCanvas*> 
+      ( gROOT->GetListOfCanvases()->FindObject("canSimpleAnalysis") );
+  if ( !can ) {
+    can =  new TCanvas("canSimpleAnalysis","canSimpleAnalysis",20,20,950,650);
+    can->Divide(3,2,0.005,0.005);
+    for (int i=0; i<6; ++i) {
+      can->cd(i);
+      gPad->SetRightMargin(0.01);
+      gPad->SetTopMargin(0.01);
+    }
+  }
+
+  can->cd(1);
+
+  TF1 *fchi2 = new TF1("fchi2","[0] * (1./sqrt(2*TMath::Pi())) "
+		       "* exp(-x/2)/sqrt(x)",0,50);
+  double xRange = hTestStatistic.GetXaxis()->GetXmax() -
+    hTestStatistic.GetXaxis()->GetXmin();
+  double binsPerUnit = hTestStatistic.GetNbinsX() / xRange;
+  double normFactor = (nTrials/2.) / binsPerUnit; // to match histogram plot
+  // divide by 2 because we only count excess tail contribution to chi2 
+  fchi2->SetParameter(0,normFactor);
+  fchi2->SetLineColor(kBlue);
+
+  TF1 *fchi2_2d = new TF1("fchi2_2d","[0] * (1./2.) * exp(-x/2)",0,50);
+  TF1 *fchi2_3d = new TF1("fchi2_3d","[0] * [1] * ( sqrt([1]*x) * exp(-[1]*x/2) )",0,50);
+  TF1 *fchi2_4d = new TF1("fchi2_4d","[0] * [1] * ([1]*x) * (1./(2)) * exp(-[1]*x/2)",0,50);
+
+  fchi2_2d->SetParameter(0,normFactor);
+  fchi2_2d->SetLineColor(kRed);
+
+  fchi2_3d->SetParameter(0,normFactor);
+  fchi2_3d->SetParameter(1,2); // correction for chi = 2 * log lambda
+  fchi2_3d->SetLineColor(kBlue);
+  
+  fchi2_4d->SetParameter(0,normFactor);
+  fchi2_4d->SetParameter(1,2); // correction for chi = 2 * log lambda
+  fchi2_4d->SetLineColor(kBlue);
+
+  hTestStatistic.Draw();
+  if (ndof_==1) { fchi2->Draw("same"); }
+  if (ndof_==2) { fchi2_2d->Draw("same"); }
+  if (ndof_==3) { fchi2_3d->Draw("same"); }
+  if (ndof_==4) { fchi2_4d->Draw("same"); } 
+  
+  gPad->SetLogy(1);
+
+  can->cd(2);
+  hLogProb.Draw();
+  cout << "Median Log Prob of Max Like: " << histMedian(&hLogProb) << endl;
+
+  can->cd(3);
+  gPad->SetLogy(1);
+  hLogPInt = hLogProb;  // first make binning the same
+  AscendingCumulate(&hLogProb, &hLogPInt);
+  hLogPInt.Draw("e");
+  double entries = hLogProb.GetEntries();
+  TLine *line = new TLine(log10(1./entries),1.,0.,entries);
+  line->Draw();
+
+  can->cd(4);
+  hPar.Draw();
+  gPad->SetLogy(1);
+
+  can->cd(5);
+  if (ndof_>=2) {
+    hGammaNs.Draw("colz");
+  }
+  
+  can->cd(6);
+  hMeanSig.Draw("colz");
+}
+
+void SimpleMultiPeriodicAnalysis::Execute(I3Ark& ark, NewLlhPeriodicTime& llh, 
+			     int nTrials, int nSrcEvents)
+{
+
+// I think the easiest way to do this is to set everything before
+//  llh.SetAnalysisSet(ark.psData);
+//  llh.SetSearchCoord(ark.mySrcLocation);
+
+  // find out if energy is being used (changes # of degrees of freedom)
+  //if (ndof_<1 || ndof_>2) {
+  //  cout << "ndof==" << ndof_ << " not allowed right now.  Setting to 1.\n";
+  //  ndof_ = 1;
+  //}
+
+  hTestStatistic.Reset();
+  hLogProb.Reset();
+  hPar.Reset();
+  hGammaNs.Reset();
+  hLogPInt.Reset();
+  hMeanSig.Reset();
+
+  hTestStatistic.SetBins(100,-1,1);
+  hTestStatistic.SetTitle(";2 ln #lambda;trials");
+  hLogProb.SetBins(100,-1,1);
+  hLogProb.SetTitle(";log_{10} Prob;trials");
+  hPar.SetBins(100,-1,1);
+  hPar.SetTitle(";nSrcBest; trials");
+  hGammaNs.SetBins(60,-1,2,90,-5,25);
+  //hGammaNs.SetBins(50,0,30,70,-6,1);
+  //hGammaNs.SetTitle(";nSrcBest;gammaBest");
+
+  hMeanSig.SetBins(60,-5.,1.,60,-5.,1.);
+  //hMeanSig.SetBins(50,0,1,70,-6,1);
+  hMeanSig.SetTitle(";log_{10} (#sigma_{T} Seed);log_{10} (#sigma_{T} Best)");
+
+  // Let Root figure out how to extend the bin range automatically
+  hTestStatistic.SetBit(TH1::kCanRebin);
+  hLogProb.SetBit(TH1::kCanRebin);
+  hPar.SetBit(TH1::kCanRebin);
+  hGammaNs.SetBit(TH1::kCanRebin);
+
+  //
+  // MAIN LOOP
+  //
+
+  //cout << "starting trials" << endl;
+
+  CountMonitor countMon(10.,nTrials);
+  cout << "going for " << nTrials << endl;
+
+  double llh03;
+  
+  for (int i=0; i<nTrials; ++i) {
+  
+    // cout << "First trial... " << endl;
+    ark.psData->GenerateDataSet_with_nSrcEvents(nSrcEvents);
+    llh.MaximizeLlh();
+
+    if(i==0) cout << "Got one!" << endl;
+
+    hTestStatistic.Fill(llh.GetTestStatistic() * 2.);
+    //cout << "teststat..." << flush;
+    //hLogProb.Fill(log10(llh.GetEstProb()));
+    //cout << " estp... " << flush;
+    //hPar.Fill(llh.GetPar(0));
+    hPar.Fill( log10(llh.GetSigmaMin()) );
+    //cout << " ns..." << flush;
+    
+    //if (llh.GetPar(3) < 0.021) { 
+    //  llh03 = llh.EvaluateLlh(llh.GetPar(0),llh.GetPar(1),llh.GetPar(2),0.03);
+    hGammaNs.Fill(llh.Get_meanBest(), llh.GetTestStatistic() * 2.);
+    //}
+    
+    if (ndof_>=2) {
+      hLogProb.Fill( llh.GetPar(3) );
+      //hGammaNs.Fill(llh.GetTestStatistic() * 2.,llh.GetPar(3));
+      //cout << "teststat:sigma... " << flush;
+      hMeanSig.Fill(log10(llh.GetSigmaGuess()),llh.GetPar(3));
+      //cout << "mean:sigma... " << flush;
+    }
+    //if(i==0) cout << "Filling histos once" << endl;
+    //cout  << "done." << endl;
+    countMon.UpdateCount();
+  } //*/
+
+  //
+  // PLOT OUTPUT
+  //
+
+  // only make new canvas if it didn't already exist:
+  //
+    can = dynamic_cast<TCanvas*> 
+      ( gROOT->GetListOfCanvases()->FindObject("canSimpleAnalysis") );
+  if ( !can ) {
+    can =  new TCanvas("canSimpleAnalysis","canSimpleAnalysis",20,20,950,650);
+    can->Divide(3,2,0.005,0.005);
+    for (int i=0; i<6; ++i) {
+      can->cd(i);
+      gPad->SetRightMargin(0.01);
+      gPad->SetTopMargin(0.01);
+    }
+  }
+
+  can->cd(1);
+
+  TF1 *fchi2 = new TF1("fchi2","[0] * (1./sqrt(2*TMath::Pi())) "
+		       "* exp(-x/2)/sqrt(x)",0,50);
+  double xRange = hTestStatistic.GetXaxis()->GetXmax() -
+    hTestStatistic.GetXaxis()->GetXmin();
+  double binsPerUnit = hTestStatistic.GetNbinsX() / xRange;
+  double normFactor = (nTrials/2.) / binsPerUnit; // to match histogram plot
+  // divide by 2 because we only count excess tail contribution to chi2 
+  fchi2->SetParameter(0,normFactor);
+  fchi2->SetLineColor(kBlue);
+
+  TF1 *fchi2_2d = new TF1("fchi2_2d","[0] * (1./2.) * exp(-x/2)",0,50);
+  TF1 *fchi2_3d = new TF1("fchi2_3d","[0] * [1] * ( sqrt([1]*x) * exp(-[1]*x/2) )",0,50);
+  TF1 *fchi2_4d = new TF1("fchi2_4d","[0] * [1] * ([1]*x) * (1./(2)) * exp(-[1]*x/2)",0,50);
+
+  fchi2_2d->SetParameter(0,normFactor);
+  fchi2_2d->SetLineColor(kRed);
+
+  fchi2_3d->SetParameter(0,normFactor);
+  fchi2_3d->SetParameter(1,2); // correction for chi = 2 * log lambda
+  fchi2_3d->SetLineColor(kBlue);
+  
+  fchi2_4d->SetParameter(0,normFactor);
+  fchi2_4d->SetParameter(1,2); // correction for chi = 2 * log lambda
+  fchi2_4d->SetLineColor(kBlue);
+
+  hTestStatistic.Draw();
+  if (ndof_==1) { fchi2->Draw("same"); }
+  if (ndof_==2) { fchi2_2d->Draw("same"); }
+  if (ndof_==3) { fchi2_3d->Draw("same"); }
+  if (ndof_==4) { fchi2_4d->Draw("same"); } 
+  
+  gPad->SetLogy(1);
+
+  can->cd(2);
+  hLogProb.Draw();
+  cout << "Median Log Prob of Max Like: " << histMedian(&hLogProb) << endl;
+
+  can->cd(3);
+  gPad->SetLogy(1);
+  hLogPInt = hLogProb;  // first make binning the same
+  AscendingCumulate(&hLogProb, &hLogPInt);
+  hLogPInt.Draw("e");
+  double entries = hLogProb.GetEntries();
+  TLine *line = new TLine(log10(1./entries),1.,0.,entries);
+  line->Draw();
+
+  can->cd(4);
+  hPar.Draw();
+  gPad->SetLogy(1);
+
+  can->cd(5);
+  if (ndof_>=2) {
+    hGammaNs.Draw("box");
+  }
+  
+  can->cd(6);
+  hMeanSig.Draw("colz");
+  
+}

@@ -1,0 +1,126 @@
+  *******************************************
+  *                                         *
+  *        W E L C O M E  to  R O O T       *
+  *                                         *
+  *   Version   5.28/00  14 December 2010   *
+  *                                         *
+  *  You are welcome to visit our Web site  *
+  *          http://root.cern.ch            *
+  *                                         *
+  *******************************************
+
+ROOT 5.28/00 (trunk@37585, Dec 14 2010, 15:20:27 on linuxx8664gcc)
+
+CINT/ROOT C/C++ Interpreter version 5.18.00, July 2, 2010
+Type ? for help. Commands must be C++ statements.
+Enclose multiple statements between { }.
+
+Processing Track_multi_40597986_discpot_allsky.C...
+Preload: /net/user/mrameez/psLab_Debian_64/labcore/preload.C
+
+LAB_COORDINATE_PROJECT not specified....
+Will use coordinate-service as default.
+(See 'labcore/start_lab.sh' or 'llh/loadlibs.C' for how to change)
+
+Building/Loading:  rootExt/public
+Error in <TGClient::TGClient>: can't open display "", switching to batch mode...
+ In case you run from a remote ssh session, reconnect with ssh -Y
+Building/Loading:  fluxus/public
+Loading libcoordinate-service
+Building/Loading:  llh/public
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/SNRCat_PWN/./RescaledSigma_IC86_SplineMPE_C.so
+
+Initializing ran1 with random seed = -55
+
+-----  LOADING IC-40  -----
+Will load scrambled times for Base Data.
+Livetime (Days): 375.539
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 36900 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% (36900 entries in tree passed cuts)
+Background set has 36900 events.
+Filling Energy PDFs:
+----- IC-40 Loaded -----
+
+-----  LOADING IC-59 BDT  -----
+Loaded tree
+Will load scrambled times for Base Data.
+Livetime (Days): 348.138
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 107569 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (107569 entries in tree passed cuts)
+Background set has 107569 events.
+Filling Energy PDFs:
+Real time 0:00:37, CP time 37.840
+----- IC-59 BDT Loaded -----
+
+-----  LOADING IC-79 BDT  -----
+Loaded tree
+Will load scrambled times for Base Data.
+Livetime (Days): 316.153
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 109866 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (109866 entries in tree passed cuts)
+Background set has 109866 events.
+Filling Energy PDFs:
+Real time 0:00:39, CP time 39.540
+Warning in <TStreamerInfo::Compile>: Counter fNClusterRange should not be skipped from class TTree
+----- IC-79 BDT Loaded -----
+
+-----  LOADING IC-86 BDT -----
+Loaded tree
+Will load scrambled times for Base Data.
+Livetime (Days): 332.61
+Configuring Source Event Sample...
+Rescaling using SplineMPE...
+Loading Background Events: 
+Selecting events from 138323 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (138323 entries in tree passed cuts)
+Background set has 138323 events.
+Filling Energy PDFs:
+0.9 25.8419
+0.85 31.7883
+0.8 36.8699
+0.75 41.4096
+0.7 45.573
+0.65 49.4584
+0.6 53.1301
+0.55 56.633
+0.5 60
+0.45 63.2563
+0.4 66.4218
+0.35 69.5127
+0.3 72.5424
+0.25 75.5225
+0.2 78.463
+0.15 81.3731
+0.1 84.2608
+-2.08167e-16 90
+-0.2 101.537
+-0.4 113.578
+-0.6 126.87
+-0.8 143.13
+backfill
+set table gamma
+Real time 0:01:16, CP time 75.940
+----- IC-86 BDT Loaded -----
+Setting up Stacking Analysis Sources (Starburst Galaxies)...
+Weight source simulation by Integrated Gamma Flux: 1
+Weight search hypothesis by Integrated Gamma Flux: 1
+000    G054.1+00.3 292.63  18.87  0.07
+1 001    G093.3+06.9 313.10  55.35  0.03
+2 002    G292.2-00.5 169.83 -61.47  0.06
+3 003    G292.0+01.8 171.15 -59.27  0.06
+4 004    G320.4-01.2 228.62 -59.13  0.12
+5 005    G263.9-03.3 128.50 -45.83  0.31
+6 006    G000.9+00.1 266.84 -28.15  0.02
+7 007    G011.2-00.3 272.86 -19.42  0.01
+8 008    G012.8-00.0 273.40 -17.82  1.06
+9 Assertion (nStarburstList==nStarburstListExpected) error:  Track_multi_40597986_discpot_allsky.C:132:
+

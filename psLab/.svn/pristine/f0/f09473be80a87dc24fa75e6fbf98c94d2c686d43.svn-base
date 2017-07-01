@@ -1,0 +1,6 @@
+Error in <TSystem::ExpandFileName>: input: $HOME/.root.mimes, output: $HOME/.root.mimes
+Logging configured from file /net/user/aguilar/icetray/meta-projects/std-processing/11-01-00/build_RHEL_6.0_amd64/log4cplus.conf
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/./mpfSigmaDegRescaledIC79Sirin_C.so
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/./mpfSigmaDegRescaledIC59_C.so
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/./mpfSigmaDegRescaled2_C.so
+Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1

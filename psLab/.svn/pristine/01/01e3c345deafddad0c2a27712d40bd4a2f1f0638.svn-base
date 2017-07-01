@@ -1,0 +1,96 @@
+{
+
+  // Recreate hEmissionModel:
+  int nBins = 100;
+  double a = 0.0;
+  double b = 26.0;
+  double r = 25.0;TH2F *hEmissionModel = 
+   new TH2F("hEmissionModel", "hEmissionModel", nBins, -180., 180., nBins,-90.,90.);
+  for (int i=0; i<nBins; i++){
+    for (int j=0; j<nBins; j++) {
+      double x = hEmissionModel->GetXaxis()->GetBinCenter(i);
+      double y = hEmissionModel->GetYaxis()->GetBinCenter(j);
+      if ((x-a)*(x-a)+(y-b)*(y-b) < r*r) hEmissionModel->SetBinContent(i,j, 1.);
+      if ((x-a)*(x-a)+(y+b)*(y+b) < r*r) hEmissionModel->SetBinContent(i,j, 1.);
+    }
+  }
+
+
+  int nXbins=hEmissionModel->GetNbinsX();
+  int nYbins=hEmissionModel->GetNbinsY();
+  double xMin=hEmissionModel->GetXaxis()->GetXmin();
+  double xMax=hEmissionModel->GetXaxis()->GetXmax();
+  double yMin=hEmissionModel->GetYaxis()->GetXmin();
+  double yMax=hEmissionModel->GetYaxis()->GetXmax();
+
+  vector<I3Event> candidateEvents;
+
+  double nEvents = 0;
+  double dummyTime = 1;
+  double testXdeg=0, testYdeg=0;
+  double testRaDeg=0, testDecDeg=0, testDecRad=0;
+
+  double fluxSum=0;
+  double nEventsSum=0;
+  double sqrdeg2sr=4.*TMath::Pi()/41253.; // square deg to steradian conversion
+
+  // arXiv:1008.2658v4
+  //FormulaFlux formflux("1.177e-6*pow(x,-2.)"); // spatial integral
+  FormulaFlux formflux("1.e-6*pow(x,-2.)"); // 10^-6 GeV cm-2 s-1 sr-1
+  // JD: A few more notes on this flux.  From the paper:
+  // flux = 10^-9 TeV cm-2 s-1 sr-1
+  // convert to GeV -> flux = 10^-6 GeV cm-2 s-1 sr-1
+  // bubbles encompass circle of radius 25deg on sky    
+  // solid angle of both bubbles = 2*Pi*(1-cos(25deg)) * 2 bubbles = 1.177 sr 
+  // -> flux = 1.177e-6 (E/GeV)^-2 GeV-1 cm-2 s-1
+  FluxBase *myFluxPtr = &formflux;
+
+
+  EquatorialDeg testLocation(0,0);
+  I3PointGenerator i3point(candidateEvents, *myFluxPtr, testLocation, ark40.livetime);
+  for (int xIndex=1; xIndex <= nXbins; xIndex++) {
+    for (int yIndex=1; yIndex <= nYbins; yIndex++) {
+
+      testXdeg = hEmissionModel->GetXaxis()->GetBinCenter(xIndex);
+      testYdeg = hEmissionModel->GetYaxis()->GetBinCenter(yIndex);
+      if (th2gen40.convGalToEq_) {
+        // Convert if TH2F is in galactic coords
+        GalacticToEq(testXdeg, testYdeg, dummyTime, testRaDeg, testDecDeg);
+      } else {
+        // No conversion, i.e. TH2F is already in Equatorial Coords
+        testRaDeg = testXdeg;
+        testDecDeg = testYdeg;
+      }
+      testLocation.SetCoords(testRaDeg,testDecDeg);
+
+      if ( hEmissionModel->GetBinContent(xIndex,yIndex) ) { // to save time
+        ark40.evLoader->LoadSourceEvents(candidateEvents, testLocation);
+        i3point.SetCandidateEvents(candidateEvents, *myFluxPtr, testLocation);
+
+        testDecRad = testDecDeg * TMath::DegToRad();
+
+        nEvents = i3point.GetMeanSrcNev()*
+                hEmissionModel->GetBinContent(xIndex,yIndex)*
+                hEmissionModel->GetXaxis()->GetBinWidth(xIndex)*
+                hEmissionModel->GetYaxis()->GetBinWidth(yIndex)*
+                cos(testDecRad)* 
+                sqrdeg2sr;
+
+        fluxSum += 1.*hEmissionModel->GetBinContent(xIndex,yIndex);
+        nEventsSum += nEvents;
+      }
+
+      //hNEvents->SetBinContent(xIndex,yIndex,nEvents);
+      
+      cout << xIndex << "," << yIndex << "  " << flush;
+
+    }
+  }
+  cout << "\n Finished. \n";
+  cout << "nEventsSum = " << nEventsSum << "\n";
+  cout << "fluxSum = " << fluxSum << "\n";
+  cout << "nEvents to Flux scale factor = " << fluxSum/nEventsSum << "\n";
+
+
+}
+

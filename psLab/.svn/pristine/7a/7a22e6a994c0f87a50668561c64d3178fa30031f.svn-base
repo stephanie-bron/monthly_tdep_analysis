@@ -1,0 +1,54 @@
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <iomanip>
+//#include <Riostream.h>
+//using namespace std;
+
+//using namespace SLACoordinateTransform;
+
+void snAlertConvert(string fname) {
+
+  gSystem->Load("/net/user/mfbaker/std-processing/releases/10-01-00/RHEL_5.0_ia32/lib/libcoordinate-service.so");  
+  
+  char filename[] = fname.c_str();
+  
+//  sprintf(filename,"g%i_xrs_1m_%i%0.2i01_%i%0.2i%i.csv",sat,year,month,year,month,lastday);
+//  sprintf(filenameout,"g%i_xrs_1m_%i%0.2i.txt",sat,year,month);
+
+  string dataline;
+  ifstream infile; 
+  infile.open(filename);
+  cout << filename << " " << infile.good() << endl;
+  string newfname = "snalerts_converted_2011.txt";
+  ofstream fout;
+  fout.open(newfname.c_str(),ios::app);
+
+  int npts=0;
+  
+  int year, month, day, hour, min, nch;
+  double mjd, a_flux, b_flux;
+  double mjd=0.;
+  double sec;
+  double strength, binsize;
+
+
+  while( infile >> strength ){
+
+    infile >> nch >> binsize >> year >> month >> day >> hour >> min >> sec;
+    mjd = SLACoordinateTransform::CalendarDate2MJD(year,month,day,hour,min,sec);
+    
+    fout << setprecision(16) << mjd << setprecision(5) << " " << strength << " " << nch << " " << binsize << endl;
+      
+    npts++;
+  }
+
+
+cout << "NPoints: " << npts << endl;
+
+infile.close();
+fout.close();
+
+}
+
+

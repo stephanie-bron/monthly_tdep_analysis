@@ -1,0 +1,89 @@
+
+// This calculation is from Eq. 20 and Table 3 in:
+//
+// Bednarek, W., Burgio, G. F., & Montaruli, T. 2005, New Astron. Rev., 49, 1
+// [astro-ph/0404534]
+//
+// which expresses as a broken power law the flux model in:
+//
+// Distefano et al., 2002, ApJ, 575, 378
+//
+// F_nu_Distefano is the integrated flux above 1 TeV, assumes a cutoff at 
+// 100 TeV, and is expressed in ergs cm^-2 s^-1
+
+
+FormulaFlux FluxCalculator_Distefano_Plus_Bednarek(double F_nu_Distefano,
+						  double cutoffEnergy_GeV=1e5)
+{
+  double K = 1. / 1.6;  // part of a conversion from ergs to GeV  
+  // in Bednarek, there is an extra factor of 10^4, converting cm^-2 to m^-2
+
+  double breakEnergy_GeV = 5e3;  // i.e. at 5 TeV
+
+  double normFactor = 4 + 5.*log(20.);
+  // 20. is the ratio of the cutoff energy in Distefano to the break energy
+  // i.e. (100 TeV / 5 TeV).
+
+  // For now, we keep this normalization constant, even if we allow
+  // the flux to extend above this default cutoffEnergy_GeV = 1e5.
+
+  char fluxLow[1000];
+  sprintf(fluxLow,"(%lg * (1./x))*(x<%lg)",
+	  F_nu_Distefano * K/normFactor,
+	  breakEnergy_GeV);
+
+  char fluxHi[1000];
+  sprintf(fluxHi,"(%lg * (1./x)**2)*(x>=%lg && x<%lg)",
+	  F_nu_Distefano * breakEnergy_GeV * K/normFactor,
+	  breakEnergy_GeV,
+	  cutoffEnergy_GeV);
+
+  TString fluxString = TString(fluxLow) + " + " + TString(fluxHi);
+
+  FormulaFlux flux(fluxString);
+  return flux;
+}
+
+
+
+// call with sourceID = 0 for a list of all available sources
+
+
+I3PointGenerator I3PointGenerator_Distefano_Plus_Bednarek(
+		    EventLoader& evLoader, 
+		    double livetime,
+		    int sourceID)
+{
+  TString sArray[20];
+  int idMax=0;
+  //                  Name       r.a.(deg)   dec(deg)  F_nu_Distefano
+  sArray[++idMax] = "SS433         287.957     4.983    1.72e-9";
+  sArray[++idMax] = "Cygnus_X-3    308.08     41.0      4.02e-9";
+  sArray[++idMax] = "GRS_1915+105  288.75     10.9      2.10e-10";
+
+  if (sourceID<1 || sourceID>idMax) {
+    cout << "sourceID " << sourceID << " not valid.\nTry:\n";
+    for (int i=1; i<=idMax; ++i) {
+      cout << (char*) sArray[i] << endl;
+    }
+    I3PointGenerator noPoint;
+    return noPoint;
+  }
+
+  cout << (char*) sArray[sourceID] << endl;
+
+  char name[100];
+  double raDeg;
+  double decDeg;
+  double F_nu;
+  sscanf( (char*) sArray[sourceID], "%s %lg %lg %lg",
+	  name, &raDeg, &decDeg, &F_nu);
+
+  EquatorialDeg srcLocation(raDeg, decDeg);
+  FormulaFlux formFlux = FluxCalculator_Distefano_Plus_Bednarek(F_nu);
+
+  vector<I3Event> srcEvents;
+  evLoader.LoadSourceEvents(srcEvents, srcLocation);
+  I3PointGenerator i3point(srcEvents, formFlux, srcLocation, livetime);
+  return i3point;
+}

@@ -1,0 +1,76 @@
+
+{
+  // These variables need to be set for all load scripts to run correctly:
+
+  // Assume current directory is where all of the load scripts are:
+  TString LOADSCRIPTDIR = TString(gSystem->pwd())+"/";
+
+  // Specify where data files are:
+  TString DATADIR = "$LAB_DATA_DIR/ic40ps/";
+
+
+
+
+  gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+  if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+  TString macroPath = gROOT->GetMacroPath();
+  macroPath += gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh:");
+  gROOT->SetMacroPath(macroPath);
+
+
+  if (0) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+  else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+  int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+
+  bool OPT_USEREALDATA = false;
+  double NON_UPSAMPLED_LIVETIME = 0.;  // will be set in macro_load
+  int UPSAMPLE_FACTOR = 20;
+
+  TString loadFile = LOADSCRIPTDIR+"macro_loadClean_Full_final_upsample.C";
+  cout << "loadFile: " << loadFile << endl;
+  gROOT->Macro(loadFile);
+
+
+
+  psData->SetBaseEvents(baseEvents);
+
+  cout << "psData:\n";
+  if (OPT_USEREALDATA) {
+    psData->UseRealData();   
+    cout << "  * * * * *   U S I N G   R E A L   D A T A  ! !  * * * * *\n";
+  } else {
+    psData->GenerateDataSet_with_nSrcEvents(0);
+    cout << "  Using scrambled data\n";
+  }
+
+
+  // Llh Function
+
+  LlhEnergy llhEnergyFn;
+  AnalysisLlh* llhPtr = &llhEnergyFn; // Base-class pointer to any Llh fn.
+  llhEnergyFn.SetEMaxRatioWarnOnlyOnce(true);
+
+  gROOT->ProcessLine(".L macro_SetLlhEnergy.C");
+  // parameters:    useEnergy,  optimizeAngleDeg,  optimizeTolerance
+  macro_SetLlhEnergy(true,  10.,  0.01);
+
+  // Disco (Discovery Potential and Sensitivity Estimator)
+
+  DiscoveryPotential disco;
+  gROOT->ProcessLine(".L macro_SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  macro_SetDisco(5, false, 2.87e-7, 0.5);
+
+
+   // Source 
+
+  EquatorialDeg mySrcLocation(153.375, 11.375);
+
+  gROOT->ProcessLine(".L macro_SetPointSource.C");
+  // parameters: srcCoord,  spectralIndex,  fluxConstant
+  macro_SetPointSource(mySrcLocation, -2, 1.);
+ 
+  return 1; // signal correct finish of script
+}

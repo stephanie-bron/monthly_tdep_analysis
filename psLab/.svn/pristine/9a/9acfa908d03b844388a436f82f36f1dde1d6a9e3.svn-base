@@ -1,0 +1,366 @@
+
+
+// *** ROOT-IMPLEMENTATED FEATURES ***
+
+
+void PrintEqDeg(EquatorialDeg eq) {
+  printf("%8.4f , %7.4f\n",fmod(eq.GetRa()+360.,360.),eq.GetDec());
+}
+
+void PrintEqDegHr(EquatorialDeg eq) {
+  int hh = eq.GetRa()/15.;
+  double hh_remainder = eq.GetRa()/15. - hh;
+  int mm = hh_remainder*60.;
+  double mm_remainder = hh_remainder*60. - mm;
+  double ss = mm_remainder*60.;
+
+  printf("% 2d % 2d % 7.4f r.a., ",hh,mm,ss);
+
+  double absdec = fabs(eq.GetDec());
+  int idec = absdec;
+  double dec_remainder = absdec - idec;
+  mm = dec_remainder*60.;
+  double mm_remainder = dec_remainder*60-mm;
+  ss = mm_remainder*60.;
+
+  if (eq.GetDec()<0.) { idec = -idec; }
+
+  printf("% 2d % 2d % 7.4f dec\n",idec,mm,ss);
+}
+
+
+/*
+void PrintTime(Astronomical::MJTime time) {
+  double t = time.GetTime_ModifiedJulianDay();
+  int year  = SLACoordinateTransform::MJD2CalendarDateYR(    t, 0, 0);
+  int month = SLACoordinateTransform::MJD2CalendarDateMONTH( t, 0, 0);
+  int day   = SLACoordinateTransform::MJD2CalendarDateDAY(   t, 0, 0);
+
+  double remainder = fmod(t, 1.);
+  int hours   = remainder*24.;
+
+  remainder = remainder*24. - hours;
+  int minutes = remainder*60.;
+
+  remainder = remainder*60. - minutes;
+  int seconds = remainder*60.; 
+
+  printf("%4d / % 2d / % 2d   %02d:%02d:%02d\n",
+	 year, month, day, hours, minutes, seconds);
+}
+*/
+
+
+vector<I3Event> EventsNearSource(vector<I3Event> &evVect, 
+				 EquatorialDeg searchLocation,
+				 double distance) {
+  vector<I3Event> outVect;
+  for (int i=0; i<evVect.size(); ++i) {
+    if (evVect[i].GetCoord().DistanceTo(searchLocation) < distance) {
+      outVect.push_back(evVect[i]);
+    }
+  }
+  return outVect;
+}
+
+
+TGraph* Plot_I3Events(vector<I3Event>& v,
+		      double DecMin=0., double DecMax=90.,
+		      double RaMin=0., double RaMax=360.) {
+
+  const int n = v.size();
+
+  double *x = new double[n];
+  double *y = new double[n];
+
+  for (int i=0; i<n; i++) {
+    I3Event ev = v[i];
+    x[i] = ev.GetCoord().GetRa();
+    y[i] = ev.GetCoord().GetDec();
+  }
+
+  gStyle->SetOptStat("");
+  TH2D *ht = new TH2D("ht","ht",10,RaMin,RaMax,10,DecMin,DecMax);
+  ht->Draw();
+  ht->GetXaxis()->SetTitle("right ascension (#circ)");  
+  ht->GetYaxis()->SetTitle("declination (#circ)");
+  ht->SetTitle("");
+
+  TGraph *g;
+  if (n) {
+    g = new TGraph(n,x,y);
+    //    g->GetXaxis()->SetTitle("right ascension (#circ)");  
+    //    g->GetYaxis()->SetTitle("declination (#circ)");
+    //    g->GetXaxis()->SetRangeUser(RaMin,RaMax);
+    //    g->GetYaxis()->SetRangeUser(DecMin,DecMax);
+    g->SetTitle();
+    g->Draw("P");
+    g->SetMarkerStyle(6);
+  }
+  return g;
+}
+
+
+TH1D* Plot_ProbDensityAtDecDeg(const DeclinationDensityMap& decMap)
+{
+  TH1D *h = (TH1D*)gDirectory->Get("hProbDensity");
+  if (h) h->Delete();
+  h = new TH1D("hProbDensity","Prob Density (per sq. deg)"
+			  ,180,-90.,90.);
+  for (double dec = -89.5; dec<90.; dec += 1.) {
+    h->Fill(dec,decMap.GetProbDensityAtDecDeg(dec));
+  }
+  return h;
+}
+
+TH1D* Plot_ProbSumAtDecDeg(const DeclinationDensityMap& decMap, 
+			   double decWidthDeg = 1.)
+{
+  TH1D *h = (TH1D*)gDirectory->Get("hProbSum");
+  if (h) h->Delete();
+  h = new TH1D("hProbSum","Prob Sum (per deg Dec)",
+		      180/decWidthDeg,-90.,90.);
+  for (double dec = -90.+decWidthDeg/2.; dec<90.; dec += decWidthDeg) {
+    hProbSum->Fill(dec, decWidthDeg * cos(dec*TMath::DegToRad())
+		   * 360.
+		   * decMap.GetProbDensityAtDecDeg(dec));
+  }
+  return hProbSum;
+}
+
+
+
+
+TH2D* Hist_I3Event_Density(vector<I3Event>& v,
+			   double sigma = 0., // 0 => use default sigma
+			   double decMinDeg = 0.,
+			   double decMaxDeg = 90.,
+			   int nBinsPerRaDeg = 1,
+			   int nBinsPerDecDeg = 1)
+{
+  double decRange = decMaxDeg-decMinDeg;
+
+  TH2D *h2 = new TH2D("EventDensity","Event Density",
+		     nBinsPerRaDeg*360,-180,180,
+		     nBinsPerDecDeg*decRange,decMinDeg,decMaxDeg);
+  double xStep = 1./nBinsPerRaDeg;
+  double yStep = 1./nBinsPerDecDeg;
+  for (double y = decMinDeg + yStep/2.; y < decMaxDeg; y += yStep) {
+    for (double x = -180 + xStep/2.; x < 180.; x += xStep) {
+      EquatorialDeg co(x,y);
+      double sum = 0.;
+      for (int i=0; i<v.size(); ++i) {
+	I3Event e = v[i];
+	if (sigma>0) {
+	  e.SetAlternateSigma(sigma);
+	}
+	sum += e.ProbFrom(co);
+      }
+      h2->Fill(x,y,sum);
+    }
+  }
+ return h2;
+}
+
+
+TH1D* Make_BkgDensityHist(TH2D *h2) {
+  TH1D *bkg = h2->ProjectionY();
+  for (int i=1; i<=bkg->GetNbinsX(); ++i) {
+    double dec = bkg->GetBinCenter(i);
+    double weight = cos(dec*TMath::DegToRad());
+    double content = bkg->GetBinContent(i);
+    bkg->SetBinContent(i,content*weight);
+  }
+  return bkg;
+}
+
+
+Plot_I3Event_Hist(TH2D* h)
+{
+  gStyle->SetOptStat("");
+  gStyle->SetPalette(1,0);
+
+  Float_t margin = .05;
+  gStyle->SetPadRightMargin(margin);
+  gStyle->SetPadLeftMargin(margin);
+  gStyle->SetPadTopMargin(margin);
+  gStyle->SetPadBottomMargin(margin);
+  TCanvas* canAitoff = new TCanvas("Aitoff","Aitoff",200,20,1000,250);
+  h->SetTitle("");
+  h->Draw("Aitoff","AH");
+
+  Float_t margin = .1;
+  gStyle->SetPadRightMargin(margin);
+  gStyle->SetPadLeftMargin(margin);
+  gStyle->SetPadTopMargin(margin);
+  gStyle->SetPadBottomMargin(margin);
+  TCanvas* canSurf = new TCanvas("Surface","Surface",20,40,900,900);
+  canSurf->Divide(1,3,0.001,0.001);
+  canSurf->cd(1);
+  h->Draw("surf1");
+  gPad->SetTheta(20);
+  gPad->SetPhi(10);
+
+  canSurf->cd(2);
+  h->Draw("surf1");
+  gPad->SetTheta(0);
+  gPad->SetPhi(0);
+
+  canSurf->cd(3);
+  h->Draw("surf1");
+  gPad->SetTheta(0);
+  gPad->SetPhi(90);
+}
+
+
+void I3Event_Summary(vector<I3Event>& v)
+{
+  for (int i=0; i<v.size(); ++i) {
+    printf("%4d:  ra=% 7.2f  dec=% 6.2f   sigma=%5.2f  Pmax=%4.3f\n",
+	   i,
+	   v[i].GetCoord().GetRa(),
+	   v[i].GetCoord().GetDec(),
+	   v[i].GetParams().parafitSigmaDeg,
+	   v[i].ProbFrom(v[i].GetCoord()));
+  }
+}
+
+
+
+void I3QuickWrite_ice3(vector<I3Event>& v, char *filename)
+{
+  FILE *fp;
+  fp = fopen(filename,"write");
+
+  printf("raDeg  decDeg  sigmaDeg\n");
+
+  for (int i=0; i<v.size(); ++i) {
+    fprintf(fp,"%7.3f  %6.3f   %5.3f\n",
+	   fmod(360.+v[i].GetCoord().GetRa(), 360.),
+	   v[i].GetCoord().GetDec(),
+	   v[i].GetParams().parafitSigmaDeg);
+  }
+
+  fclose(fp);
+}
+
+
+
+
+
+
+TH1D* Plot_SourceWeights(const vector<I3Event>& v)
+{
+  // start histogram with range given by first entry... then rebin...
+  TH1D *h = new TH1D("SrcWeights","SrcWeights",100,0,
+		     v[0].GetMCParams().srcWeight);
+  h->SetBit(TH1::kCanRebin);
+
+  for (int i=0; i<v.size(); i++) {
+    double w = v[i].GetMCParams().srcWeight;
+    h->Fill(w);
+  }
+  return h;
+}
+
+
+TH1D* Plot_I3Events_Dec(vector<I3Event>& v, int NBins) {
+  TH1D *h = new TH1D("Dec","Dec",NBins,-90,90);
+  for (int i=0; i<v.size(); i++) {
+    double x = v[i].GetCoord().GetDec();
+    h->Fill(x);
+  }
+  return h;
+}
+
+TH1D* Plot_I3Events_SinDec(vector<I3Event>& v, int NBins) {
+  TH1D *h = new TH1D("SinDec","Sin Dec",NBins,-1,1);
+  for (int i=0; i<v.size(); i++) {
+    double x = v[i].GetCoord().GetDec();
+    h->Fill(sin(x*TMath::DegToRad()));
+  }
+  return h;
+}
+
+
+
+
+// fluxConstant is for power law
+void PresentDiscoveryPotentialResults(DiscoveryPotential *disco, 
+				      double fluxConstant = 0.) {
+  gStyle->SetOptStat("");
+
+  TCanvas *can = new TCanvas("Discovery","Discovery",20,20,1000,500);
+  can->Divide(2,1);
+  can->cd(1);
+  disco->h_nSrc_logP->Draw("box");
+  int min_nSrcBins = disco->nsMaxSampled_;
+
+  if (min_nSrcBins <= 20) {
+    disco->h_nSrc_logP->GetYaxis()->SetRange(0,min_nSrcBins+1);
+    disco->h_nSrc_logP->GetYaxis()->CenterLabels(1);
+    disco->h_nSrc_logP->GetYaxis()->SetNdivisions(min_nSrcBins+1);
+  }
+  
+  can->Update();
+  vline(-log10(disco->detectionSignificance_),2)->Draw();
+
+  can->cd(2);
+  disco->hDiscoveryFraction->GetYaxis()->SetRangeUser(0,1);
+  disco->hDiscoveryFraction->Draw();
+  if (min_nSrcBins <= 20) {
+    hDiscoveryFraction->GetXaxis()->SetRange(0,min_nSrcBins+2);
+    //    hDiscoveryFraction->GetXaxis()->CenterLabels(1);
+    hDiscoveryFraction->GetXaxis()->SetNdivisions(min_nSrcBins+2);
+  }
+  can->Update();
+  
+
+  TGraph *g = disco->detectionRate_vs_Mean;
+  g->SetMarkerStyle(6);
+  g->Draw("P");
+  cout << "Poisson Mean nSrcEv for " << disco->detectionPower_*100;
+  cout << "+/-" << disco->powerUncertainty_*100;
+  cout << " % detection probability: ";
+  cout  << disco->MeanSrcEv_ForDetection_ << endl;
+
+  can->Update();
+  vline(disco->MeanSrcEv_ForDetection_,4,2)->Draw();
+  hline(disco->detectionPower_,4,2)->Draw();
+
+  cout << "Threshold significance for detection: ";
+  cout  << disco->detectionSignificance_ << endl;
+
+  double meanSrcEv_ForDetection = disco->MeanSrcEv_ForDetection_;
+
+  I3SignalGenerator *is = 
+    (dynamic_cast<I3Analysis*> (disco->GetAnalysisSet()))->GetSource();
+  double fluxScale = 
+    is->GetFluxScaleForNev(meanSrcEv_ForDetection);
+
+  if (fluxConstant > 0.) {
+    double meanFlux_ForDetection = fluxScale*fluxConstant;
+    cout << "Mean Flux for " << disco->detectionPower_*100;
+    cout << "% detection probability: ";
+    cout << "  Flux: " << meanFlux_ForDetection << " GeV^-1 cm^-2 s^-1\n";
+  } else {
+    cout << "  Flux scale relative to model is: " << fluxScale << endl;
+    cout << "  (need to specify a fluxConstant if flux is power law)\n";
+  }
+
+
+}
+
+
+
+TPolyMarker3D* GraphToPolyMarker3D(TGraph *g, Marker_t marker=1) {
+  int n = g->GetN();
+  TPolyMarker3D *tp = new TPolyMarker3D(n,marker);
+  const Double_t *x = dynamic_cast<const Double_t*> g->GetX();
+  const Double_t *y = dynamic_cast<const Double_t*> g->GetY();
+  for (int i=0; i<n; ++i) {
+    tp->SetPoint(i,x[i],y[i],0);
+  }
+  return tp;
+}
+  

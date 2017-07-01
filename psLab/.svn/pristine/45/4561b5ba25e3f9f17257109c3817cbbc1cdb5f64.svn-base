@@ -1,0 +1,18 @@
+{
+gROOT->SetStyle("Plain");
+int nBins = 100;
+double a = 0.0;
+double b = 26.0;
+double r = 25.0;
+TH2F *hEmissionModel = new TH2F("hEmissionModel", "hEmissionModel", nBins, -180., 180., nBins,-90.,90.);
+for (int i=0; i<nBins; i++){
+  for (int j=0; j<nBins; j++) {
+	double x = hEmissionModel->GetXaxis()->GetBinCenter(i);
+	double y = hEmissionModel->GetYaxis()->GetBinCenter(j);
+	if ((x-a)*(x-a)+(y-b)*(y-b) < r*r) hEmissionModel->SetBinContent(i,j, 1.);
+	if ((x-a)*(x-a)+(y+b)*(y+b) < r*r) hEmissionModel->SetBinContent(i,j, 1.);
+  }
+}
+hEmissionModel->Draw("colz");
+// this gives 0.375pi str of solid angle
+}

@@ -1,0 +1,91 @@
+// Okay, I want a simple way of plotting the errors on the fit parameters for a 
+// particular flare. Here I have hard-coded in the parameters for the hottest
+// flare from the IC59 period, and I vary them slightly and plot how the test
+// statistic changes.
+
+//should assume I've already loaded the *unblinded* data + source (ark59).
+
+{
+
+  bool optEnergy = true;
+
+
+
+string nstring;
+int n;
+
+double dist;
+double mjd;
+double tmin = ark59.tmin;
+double tmax = ark59.tmax;
+int tbins = max(100.,(tmax-tmin)*1000.);
+
+//vector<I3Event> eventVector59 = ark59.baseEvents;   
+EquatorialDeg testSearch1(21.35,-0.25);
+
+double nsrctest[11], gammatest[11], meantest[11], sigmatest[11];
+double nsrcts[11], gammats[11], meants[11], sigmats[11];
+
+double nssrc = 14.5;
+double gammasrc = 3.89;//1.64;//2.15;//llhEnergyFn->GetPar(1);
+double meansrc = 55259.;
+double sigmasrc = 5.55;
+
+for (int i=0;i<11;i++) {
+  nsrctest[i] =  nssrc    + (i-5)*0.25;
+  gammatest[i] = gammasrc + (i-5)*0.1;
+  meantest[i] =  meansrc  + (i-5)*2.5;
+  sigmatest[i] = sigmasrc + (i-5)*0.75;
+}
+
+double spectralIndex=3.8;
+
+    TimePdf * tPdf = new GaussianTimePdf(ark59.tmin, ark59.tmax, 54977.,0.3,1.);
+    ark59.SetPointSource(testSearch, PowerLawFlux(1.,spectralIndex), tPdf); 
+    ark59.psData.GetSource().SetTimeAzBins( ark59.lcBkgProb.nbAz );
+    newllh59.SetTimeBounds(tPdf);    
+    newllh59.SetAnalysis(ark59.psData,testSearch);
+
+cout << "fixing to base" << endl;
+ark59.decBkgProb.FixToBase();
+newllh59.MaximizeLlh();
+
+newllh59.SetMonitorLevel(2);
+
+for (int i=0;i<11;i++) {
+  nsrcts[i] = newllh59.EvaluateLlh(nsrctest[i],gammasrc,meansrc,sigmasrc);
+  gammats[i] = newllh59.EvaluateLlh(nssrc,gammatest[i],meansrc,sigmasrc);
+  meants[i] = newllh59.EvaluateLlh(nssrc,gammasrc,meantest[i],sigmasrc);
+  sigmats[i] = newllh59.EvaluateLlh(nssrc,gammasrc,meansrc,sigmatest[i]);
+}
+
+TGraph * gns    = new TGraph(11,nsrctest, nsrcts);
+TGraph * ggamma = new TGraph(11,gammatest,gammats);
+TGraph * gmean  = new TGraph(11,meantest, meants);
+TGraph * gsigma = new TGraph(11,sigmatest,sigmats);
+
+
+TCanvas* c1 = new TCanvas("c1","c1",1000,500);
+c1->Divide(2,2);
+
+c1->cd(1);
+gns->GetXaxis()->SetTitle("Tested ns");
+gns->GetYaxis()->SetTitle("TS value");
+gns->Draw("AL");
+
+c1->cd(2);
+ggamma->GetXaxis()->SetTitle("Tested #Gamma");
+ggamma->GetYaxis()->SetTitle("TS value");
+ggamma->Draw("AL");
+
+c1->cd(3);
+gmean->GetXaxis()->SetTitle("Tested mean");
+gmean->GetYaxis()->SetTitle("TS value");
+gmean->Draw("AL");
+
+c1->cd(4);
+gsigma->GetXaxis()->SetTitle("Tested #sigma_T");
+gsigma->GetYaxis()->SetTitle("TS value");
+gsigma->Draw("AL");
+
+}

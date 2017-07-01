@@ -1,0 +1,19 @@
+#!/bin/bash
+date
+hostname
+cd /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole
+eval export SROOT=/net/local/software/RHEL_6.0_amd64 ;
+export I3_PORTS=/net/local/software/RHEL_6.0_amd64/i3ports/v3 ;
+export I3_SITE_CMAKE_DIR=/net/local/software/RHEL_6.0_amd64/i3ports/site_cmake ;
+export PATH=/net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.24.00b/bin:/net/local/software/RHEL_6.0_amd64/i3ports/v3/qt-4.6.0/bin:/net/local/software/RHEL_6.0_amd64/bin:/net/local/software/RHEL_6.0_amd64/i3ports/v3/bin:/net/local/software/RHEL_6.0_amd64/i3ports/v3/qt-4.4.3/bin:/net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.24.00b/bin:/home/mrameez/bin:/net/local/software/RHEL_6.0_amd64/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/dell/srvadmin/bin:/net/local/software/RHEL_6.0_amd64/i3ports/v3/bin:.:/home/mrameez/bin ;
+export MANPATH=/net/local/software/RHEL_6.0_amd64/man:/net/local/software/RHEL_6.0_amd64/share/man: ;
+export PKG_CONFIG_PATH=/net/local/software/RHEL_6.0_amd64/lib/pkgconfig: ;
+export LD_LIBRARY_PATH=/net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.24.00b/lib:/net/local/software/RHEL_6.0_amd64/i3ports/v3/qt-4.6.0/lib:/net/local/software/RHEL_6.0_amd64/i3ports/v3/lib/Minuit2-5.24.00:/net/local/software/RHEL_6.0_amd64/i3ports/v3/lib/boost-1.38.0:/net/local/software/RHEL_6.0_amd64/i3ports/v3/lib/log4cplus-1.0.2:/net/local/software/RHEL_6.0_amd64/lib:/net/local/software/RHEL_6.0_amd64/i3ports/v3/lib:/net/local/software/RHEL_6.0_amd64/i3ports/v3/lib/Minuit2-5.24.00:/net/local/software/RHEL_6.0_amd64/i3ports/v3/qt-4.4.3/lib:/net/local/software/RHEL_6.0_amd64/i3ports/v3/lib/boost-1.38.0:/net/local/software/RHEL_6.0_amd64/lib:/net/local/software/RHEL_6.0_amd64/i3ports/v3/lib:/lib:/net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.24.00b/lib::/opt/AMDAPP/lib/x86_64:/opt/AMDAPP/lib/x86:/jre/lib/amd64/server ;
+export PYTHONPATH=/net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.24.00b/lib:/net/local/software/RHEL_6.0_amd64/lib/python2.6/site-packages:/net/local/software/RHEL_6.0_amd64/i3ports/v3/lib/python2.6/site-packages: ;
+export ROOTSYS=/net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.24.00b ;
+export OS_ARCH=RHEL_6.0_amd64 ;
+export GCC_VERSION=4.4.6 ;
+export JAVA_HOME=/usr/lib/jvm/java ;
+export GOTO_NUM_THREADS=1 ;
+/net/user/mrameez/trunk/start.sh root -l -b -q '/net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_upperlimit_Sirin.C'
+date

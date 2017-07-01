@@ -1,0 +1,64 @@
+
+// A function to convolve a 2D histogram with
+//  a 2D circular Gaussian of width sigma.
+
+TH2F* ConvolveTH2F(TH2F *hIn, double sigma, char* hName) {
+
+
+  double xMin=hIn->GetXaxis()->TAxis::GetXmin();
+  double xMax=hIn->GetXaxis()->TAxis::GetXmax();
+  double yMin=hIn->GetYaxis()->TAxis::GetXmin();
+  double yMax=hIn->GetYaxis()->TAxis::GetXmax();
+  int nBinsX = hIn->GetNbinsX();
+  int nBinsY = hIn->GetNbinsY();
+  double binSizeX = (xMax-xMin)/nBinsX;
+  double binSizeY = (yMax-yMin)/nBinsY;
+
+  double zMin = hIn->GetMinimum();
+  double zMax = hIn->GetMaximum();
+
+  //TH2F *hSmear = new TH2F("hSmear","hSmear",nBinsX,xMin,xMax,nBinsY,yMin,yMax);
+  TH2F *hSmear = (TH2F*)hIn->Clone("hSmear");
+
+  bool ENABLE_GRAPHICS = false;
+  //if (ENABLE_GRAPHICS)
+
+  // [0]=x-mean, [1]=y-mean, [2]=sigma 
+  //TF2 *fGaus2D = new TF2("fGaus2D","1./(2*3.14159265*[2]^2)*exp(-1*((x-[0])^2+(y-[1])^2)/(2*[2]^2))",xMin,xMax,yMin,yMax);
+  // Make it cyclic (i.e. add one cycle before and after)
+  TF2 *fGaus2D = new TF2("fGaus2D","1./(2*3.14159265*[2]^2)*exp(-1*((x-[0])^2+(y-[1])^2)/(2*[2]^2))+1./(2*3.14159265*[2]^2)*exp(-1*((x+360-[0])^2+(y-[1])^2)/(2*[2]^2))+1./(2*3.14159265*[2]^2)*exp(-1*((x-360-[0])^2+(y-[1])^2)/(2*[2]^2))",xMin,xMax,yMin,yMax);
+  fGaus2D->SetNpx(nBinsX);
+  fGaus2D->SetNpy(nBinsY);
+  fGaus2D->SetParameters(0,0,sigma);
+
+  TH2F *hMultTemp= new TH2F("hMultTemp","hMultTemp",nBinsX,xMin,xMax,nBinsY,yMin,yMax);
+  char sbuf[50];
+  for( int iPrime=1; iPrime<=nBinsX; iPrime++) {
+    for( int jPrime=1; jPrime<=nBinsY; jPrime++) {
+      hMultTemp = (TH2F*)hIn->Clone("hMultTemp");
+
+      double xPrime = hIn->GetXaxis()->GetBinCenter(iPrime);
+      double yPrime = hIn->GetYaxis()->GetBinCenter(jPrime);
+      //printf("iPrime:%d, jPrime:%d, xPrime:%0.2f, yPrime:%0.2f\n",iPrime,jPrime,xPrime,yPrime);
+
+      fGaus2D->SetParameters(xPrime,yPrime,sigma);
+      hMultTemp->Multiply(fGaus2D);
+      double sum = hMultTemp->Integral()*binSizeX*binSizeY;
+      hSmear->SetBinContent(iPrime,jPrime,sum);
+      if (ENABLE_GRAPHICS) hSmear->Draw("colz");
+      delete hMultTemp;
+      
+    }
+  }
+
+  // Normalize over range in deg before returning 
+  //  (integral does not include bin size, by default)
+  //double sumTot = hSmear->Integral()*(xMax-xMin)*(yMax-yMin); // Whoops!
+  double sumTot = hSmear->Integral()*binSizeX*binSizeY;
+  hSmear->Scale(1./sumTot);
+
+  hSmear->SetName(hName);
+
+  return hSmear;
+
+}

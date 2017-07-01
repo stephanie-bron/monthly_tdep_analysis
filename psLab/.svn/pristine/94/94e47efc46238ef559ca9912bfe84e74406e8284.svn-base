@@ -1,0 +1,185 @@
+
+class SimpleMultiAnalysis {
+ public:
+  TH1D hTestStatistic;
+  TH1D hLogProb;
+  TH1D hPar;
+  TH2D hGammaNs;
+  TH1D hLogPInt;
+  TCanvas* can;
+  int ndof_;
+  
+  SimpleMultiAnalysis() : can(NULL) , ndof_(2) { }
+  ~SimpleMultiAnalysis() { }
+
+  void Usage();
+  void SetNDoF(int ndof) { ndof_ = ndof; }
+  void Execute(Ark& ark, AnalysisFn& llh, int nTrials, int nSrcEvents);
+  bool Write(char *filename, char* fileoption);
+  
+};
+
+
+void SimpleMultiAnalysis::Usage() {
+  cout << "SimpleMultiAnalysis sa;\n";
+  cout << "sa.SetNDoF(int ndof);   // default degrees of freedom is 2\n";
+  cout << "sa.Execute(MultiArk& ark, MultiAnalysisFn& llh,\n"
+          "           int nTrials, int nSrcEvents = 0)\n";
+}
+
+
+void SimpleMultiAnalysis::Execute(MultiArk& ark, MultiAnalysisFn& llh, 
+				  int nTrials, int nSrcEvents)
+{
+
+// I think the easiest way to do this is to set everything before
+//  llh.SetAnalysisSet(ark.psData);
+//  llh.SetSearchCoord(ark.mySrcLocation);
+
+  // find out if energy is being used (changes # of degrees of freedom)
+  //if (ndof_<1 || ndof_>2) {
+  //  cout << "ndof==" << ndof_ << " not allowed right now.  Setting to 1.\n";
+  //  ndof_ = 1;
+  //}
+
+  hTestStatistic.Reset();
+  hLogProb.Reset();
+  hPar.Reset();
+  hGammaNs.Reset();
+  hLogPInt.Reset();
+
+  hTestStatistic.SetBins(100,0,1);
+  hTestStatistic.SetTitle(";2 ln #lambda;trials");
+  hTestStatistic.SetName("hTestStatistic");
+  
+  hLogProb.SetBins(100,-1,1);
+  hLogProb.SetTitle(";log_{10} Prob;trials");
+  hLogProb.SetName("hLogProb");
+  hPar.SetBins(100,-1,1);
+  hPar.SetTitle(";nSrcBest; trials");
+  hPar.SetName("hPar");
+  hGammaNs.SetBins(50,-1,1,30,1,4);
+  hGammaNs.SetTitle(";nSrcBest;gammaBest");
+  hGammaNs.SetName("hGammaNs");
+  
+  // Let Root figure out how to extend the bin range automatically
+  hTestStatistic.SetBit(TH1::kCanRebin);
+  hLogProb.SetBit(TH1::kCanRebin);
+  hPar.SetBit(TH1::kCanRebin);
+  hGammaNs.SetBit(TH1::kCanRebin);
+
+  //
+  // MAIN LOOP
+  //
+
+  cout << "starting trials" << endl;
+
+  CountMonitor countMon(10.,nTrials);
+  cout << "going for " << nTrials << endl;
+  
+  for (int i=0; i<nTrials; ++i) {
+  
+    // cout << "First trial... " << endl;
+    ark.psData->GenerateDataSet_with_nSrcEvents(nSrcEvents);
+    llh.MaximizeLlh();
+    if(i==0){ cout << "got one!" << endl; }
+    if(i%100 == 0) { cout << "trial " << i << ")" << endl; }
+    
+    hTestStatistic.Fill(llh.GetTestStatistic() * 2.);
+    hLogProb.Fill(log10(llh.GetEstProb()));
+    hPar.Fill(llh.GetPar(0));
+    if (ndof_==2) {
+      hGammaNs.Fill(llh.GetPar(0),llh.GetPar(1));
+    }
+    countMon.UpdateCount();
+  }
+  
+  //
+  // PLOT OUTPUT
+  //
+
+  // only make new canvas if it didn't already exist:
+  //
+    can = dynamic_cast<TCanvas*> 
+      ( gROOT->GetListOfCanvases()->FindObject("canSimpleAnalysis") );
+  if ( !can ) {
+    can =  new TCanvas("canSimpleAnalysis","canSimpleAnalysis",20,20,950,650);
+    can->Divide(3,2,0.005,0.005);
+    for (int i=0; i<6; ++i) {
+      can->cd(i);
+      gPad->SetRightMargin(0.01);
+      gPad->SetTopMargin(0.01);
+    }
+  }
+
+  can->cd(1);
+
+  TF1 *fchi2 = new TF1("fchi2","[0] * (1./sqrt(2*TMath::Pi())) "
+		       "* exp(-x/2)/sqrt(x)",0,50);
+  double xRange = hTestStatistic.GetXaxis()->GetXmax() -
+    hTestStatistic.GetXaxis()->GetXmin();
+  double binsPerUnit = hTestStatistic.GetNbinsX() / xRange;
+  double normFactor = (nTrials/2.) / binsPerUnit; // to match histogram plot
+  // divide by 2 because we only count excess tail contribution to chi2 
+  fchi2->SetParameter(0,normFactor);
+  fchi2->SetLineColor(kBlue);
+
+  hTestStatistic.Draw();
+  if (ndof_==1) { fchi2->Draw("same"); }
+
+  if (ndof_==2) {
+
+    cout << "NDoF: " << ndof_<< endl;
+    TF1 *fchi2_2d = new TF1("fchi2_2d","[0] * (1./2.) * exp(-x/2)",0,50);
+    fchi2_2d->SetParameter(0,normFactor);
+    fchi2_2d->SetLineColor(kRed);
+    fchi2_2d->Draw("same"); 
+  }
+  gPad->SetLogy(1);
+
+
+  can->cd(2);
+  hLogProb.Draw();
+  cout << "Median Log Prob of Max Like: " << histMedian(&hLogProb) << endl;
+
+  can->cd(3);
+  gPad->SetLogy(1);
+  hLogPInt = hLogProb;  // first make binning the same
+  AscendingCumulate(&hLogProb, &hLogPInt);
+  hLogPInt.Draw("e");
+  double entries = hLogProb.GetEntries();
+  TLine *line = new TLine(log10(1./entries),1.,0.,entries);
+  line->Draw();
+  
+  can->cd(4);
+  hPar.Draw();
+  gPad->SetLogy(1);
+  
+  can->cd(5);
+  if (ndof_==2) {
+    hGammaNs.Draw("colz");
+  }
+  
+}
+
+bool SimpleMultiAnalysis::Write(char*filename, char* fileoption) {
+  TFile *fileOutput = new TFile(filename, fileoption);
+  if (fileOutput->IsZombie()) {
+    cout << "Try using 'recreate' option?\n";
+    return false; // no file saved
+  }
+
+  cout << "Writing Histograms  to: " << filename << endl;
+  
+  hTestStatistic.Write("hTestStatistic");
+  hLogProb.Write("hLogProb");
+  hLogPInt.Write("hLogPInt");
+  hPar.Write("hPar");
+  hGammaNs.Write("hGammaNs");
+  if(ndof_ == 2)fchi2_2d->Write("fchi2_2d");
+  if(ndof_ == 1)fchi2->Write("fchi2_2d");
+  
+  fileOutput->Close();
+  return true;  // file saved (apparently!)
+}
+

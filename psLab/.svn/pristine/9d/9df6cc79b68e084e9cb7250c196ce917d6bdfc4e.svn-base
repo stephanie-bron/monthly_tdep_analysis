@@ -1,0 +1,58 @@
+{
+
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+    if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic59/Ark.C");
+
+    bool OPT_USEREALDATA = false;
+
+    I3Ark ark59;
+    gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/ic59/load_ark_ic59.C(ark59, OPT_USEREALDATA)");
+
+    ark59.evLoader.SetMonitor(false);
+    EventLoader *evPtr59 = &ark59.evLoader;
+    MultiArk mark;
+    mark.AddArk(ark59);
+    MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+
+    NewLlhTH2F newllhth2f59;
+    newllhth2f59.SetUseEnergy(true);
+    newllhth2f59.SetAnalysisSet(ark59.psData);
+    newllhth2f59.LoadTH2Fpdfs("mainPDF_ic59.root");
+
+    MultiAnalysisFn maf;
+    maf.AddAnalysisFn(&newllhth2f59);
+  
+    NewLlhTH2F_ParTranslator pt;
+    //pt.SetRange(1,4,31);
+    pt.SetTranslator(mas);
+    
+    maf.SetParTranslator(&pt);
+ 
+    vector<MinuitParDef> pdv;
+    pdv.push_back( MinuitParDef("nSrc",10.,10., 0.,1000.) );
+    pdv.push_back( MinuitParDef("gamma",2.7,0.0, 2.6, 2.8) );
+    maf.SetParDefs(pdv);
+
+cout<<"looping"<<endl;  
+  //running******************
+  ofstream out;
+  out.open("scrambled_ic59_gp.txt");
+  int nTrials = 10000;
+  for (int tries=0; tries<nTrials; tries++){
+      mas.GenerateDataSet_with_nSrcEvents(0);
+      maf.MaximizeLlh();
+      double maxLlh = maf.Get_logLambdaBest();
+      double bestFitNs = maf.GetPar(0);
+      double bestFitGamma = maf.GetPar(1);
+      out<<maxLlh<<" "<<bestFitNs<<" "<<bestFitGamma<<endl;
+  }
+  out.close();
+  return 1; // signal correct finish of script
+
+}

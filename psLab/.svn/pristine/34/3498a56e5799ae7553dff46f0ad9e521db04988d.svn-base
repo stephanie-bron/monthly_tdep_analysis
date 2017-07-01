@@ -1,0 +1,119 @@
+
+{
+
+#include "TString";
+
+// This loops over the scrambled skymaps from the
+// untriggered flare search, and finds the most
+// significant spot in each. Then we also find it
+// for the data.
+
+//char filen[200];
+
+ int maxbin;
+double maxval;
+
+TH1D * hMax = new TH1D("hMax","hMax",50,3,9);
+TH1D * hSigma = new TH1D("hSigma","hSigma",50,-7,3);
+TH1D * hNs = new TH1D("hNs","hNs",50,0,20);
+TH1D * hGamma = new TH1D("hGamma","hGamma",30,1,4);
+TH1D * hDec = new TH1D("hDec","hDec",60,-85,85);
+
+TH2D * hhSM = new TH2D("hhSM","hhSM",50,-7,3,50,3,9);
+TH2D * hhSN = new TH2D("hhSN","hhSN",50,0,20,50,3,9);
+
+TH2D * hhMZ = new TH2D("hhMZ","hhMZ",50,3,9,40,-85,85);
+TH2D * hhNZ = new TH2D("hhNZ","hhNZ",50,0,20,40,-85,85);
+TH2D * hhGZ = new TH2D("hhGZ","hhGZ",50,0,20,40,-85,85);
+
+int i,j;
+
+double xmax, ymax;
+double meanBest, sigmaBest, gammaBest, nsrcBest;
+double maxsigma, maxns, maxgamma;
+
+// TFile *f = new TFile();
+
+ int nbetter=0;
+
+ double ntrials = 0;
+ 
+ void *dd = gSystem->OpenDirectory("/net/user/aguilar/work/IceCube/psLab_RHEL_5.0_amd64/macro_llh/IC59/maps/integrated/");
+ char nfile[200];
+
+
+  char *nextFileName;
+ while(nextFileName = gSystem->GetDirEntry(dd)) {
+   
+   
+   sprintf(nfile, "/net/user/aguilar/work/IceCube/psLab_RHEL_5.0_amd64/macro_llh/IC59/maps/integrated/%s", nextFileName);
+   
+   TString fileStr = nextFileName;
+   
+   
+   if(strstr(nfile,"unblind"))
+     {
+       cout << "unblinded file" << endl;
+     }
+   
+   if(fileStr->EndsWith(".root") && !strstr(nfile, "unblind")){// || !
+     
+     cout << "Opening file " << nfile << endl;
+	
+     ntrials++;
+   
+     
+     TFile *f = new TFile(nfile);
+     
+     TH2D *hAllSkyFine = f.Get("hAllSkyFine");
+  
+     maxbin = hAllSkyFine->GetMaximumBin();
+     maxval = hAllSkyFine->GetBinContent(maxbin);
+     
+     hAllSkyFine->GetBinWithContent2(maxval,i,j,1,3600,1,1700,0.01);
+     
+     xmax = hAllSkyFine->GetXaxis()->GetBinCenter(i);
+     ymax = hAllSkyFine->GetYaxis()->GetBinCenter(j);
+     
+     cout << ntrials << " (" << xmax << ":" << ymax << ") " << maxval << endl;
+     
+     if (maxval >= 4.65008993698) {nbetter++; }
+     
+     hMax->Fill(maxval);
+     
+     delete f;
+
+   }
+ }
+
+
+
+ TCanvas * c1 = new TCanvas("c1","c1",50,50,600,600);
+ c1.Divide(2,2);
+ TCanvas * ca = new TCanvas("ca","ca",50,50,600,600);
+
+ c1.cd(1);
+ hMax->GetXaxis()->SetTitle("-log_{10} (pretrial p-value at hottest spot)");
+ hMax->Draw(); 
+ ca.cd();
+ hMax->Draw();
+ 
+ TCanvas * c2 = new TCanvas("c2","c2",50,50,400,600);
+ hMax->GetYaxis()->SetTitle("Fraction of Trials");
+ hMax->Scale(1./ntrials);
+ hMax->SetTitle("");
+ hMax->Draw();
+ l = new TLine(4.67768, 0., 4.67768, 0.10);
+ l->SetLineWidth(2);
+ l->SetLineColor(2);
+ l->Draw();
+ 
+
+ cout << "log10(estp): " << maxval << " at " <<  xmax << " RA and " << ymax << " dec." << endl;
+ cout << "The mean is at: " << meanBest << " MJD and the flare width is: " << pow(10.,sigmaBest) << " days." << endl;
+ cout << "The spectral index fit is: " << gammaBest << " and the fit nsrc is: " << nsrcBest << "." << endl;
+ 
+ cout << nbetter << " trials out of " << ntrials << " have a hottest spot with a higher p-value than data." << endl;
+ 
+
+}

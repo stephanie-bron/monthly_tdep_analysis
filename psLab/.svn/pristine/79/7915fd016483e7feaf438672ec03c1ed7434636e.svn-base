@@ -1,0 +1,51 @@
+
+TH2D* ShowLlhEnergy(I3Analysis &aSet, LlhEnergy &llhEnergyFn,
+		   EquatorialDeg searchCoord, int nsMin, int nsMax)
+{
+  llhEnergyFn.SetAnalysis(aSet, searchCoord);
+  llhEnergyFn.MaximizeLlh();
+
+  TH2D *h = new TH2D("hLlhEnergy","hLlhEnergy;nSrc;spectral index;sigma",10*(nsMax-nsMin),nsMin,nsMax,
+		   30,1,4);
+  
+  for (int ix=1; ix<=h->GetNbinsX(); ++ix) {
+    for (int iy=1; iy<=h->GetNbinsY(); ++iy) {
+      double llh = llhEnergyFn.EvaluateLlh(h->GetXaxis()->GetBinCenter(ix),
+					   h->GetYaxis()->GetBinCenter(iy));
+      h->SetBinContent(ix,iy,sqrt(2*fabs(llh))*(llh)/fabs(llh));
+    }
+  }
+
+  h->GetZaxis()->SetRangeUser(-4,6);
+  return h;
+}
+		    
+
+void ScanRegion(I3Analysis &aSet, LlhEnergy &llhEnergyFn,
+		   EquatorialDeg searchCoord, int nsMin, int nsMax)
+{
+  TCanvas *c = new TCanvas("bigCan","bigCan");
+  c->Divide(3,3,0.001,0.001);
+  c->cd(1);
+  for (int iy = 0; iy<3; ++iy) {
+    for (int ix = 1; ix<=3; ++ix) {
+      double ra = searchCoord.GetRa();
+      double dec = searchCoord.GetDec();
+      ra += ix-2;
+      dec += -iy+1;
+      cout << ra << " , " << dec << "     ";
+      TH2D *h = ShowLlhEnergy(aSet,llhEnergyFn, 
+			      EquatorialDeg(ra,dec), nsMin, nsMax);
+      cout << iy*3+ix << endl;
+      c->cd(iy*3+ix);
+      h->DrawClone("colz");
+      TMarker *tm = new TMarker();
+      tm->SetX(llhEnergyFn.Get_nSrcBest());
+      tm->SetY(llhEnergyFn.Get_gammaBest());
+      tm->SetMarkerStyle(2);
+      tm->SetMarkerColor(kRed);
+      tm->Draw();
+    }
+    cout << endl;
+  }
+}

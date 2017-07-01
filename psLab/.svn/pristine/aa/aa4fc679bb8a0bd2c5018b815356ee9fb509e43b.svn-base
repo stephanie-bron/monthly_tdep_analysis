@@ -1,0 +1,7 @@
+void AllSkyBasic_save(char *filename) {
+  TFile *f = new TFile(filename,"new");
+  hAllSkyCoarse->Write();
+  hAllSkyFine->Write();
+  f->Close();
+}
+

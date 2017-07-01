@@ -1,0 +1,1 @@
+/net/user/cfinley/lab/setLabEnv64.sh  root -b -q '/net/user/cfinley/lab/macro_llh/ic40/cluster_AllSky_trials/rootSubmitMacro.C(-3)'

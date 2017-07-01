@@ -1,0 +1,21 @@
+#!/bin/bash
+
+mkdir -p $LAB_MAIN_DIR/macro_llh/trials/
+
+#for i in `seq 1 1000`
+#for i in `seq 1001 2000`
+#for i in `seq 2001 3000`
+#for i in `seq 3001 5000`
+#for i in `seq 5001 6000`
+for i in `seq 6001 10000`
+do
+
+ # Seed is set by $i
+ echo "$LAB_MAIN_DIR/start.sh root -b -q -l $LAB_MAIN_DIR/macro_llh/ic40_full/AllSkyOneScrambledTrial.C'($i)' " > $LAB_MAIN_DIR/macro_llh/trials/uwa-trials$i.sh
+
+ chmod a+x $LAB_MAIN_DIR/macro_llh/trials/uwa-trials$i.sh
+
+ ./submit_npx3_indexed.sh $i $LAB_MAIN_DIR/macro_llh/trials/uwa-trials$i.sh
+
+done
+

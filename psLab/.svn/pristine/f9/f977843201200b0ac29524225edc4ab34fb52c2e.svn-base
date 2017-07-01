@@ -1,0 +1,10 @@
+
+
+
+int GetMonthFromMJD(double mjd) {
+  Astro::Time t(mjd);
+  int year, month, day, hour, minute;
+  double second;
+  t.GetCalendarTime(&year, &month, &day, &hour, &minute, &second);
+  return month;
+}

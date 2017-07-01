@@ -1,0 +1,174 @@
+
+class ExtendedSkyMulti {
+ public:
+  TH2D hExtendedSkyCoarse;
+  TH2D hExtendedSkyNsrc;
+  TH2D hExtendedSkyLlh;
+  TCanvas *canExtendedSkyCoarse;
+  EquatorialDeg searchLocation; // persistent, since llh references it
+  double decDegMax;
+  double raDegMax;
+  double resultMax;
+  double nsBest;
+  double gammaBest;
+  double llhBest;
+
+  double raLow;
+  double raHigh;
+  double decLow;
+  double decHigh;
+
+  bool optBatch;   // if set to true, will skip drawing plots
+  double resultThreshold;  // -LOG_P VALUE FOR FINE-BINNED FOLLOW-UP
+
+
+  ExtendedSkyMulti() : 
+    canExtendedSkyCoarse(NULL),
+    optBatch(false),
+    resultThreshold(1.5) 
+  { 
+    SetRange(0, 360, -85, 85);
+  }
+  ~ExtendedSkyMulti() { }
+
+  void SetRange(double ra_low, double ra_high, double dec_low, double dec_high)
+  {
+    raLow   = ra_low;
+    raHigh  = ra_high;
+    decLow  = dec_low;
+    decHigh = dec_high;
+  }
+
+  void Usage();
+  void Execute(MultiArk& ark, MultiAnalysisFn& llh, //NewLlhEnergy_ParTranslator pt,
+	       int coarseBinsPerDeg = 2);
+  bool Write(char*filename, char* fileoption="new");
+
+};
+
+
+void ExtendedSkyMulti::Usage() {
+  cout << "ExtendedSkyMulti es;\n";
+  cout << "  es.SetRange(0, 360, -85, 85);    [default ra, dec ranges]\n";
+  cout << "  es.Execute(Ark& ark, MultiAnalysisFn& llh,\n";
+  cout << "             int coarseBinsPerDeg = 2)\n";
+  cout << "  es.Write(char*filename, char* fileoption=\"new\")\n";
+}
+
+
+void ExtendedSkyMulti::Execute(MultiArk& ark, MultiAnalysisFn& llh, //NewLlhEnergy_ParTranslator pt,
+		     int coarseBinsPerDeg) {
+  cout<<"doing execute"<<endl;
+  //llh.SetAnalysisSet(ark.psData); // doesn't do anything
+
+  gStyle->SetPalette(1);
+  //  CreatePalette(5);
+
+  // SET COARSE BINNING
+  int nBinsCoarseRa = (raHigh-raLow)*coarseBinsPerDeg;
+  int nBinsCoarseDec = (decHigh-decLow)*coarseBinsPerDeg;
+
+
+  decDegMax = 0.;
+  raDegMax = 0.;
+  resultMax = 0.;
+  nsBest = 0.;
+  gammaBest = 0.;
+  llhBest = 0.;
+
+  hExtendedSkyCoarse.Reset();
+  hExtendedSkyLlh.Reset();
+  hExtendedSkyNsrc.Reset();
+
+  hExtendedSkyCoarse.SetBins(nBinsCoarseRa,raLow,raHigh,
+			nBinsCoarseDec,decLow,decHigh);
+  hExtendedSkyLlh.SetBins(nBinsCoarseRa,raLow,raHigh,
+			nBinsCoarseDec,decLow,decHigh);
+  hExtendedSkyNsrc.SetBins(nBinsCoarseRa,raLow,raHigh,
+			nBinsCoarseDec,decLow,decHigh);
+  hExtendedSkyCoarse.SetTitle("hExtendedSkyCoarse");
+  hExtendedSkyLlh.SetTitle("hExtendedSkyLlh");
+  hExtendedSkyNsrc.SetTitle("hExtendedSkyNsrc");
+  cout << "Coarse Grid: RA Bins: " << nBinsCoarseRa;
+  cout << "   Dec Bins: " << nBinsCoarseDec << endl;
+
+
+  //
+  // COARSE GRID
+  //
+  
+  resultMax = 0.;
+  double result = 0.;
+  for (int iDec=1; iDec<=nBinsCoarseDec; ++iDec) {
+    double decDeg = hExtendedSkyCoarse.GetYaxis()->GetBinCenter(iDec);
+    
+    ark.SetPointSource(EquatorialDeg(0., decDeg), PowerLawFlux(1.,-2.));
+    NewLlhEnergy_ParTranslator * pt1 = new NewLlhEnergy_ParTranslator;
+    pt1->SetRange(1,4,31);
+    pt1->SetTranslator(dynamic_cast<MultiAnalysisSet*>(ark.psData)); cout << "Set Translator!" << endl;
+    llh.SetParTranslator(pt1);
+    
+    if (!optBatch) { cout << decDeg << "  " << flush; }
+
+    for (int iRa=1; iRa<=nBinsCoarseRa; ++iRa) {
+      double raDeg = hExtendedSkyCoarse.GetXaxis()->GetBinCenter(iRa);
+
+      searchLocation.SetCoords(raDeg, decDeg);
+      llh.SetSearchCoord(searchLocation);
+      llh.MaximizeLlh();
+
+      double result = -log10(llh.GetEstProb());
+      hExtendedSkyCoarse.SetBinContent(iRa, iDec, result);
+      hExtendedSkyLlh.SetBinContent(iRa, iDec, llh.GetTestStatistic());
+      hExtendedSkyNsrc.SetBinContent(iRa, iDec, llh.GetPar(0));
+
+      if (result>resultMax) { 
+	resultMax = result;
+	decDegMax = decDeg;
+	raDegMax = raDeg;
+	nsBest = llh.GetPar(0);
+	gammaBest = llh.GetPar(1);
+	llhBest = llh.Get_logLambdaBest();
+      }
+    }
+    
+    delete pt1;
+  }
+  cout << endl;
+
+  if (!optBatch) {
+    cout<<"draw"<<endl; 
+   // only make new canvas if it didn't already exist:
+    if ( !canExtendedSkyCoarse ) {
+      canExtendedSkyCoarse =
+	new TCanvas("canExtendedSkyCoarse","canExtendedSkyCoarse",800,400);
+    }
+    canExtendedSkyCoarse->cd();
+    hExtendedSkyCoarse.Draw("colz");
+    canExtendedSkyCoarse->Update();
+  }  
+
+  cout << "Coarse Grid Hottest Spot:\n";
+  cout << "   Ra: " << raDegMax << " , Dec: " << decDegMax << endl;
+  cout << "   logLambda =  " << llhBest << "      ";
+  cout << "   -log10(p) =  " << resultMax << endl;
+  cout << "          ns = " << nsBest << endl;
+  cout << "       gamma = " << gammaBest << "\n\n";
+
+}
+
+
+bool ExtendedSkyMulti::Write(char*filename, char* fileoption) {
+  TFile *fileOutput = new TFile(filename, fileoption);
+  if (fileOutput->IsZombie()) {
+    cout << "Try using 'recreate' option?\n";
+    return false; // no file saved
+  }
+
+  cout << "Writing hExtendedSkyCoarse to: " << filename << endl;
+  hExtendedSkyCoarse.Write("hExtendedSkyCoarse");
+  hExtendedSkyNsrc.Write("hExtendedSkyNsrc");
+  hExtendedSkyLlh.Write("hExtendedSkyLlh");
+  fileOutput->Close();
+  return true;  // file saved (apparently!)
+}

@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+
+import glob, pylab, dashi
+from pylab import *
+import numpy as np
+import sys, operator
+
+dashi.visual()
+
+def GetPValFromFile(file):
+    f = open(file)
+    
+    best_pvalue = 1
+    above=False
+    
+    for line in f:
+        
+        if len(line.split("&")) < 7:
+            continue
+        
+        dec = float(line.split("&")[2])
+        #print dec
+        if not chooser(dec,-5.):
+            continue
+        
+        pvalue = (line.split("&")[6])
+        #print pvalue
+
+        if pvalue.find("--") == -1:
+            pvalue = float(pvalue)
+        else:
+            pvalue = 0.5
+
+
+        if pvalue < best_pvalue:
+            best_pvalue = pvalue
+        
+    print best_pvalue
+
+    FilePVal=-np.log10(best_pvalue)
+            
+    return FilePVal
+
+hemi=sys.argv[1]
+UnblindedSourceList=sys.argv[2]
+if hemi=='north':
+	chooser=operator.ge
+elif hemi=='south':
+	chooser=operator.lt
+else:
+	sys.exit('what hemisphere is %s!?!  choose "north" or "south"' % (hemi))
+
+files = glob.glob("ScrambledSourceLists/sourcelist*.txt");
+
+sig = []
+
+obs_sig = - np.log10(0.03)
+obs_sig = GetPValFromFile('%s' % (UnblindedSourceList))
+
+print "Observed sig: ", obs_sig
+
+for file in files:
+    sig.append(GetPValFromFile(file))
+
+sig=np.array(sig)
+cont=float(len(sig))
+above=float(sum(sig>obs_sig))
+
+hist=dashi.factory.hist1d(sig,50)
+hist.bincontent/=float(len(sig))
+hist.line(linewidth=2,label='Scrambled trials')
+
+pylab.axvline(x=obs_sig, linewidth=3, color='red',label='Observed p-value')
+
+print "%3.0f data samples"  % above
+print " out of %3.0f samples " % cont
+
+print "Post-trial: ", float(above)/float(cont)
+pylab.xlabel("-log$_{10}$(p-value)", fontsize='18')
+pylab.ylabel("Fraction of Trials", fontsize='18')
+pylab.title('%sern Sky Source List Search' % (hemi[0].upper()+hemi[1:]),fontsize=20)
+pylab.figtext(0.5,0.7,'Post-trials p-value: %5.3f'
+	% (float(above)/float(cont)),fontsize=17)
+pylab.figtext(0.65,0.45,'ICECUBE\nPRELIMINARY',color='red',fontsize=18,
+	fontweight='bold')
+pylab.legend(prop={'size':'16'})
+
+
+grid()
+savefig('FinalPlots/SourceListPostTrial_%s.png' % (hemi))
+show()

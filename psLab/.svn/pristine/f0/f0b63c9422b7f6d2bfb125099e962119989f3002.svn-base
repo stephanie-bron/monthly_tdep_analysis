@@ -1,0 +1,61 @@
+
+{
+  // Personalize script here //
+
+  Ark* arkPtr = &ark22;
+  //  Ark* arkPtr = &mark;
+
+  // ----------------------- //
+
+
+  int nTrials = 10000;
+  int nSrc = 0.;
+
+  // Reset the stopwatches (otherwise keep value from last time)
+  llhEnergyFn.stopwatch_MaximizeLlh_.Reset();
+  llhEnergyFn.stopwatch_optimize_.Reset();
+  llhEnergyFn.stopwatch_minuitMigrad_.Reset();
+  llhEnergyFn.stopwatch_minuitFCN_.Reset();
+
+  cout << "\nNumber of Trials: " << nTrials << endl;
+  cout << "\nNumber of Base Events: " << 
+    arkPtr->psData->GetEventPtrList()->GetSize() << endl;
+  //  cout << "Base Thinning: " << arkPtr->psData->GetBaseThinningProb() << endl;
+  cout << "Search Location: " << arkPtr->mySrcLocation.GetRa() << " , "
+       << arkPtr->mySrcLocation.GetDec() << endl;
+  cout << "nSrc events to add: " << nSrc << endl;
+
+
+  CountMonitor cm(10., nTrials);
+
+  TStopwatch tsTotal, tsGenerate;
+  tsTotal.Stop();
+  tsGenerate.Stop();
+
+  tsTotal.Start(false);  // false = don't reset
+  for (int i=0; i<nTrials; ++i) {
+    cm.UpdateCount();
+    tsGenerate.Start(false);  // false = don't reset
+    arkPtr->psData->GenerateDataSet_with_nSrcEvents(nSrc);
+    //    psData.UseRealData();
+    tsGenerate.Stop();
+    llhEnergyFn.SetAnalysis(*(arkPtr->psData),arkPtr->mySrcLocation);
+    llhEnergyFn.MaximizeLlh();
+  }
+  tsTotal.Stop();
+  cout << endl;
+
+  cout << "Total Time Results:        ";
+  tsTotal.Print();
+  cout << "- Total Generator Results:   ";
+  tsGenerate.Print();
+  cout << "- MaximizeLlh Time Results:  ";
+  llhEnergyFn.stopwatch_MaximizeLlh_.Print();
+  cout << "  - Optimize Time Results:     ";
+  llhEnergyFn.stopwatch_optimize_.Print();
+  cout << "  - MinuitMigrad Time Results: ";
+  llhEnergyFn.stopwatch_minuitMigrad_.Print();
+  cout << "    - MinuitFCN Time Results:    ";
+  llhEnergyFn.stopwatch_minuitFCN_.Print();
+
+}

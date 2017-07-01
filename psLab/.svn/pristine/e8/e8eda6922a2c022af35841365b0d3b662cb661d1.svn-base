@@ -1,0 +1,14 @@
+
+double decl;
+
+void root_stress_test(double d){
+  
+  
+  decl = d;
+  cout << "Using declination band " << decl << "\n\n";
+  
+  gSystem->cd("/net/user/jfeintzeig/2013/psLab/macro_llh/ic86-I");
+  
+  gROOT->ProcessLine(".x Track_joint_IC86_stress_test.C"); //everything is done and saved in here
+
+}

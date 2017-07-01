@@ -1,0 +1,118 @@
+
+
+{
+  bool RELOAD;
+
+  if (!RELOAD) {
+  
+    RELOAD = true;
+
+    gROOT->Macro("$LAB_MAIN_DIR/llhSN/loadlibs.C");
+    //gROOT->ProcessLine(".L $LAB_MAIN_DIR/llhSN/public/VectorLoader.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+    if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+    SNEventLoader snloader;
+
+    vector<SNEvent> bkgEvents;
+    snloader.LoadBkgEvents("snalerts_converted_2011.txt", bkgEvents);
+  
+    SimpleProb snProb;
+    snProb.SetRangeAndBackFill(30,6,9,25);//15,6.,9.,25);
+    snProb.SetTableBkg(bkgEvents);
+  
+    SNAnalysis sna;
+    sna.SetBaseEvents(bkgEvents);
+    sna.SetSimpleProb( snProb );
+    sna.SetRandomizeBase(true);
+    
+    EventTimeModule d;
+    d.SetTimesWithinRange(55565.5, 55642.);
+    sna.SetEventTimeModulePtr(&d);
+  
+    NewLlhSN llhsn;
+    llhsn.ndof_ = 3.;
+    llhsn.SetBlocks("/net/user/mfbaker/data/GOES/blockdata_a_hourly.txt");
+    llhsn.SetLivetime(80);
+    llhsn.SetMonitorLevel(0);
+    
+  }
+
+//  TimePdf * tPdf = new BlockTimePdf1();
+//  tPdf->SetBlockLevels("/net/user/mfbaker/data/GOES/newdata_hourly.txt");
+//  tPdf->SetLivetime( ark59.livetime );
+//  tPdf->CheckTimeBounds(ark59.tmin, ark59.tmax);
+
+  sna.UseRealData();
+  llhsn.SetAnalysisSet(&sna);
+  llhsn.PrepareAnalysis();
+  
+  int ntrials = 1000;
+  
+  //*
+  TH2D* hprob = new TH2D("hprob","",80,-20,20,40,0,20);
+  TH1D* hTestStatistic = new TH1D("hTestStatistic","",100,-1,1);
+  
+  hTestStatistic.SetBit(TH1::kCanRebin);
+  
+  //TFitterMinuit * mSN = llhsn.Minuit();
+  double lag, thresh, ns;
+  
+  /*
+  for (int i=0;i<ntrials;i++) {
+    
+    sna.GenerateDataSet_with_nSrcEvents(0); 
+    llhsn.MaximizeLlh();
+    
+    hTestStatistic->Fill(llhsn.GetTestStatistic());
+  
+    cout << llhsn.GetTestStatistic() << " " << llhsn.GetPar(0) << " " << llhsn.GetPar(1) << " " << llhsn.GetPar(2) << endl;
+    
+//    cout << "\b\b\b\b" << flush;
+//    cout << 100*i/ntrials << "% " << flush;
+    
+  }
+  cout << endl;
+  
+  hTestStatistic->Draw();
+  
+//  cout << llhsn.GetPar(0) << " " << llhsn.GetPar(1) << " " << llhsn.GetPar(2) << endl;
+  
+  //*/
+  cout << "going to loop" << endl;
+  
+  thresh = 1e-6;
+//  ns = 5;
+  
+  for (int i=1;i<=80;i++) {
+    lag = hprob->GetXaxis()->GetBinCenter(i);
+    
+    for (int j=1;j<=40;j++) {
+      ns = hprob->GetYaxis()->GetBinCenter(j);
+      //thresh = hprob->GetYaxis()->GetBinCenter(j);
+      
+      //cout << lag << " " << thresh << flush;
+      
+      //mSN->SetParameter(1,"lag",lag,0,-30,30);
+      //llhsn.SetOptParAuto(1);
+      //mSN->SetParameter(2,"thresh",thresh,0,0,1e-5);
+      //llhsn.SetOptParAuto(2);
+      
+      //cout << " maximizing..." << endl;
+      
+      //llhsn.MaximizeLlh();
+      
+      hprob->SetBinContent(i,j,llhsn.EvaluateLlh(ns,lag,thresh));
+    }
+  }
+
+  hprob->Draw("colz");
+
+ //*/
+ 
+ return 1;
+
+}

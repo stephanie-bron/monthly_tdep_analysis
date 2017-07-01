@@ -1,0 +1,156 @@
+class SourceListSearch {
+
+public:
+  
+  
+  SourceListSearch():
+    texOutputString_(""),
+    plainOutputString_("")
+  {
+    
+  }
+  ~SourceListSearch() { }
+  
+  
+  void Usage();
+  void Execute(Ark& ark, MultiAnalysisFn & llh,
+	       char* sourceFile, char *filaname);
+  
+};
+
+
+void SourceListSearch::Usage() {
+  cout << "SourceListSearch sl;\n";
+  cout << "  sl.Execute(Ark& ark, MultiAnalysisFn& llh,\n";
+  cout << "             char* sourceFile, char* filename)\n";
+}
+
+
+void SourceListSearch::Execute(Ark& ark, MultiAnalysisFn &llh,
+			       char* sourceFile, char* filename) {
+  
+  llh.SetAnalysisSet(ark.psData);
+  
+  FILE *fp = fopen(sourceFile,"r");
+
+  char buffer[200];
+  double raDeg, decDeg;
+
+  TString psNameArray[100];
+  EquatorialDeg psEqCoordArray[100];
+
+  string strfile;
+  
+  int s1 = 0;
+  int nPsList = 0;
+  
+  while(fscanf(fp,"%s %lf %lf\n", buffer, &raDeg, &decDeg) == 3) {
+    
+    psNameArray[s1] = buffer;
+    psEqCoordArray[s1] = EquatorialDeg(raDeg, decDeg);
+    
+    printf("%20s  %7.3lf  %6.3lf\n",
+	   dynamic_cast<char*>psNameArray[s1], 
+	   psEqCoordArray[s1].GetRa(),
+	   psEqCoordArray[s1].GetDec() );
+    ++s1;
+  }
+  nPsList = s1;
+
+  cout << nPsList << " total sources read.\n";
+  fclose(fp);
+   
+  string texOutputString_;
+  string plainOutputString_;
+  
+  double bestPMin = 1.;
+  int bestSource = 0;
+  
+  
+  for (int j = 0; j < nPsList; ++j) {
+
+    EquatorialDeg searchLocation = psEqCoordArray[j];
+    llh.SetSearchCoord(searchLocation);
+    ark.SetPointSource(searchLocation, PowerLawFlux(1.,-2.));
+    
+    
+    NewLlhEnergy_ParTranslator *pt = new NewLlhEnergy_ParTranslator;
+    pt->SetRange(1,4,31); //gamma_min, gamma_max, nBins
+    pt->SetTranslator(dynamic_cast<MultiAnalysisSet*>(ark.psData));
+    llh.SetParTranslator(pt);
+    llh.MaximizeLlh();
+    
+    double pvalue = llh.GetEstProb();
+    
+    
+
+    if (pvalue < bestPMin) { 
+      bestPMin = pvalue; 
+      bestSource = j;
+    }
+    
+    double distance = 2.; // degrees
+    
+    double bkgCount = ark.psData->BkgNumberDensity(searchLocation)
+      * (distance)*(distance)*TMath::Pi();
+
+    double nSrc = llh.GetPar(0);
+    
+    double fluxUpLimit = 0.;
+    
+    TString sName = psNameArray[j];
+    sName.ReplaceAll("_"," ");
+      
+    char buffer[1000];
+    
+    
+
+    char pvalueChar[20];
+    if (pvalue < 0.495) {
+      sprintf(pvalueChar,"%.3lg",pvalue);
+    } else {
+      sprintf(pvalueChar,"--");
+    }
+  
+    sprintf(buffer,
+	    "%20s & %6.2f & %5.2f & %5.2f & %s & %3.1f & %3.1f\\\\\n",
+	    dynamic_cast<char*>(sName),
+	    searchLocation.GetRa(), searchLocation.GetDec(),
+	    fluxUpLimit,
+	    pvalueChar,
+	    nSrc,
+	    bkgCount);
+    
+    texOutputString_ += buffer;
+    
+    sprintf(buffer,
+	    "%20s  (%7.3f , %6.3f)  :  %5.2f  %s  %3.1f   %3.1f\n",
+	    dynamic_cast<char*>psNameArray[j],
+	    searchLocation.GetRa(), searchLocation.GetDec(),
+	    fluxUpLimit,
+	    pvalueChar,
+	    nSrc,
+	    bkgCount);
+    
+    plainOutputString_ += buffer;
+    
+    delete pt;
+  }
+  
+
+  cout << "Best source p-value:" << bestPMin << endl;
+  cout << "Source "<<  dynamic_cast<char*>(psNameArray[bestSource]) << endl;
+
+  cout << plainOutputString_ << endl;
+  
+  ofstream fout(filename);
+
+  fout << texOutputString_ << endl;
+  fout << "Best source p-value:" << bestPMin << endl;
+  fout << "Source "<<  dynamic_cast<char*>(psNameArray[bestSource]) << endl;
+
+    
+};
+
+
+  

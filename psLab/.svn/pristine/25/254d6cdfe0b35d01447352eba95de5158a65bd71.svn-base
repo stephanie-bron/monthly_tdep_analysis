@@ -1,0 +1,151 @@
+#include "TH2D.h"
+#include "TStopwatch.h"
+
+#include "llh/public/I3Analysis.h"
+#include "llh/public/LlhFunctionsBase.h"
+#include "llh/public/CoordEquatorialDeg.h"
+
+class AllSky {
+ public:
+  TH2D hAllSkyCoarse_;
+  TH2D hAllSkyFine_;
+  double resultThreshold_;
+  bool optMonitor_;
+
+  double resultMax_;
+  double decDegMax_;
+  double raDegMax_;
+  double nsBest_;
+  double gammaBest_;
+  double llhBest_;
+
+  AllSky() : resultThreshold_(1.5), optMonitor_(true) { }
+  ~AllSky() { }
+
+  void SetBins(double raLow = 0., double raHigh = 360.,
+	       double decLow = -85., double decHigh = 85.,
+	       int coarseBinsPerDeg = 2, int fineBinsPerDeg = 10) {
+    hAllSkyCoarse_.Reset();
+    hAllSkyCoarse_.SetBins(coarseBinsPerDeg*(raHigh-raLow),raLow,raHigh,
+			  coarseBinsPerDeg*(decHigh-decLow),decLow,decHigh);
+    hAllSkyFine_.Reset();
+    hAllSkyFine_.SetBins(fineBinsPerDeg*(raHigh-raLow),raLow,raHigh,
+			fineBinsPerDeg*(decHigh-decLow),decLow,decHigh);
+  }
+
+  void SetThreshold(double resultThreshold = 1.5) {
+    resultThreshold_ = resultThreshold;
+  }
+
+  void Fill(I3Analysis& aSet, AnalysisLlh *llhPtr) {
+    TStopwatch ts_total;
+    TStopwatch ts_llh_only;
+    ts_llh_only.Stop();
+
+    cout << "Coarse Grid: RA Bins: " << hAllSkyCoarse_.GetNbinsX();
+    cout << "   Dec Bins: " << hAllSkyCoarse_.GetNbinsY() << endl;
+
+    cout << "Fine Grid: RA Bins: " << hAllSkyFine_.GetNbinsX();
+    cout << "   Dec Bins: " << hAllSkyFine_.GetNbinsY() << endl;
+
+    cout << "\nResult Threshold for fine-grid follow-up: " << resultThreshold_;
+    cout << "\n";
+
+    resultMax_ = 0.;
+    for (int iDec=1; iDec<=hAllSkyCoarse_.GetNbinsY(); ++iDec) {
+      double decDeg = hAllSkyCoarse_.GetYaxis()->GetBinCenter(iDec);
+      if (optMonitor_) { cout << decDeg << "  " << flush; }
+
+      for (int iRa=1; iRa<=hAllSkyCoarse_.GetNbinsX(); ++iRa) {
+	double raDeg = hAllSkyCoarse_.GetXaxis()->GetBinCenter(iRa);
+      
+	EquatorialDeg searchLocation(raDeg,decDeg);
+	llhPtr->SetAnalysis(aSet,searchLocation);
+	ts_llh_only.Start(false);  //  false = don't reset
+	llhPtr->MaximizeLlh();
+	ts_llh_only.Stop();
+	double result = -log10(llhPtr->GetEstProb());
+	hAllSkyCoarse_.SetBinContent(iRa, iDec, result);
+
+	if (result>resultMax_) { 
+	  resultMax_ = result;
+	  decDegMax_ = decDeg;
+	  raDegMax_ = raDeg;
+	  nsBest_ = llhPtr->GetPar(0);
+	  gammaBest_ = llhPtr->GetPar(1);
+	  llhBest_ = llhPtr->Get_logLambdaBest();
+	}
+      }
+    }
+    if (optMonitor_) { 
+      cout << endl; 
+      cout << "Total time: ";
+      ts_total.Print();
+      ts_total.Start(false);
+      cout << "Maximize Llh time: ";
+      ts_llh_only.Print();
+    }
+
+    cout << "Coarse Grid Hottest Spot:\n";
+    cout << "   Ra: " << raDegMax_ << " , Dec: " << decDegMax_ << endl;
+    cout << "   logLambda =  " << llhBest_ << "      ";
+    cout << "   -log10(p) =  " << resultMax_ << endl;
+    cout << "          ns = " << nsBest_ << endl;
+    cout << "       gamma = " << gammaBest_ << "\n\n";
+
+    
+    for (int iDec=1; iDec<=hAllSkyFine_.GetNbinsY(); ++iDec) {
+      double decDeg = hAllSkyFine_.GetYaxis()->GetBinCenter(iDec);
+      if (optMonitor_) { cout << decDeg << "  " << flush; }
+
+      for (int iRa=1; iRa<=hAllSkyFine_.GetNbinsX(); ++iRa) {
+	double raDeg = hAllSkyFine_.GetXaxis()->GetBinCenter(iRa);
+
+	double result;
+
+	// Check if follow-up required
+	double coarseResult = 
+	  hAllSkyCoarse_.GetBinContent( hAllSkyCoarse_.FindBin(raDeg,decDeg) );
+
+	if (coarseResult > resultThreshold_) {
+	  EquatorialDeg searchLocation(raDeg,decDeg);
+	  llhPtr->SetAnalysis(aSet,searchLocation);
+	  ts_llh_only.Start(false);  //  false = don't reset
+	  llhPtr->MaximizeLlh();
+	  ts_llh_only.Stop();
+	  result = -log10(llhPtr->GetEstProb());
+
+	  if (result>resultMax_) { 
+	    resultMax_ = result;
+	    decDegMax_ = decDeg;
+	    raDegMax_ = raDeg;
+	    nsBest_ = llhPtr->GetPar(0);
+	    gammaBest_ = llhPtr->GetPar(1);
+	    llhBest_ = llhPtr->Get_logLambdaBest();
+	  }
+	} else {
+	  result = coarseResult;
+      }
+
+	hAllSkyFine_.SetBinContent(iRa, iDec, result);
+
+      }
+    }
+
+    if (optMonitor_) { 
+      cout << endl; 
+      cout << "Total time: ";
+      ts_total.Print();
+      cout << "Maximize Llh time: ";
+      ts_llh_only.Print();
+    }
+
+    cout << "Fine Grid Hottest Spot:\n";
+    cout << "   Ra: " << raDegMax_ << " , Dec: " << decDegMax_ << endl;
+    cout << "   logLambda =  " << llhBest_ << "      ";
+    cout << "   -log10(p) =  " << resultMax_ << endl;
+    cout << "          ns = " << nsBest_ << endl;
+    cout << "       gamma = " << gammaBest_ << "\n\n";
+  }
+
+};

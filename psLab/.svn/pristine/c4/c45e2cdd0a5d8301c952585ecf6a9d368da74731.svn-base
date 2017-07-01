@@ -1,0 +1,148 @@
+{
+  
+  vector<I3Event> eventVector86 = ark86.baseEvents;
+  vector<I3Event> eventVector79 = ark79.baseEvents;
+  vector<I3Event> eventVector59 = ark59.baseEvents;
+
+  
+  vector<I3Event> eventVector;
+  
+  for (int i=0;i<eventVector86.size();i++) {
+    eventVector.push_back(eventVector86[i]);
+  }
+  
+  for (int i=0;i<eventVector79.size();i++) {
+    eventVector.push_back(eventVector79[i]);
+  }
+  
+  for (int i=0;i<eventVector59.size();i++) {
+    eventVector.push_back(eventVector59[i]);
+  }
+
+  
+  cout << "Stacked catalog with " << srcLocations.size() << " locations" << endl;
+
+  cout << "Events in IC59: " << eventVector59.size() << endl;
+  cout << "Events in IC79: " << eventVector79.size() << endl;
+  cout << "Events in IC86: " << eventVector86.size() << endl;
+  
+  double best_gamma = maf.GetPar(1);
+  
+  cout << "Best gamma " << best_gamma << endl;
+
+  I3Event e;
+  
+  
+  ark59.decBkgProb.FixToBase();
+  ark79.decBkgProb.FixToBase();
+  ark86.decBkgProb.FixToBase();
+  
+  
+  ofstream fout("IC86_IC79_IC59_Milagro6_sourceJ1852_unblinded.txt");
+  
+  for (int j = 0; j < srcLocations.size(); j++) 
+    {
+      fout << srcLocations[j].GetRa() << " " << srcLocations[j].GetDec() << endl;
+    }
+  
+  
+  double eWeight;
+  double spaceWeight;
+  
+  //IC59 events
+  for (int i = 0; i < eventVector59.size(); i++) {
+    
+    
+    eWeight = ark59.eProb->GetEnergyProbGamma(eventVector59[i],best_gamma)/ark59.eProb->GetEnergyProbBkg(eventVector59[i]);
+    
+    spaceWeight = 0;
+    
+    for (int j = 0; j < srcLocations.size(); j++) 
+      {
+	
+	double r = eventVector59[i].GetCoord().DistanceTo(srcLocations[j]);
+        double es = eventVector59[i].GetParams().parafitSigmaDeg; // event sigma
+        
+	double ss = srcSigmas[j]; // source sigma
+        double sigma = sqrt( (es*es + ss*ss) ); // Convolved Gaussians
+        double sigSpaceProb = exp(-r*r/(sigma*sigma*2)) / (2.*TMath::Pi()*sigma*sigma);
+	double bkgSpaceProb = ark59.decBkgProb.GetBkgProbDensity(eventVector59[i]);
+	
+	double spaceRatio = sigSpaceProb / bkgSpaceProb;
+	
+	spaceWeight += spaceRatio;
+	
+	
+      } //End loop of sources
+    
+//     if(spaceWeight*eWeight > 1e3)
+//       {
+	fout << "IC59 " << spaceWeight << " " << eWeight << " " <<  eventVector59[i].GetParams().runID << " " << eventVector59[i].GetParams().eventID  << " " << eventVector59[i].GetEquatorialDeg().GetRa() << " " << eventVector59[i].GetEquatorialDeg().GetDec() <<" "<<eventVector59[i].GetParams().energyValue <<" "<<eventVector59[i].GetParams().parafitSigmaDeg<<endl;
+	cout << "IC59 " << spaceWeight << " " << eWeight << " " <<  eventVector59[i].GetParams().runID << " " << eventVector59[i].GetParams().eventID  << " " << eventVector59[i].GetEquatorialDeg().GetRa() << " " << eventVector59[i].GetEquatorialDeg().GetDec() << endl;
+//       }
+    
+  } // End loop of events
+  
+
+  //IC79 events
+  for (int i = 0; i < eventVector79.size(); i++) {
+    
+    eWeight = ark79.eProb->GetEnergyProbGamma(eventVector79[i],best_gamma)/ark79.eProb->GetEnergyProbBkg(eventVector79[i]);
+    
+    spaceWeight = 0;
+    
+    for (int j = 0; j < srcLocations.size(); j++)
+      {
+      	double r = eventVector79[i]->GetCoord().DistanceTo(srcLocations[j]);
+        double es = eventVector79[i]->GetParams().parafitSigmaDeg; // event sigma
+        double ss = srcSigmas[j]; // source sigma
+        double sigma = sqrt( (es*es + ss*ss) ); // Convolved Gaussians
+        double sigSpaceProb = exp(-r*r/(sigma*sigma*2)) / (2.*TMath::Pi()*sigma*sigma);
+	double bkgSpaceProb = ark79.decBkgProb.GetBkgProbDensity(eventVector79[i]);
+	double spaceRatio = sigSpaceProb / bkgSpaceProb;
+	
+	spaceWeight += spaceRatio;
+		
+	
+      } //End loop of sources
+    
+//     if(spaceWeight*eWeight > 1e3)
+//       {
+	fout << "IC79 " << spaceWeight << " " << eWeight << " " <<  eventVector79[i].GetParams().runID << " " << eventVector79[i].GetParams().eventID  << " " << eventVector79[i].GetEquatorialDeg().GetRa() << " " << eventVector79[i].GetEquatorialDeg().GetDec() <<" "<<eventVector79[i].GetParams().energyValue<<" "<<eventVector79[i].GetParams().parafitSigmaDeg << endl;
+	cout << "IC79 " << spaceWeight << " " << eWeight << " " <<  eventVector79[i].GetParams().runID << " " << eventVector79[i].GetParams().eventID  << " " << eventVector79[i].GetEquatorialDeg().GetRa() << " " << eventVector79[i].GetEquatorialDeg().GetDec() << endl;
+//       }
+    
+  } // End loop of events
+  
+  for (int i = 0; i < eventVector86.size(); i++) {
+    
+    eWeight = ark86.eProb->GetEnergyProbGamma(eventVector86[i],best_gamma)/ark86.eProb->GetEnergyProbBkg(eventVector86[i]);
+    
+    spaceWeight = 0;
+    
+    for (int j = 0; j < srcLocations.size(); j++)
+      {
+      	double r = eventVector86[i]->GetCoord().DistanceTo(srcLocations[j]);
+        double es = eventVector86[i]->GetParams().parafitSigmaDeg; // event sigma
+        double ss = srcSigmas[j]; // source sigma
+        double sigma = sqrt( (es*es + ss*ss) ); // Convolved Gaussians
+        double sigSpaceProb = exp(-r*r/(sigma*sigma*2)) / (2.*TMath::Pi()*sigma*sigma);
+	double bkgSpaceProb = ark86.decBkgProb.GetBkgProbDensity(eventVector86[i]);
+	double spaceRatio = sigSpaceProb / bkgSpaceProb;
+	
+	spaceWeight += spaceRatio;
+		
+	
+      } //End loop of sources
+    
+//     if(spaceWeight*eWeight > 1e3)
+//       {
+	fout << "IC86 " << spaceWeight << " " << eWeight << " " <<  eventVector86[i].GetParams().runID << " " << eventVector86[i].GetParams().eventID  << " " << eventVector86[i].GetEquatorialDeg().GetRa() << " " << eventVector86[i].GetEquatorialDeg().GetDec() <<" "<<eventVector86[i].GetParams().energyValue<<" "<<eventVector86[i].GetParams().parafitSigmaDeg << endl;
+	cout << "IC86 " << spaceWeight << " " << eWeight << " " <<  eventVector86[i].GetParams().runID << " " << eventVector86[i].GetParams().eventID  << " " << eventVector86[i].GetEquatorialDeg().GetRa() << " " << eventVector86[i].GetEquatorialDeg().GetDec() << endl;
+//       }
+    
+  } // End loop of events
+  
+  
+  
+}

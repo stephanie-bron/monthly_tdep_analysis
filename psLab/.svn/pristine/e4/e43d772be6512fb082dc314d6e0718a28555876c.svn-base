@@ -1,0 +1,91 @@
+{
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+
+    gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+    if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+    gROOT->ProcessLine(".L Ark.C");
+
+    bool OPT_USEREALDATA = true;
+
+
+    I3Ark* ark22a = new I3Ark();
+    gROOT->Macro("load_ark_ic22.C((*ark22a), OPT_USEREALDATA)");
+
+    I3Ark* ark22b = new I3Ark();
+    gROOT->Macro("load_ark_ic22.C((*ark22b), OPT_USEREALDATA)");
+
+
+    MultiArk mark;
+    mark.AddArk(*ark22a);
+    mark.AddArk(*ark22b);
+    MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+
+    NewLlhEnergy newllha;
+    newllha.SetAnalysisSet(ark22a->psData);
+    newllha.SetOptimizeTolerance(0.01);
+    newllha.SetOptimizeAngleDeg(10.);
+    
+    NewLlhEnergy newllhb;
+    newllhb.SetAnalysisSet(ark22b->psData);
+    newllhb.SetOptimizeTolerance(0.01);
+    newllhb.SetOptimizeAngleDeg(10.);
+
+    MultiAnalysisFn maf;
+    maf.AddAnalysisFn(&newllha);
+    maf.AddAnalysisFn(&newllhb);
+  }
+
+
+  EquatorialDeg testSearch(153.375, 11.375);
+
+  mark.SetPointSource(testSearch, PowerLawFlux(1,-2));
+  maf.SetSearchCoord(testSearch);
+
+  NewLlhEnergy_ParTranslator pt;
+  pt.SetRange(1,4,31);  // gamma_min, gamma_max, nBins (set-points, actually)
+  pt.SetTranslator(mas);
+  maf.SetParTranslator(&pt);
+
+  vector<MinuitParDef> pdv;
+  pdv.push_back( MinuitParDef("nSrc",1,0.1, 0,100) );
+  pdv.push_back( MinuitParDef("gamma",2,0.1, 1., 4) );
+  maf.SetParDefs(pdv);
+
+  maf.MaximizeLlh();
+
+  cout << "logLambda: " << maf.Get_logLambdaBest() << endl;
+  cout << "-LogP: " << -log10(maf.GetEstProb()) << endl;
+  cout << "nSrc: " << maf.GetPar(0) << endl;
+  cout << "Gamma: " << maf.GetPar(1) << endl;
+
+
+  gROOT->ProcessLine(".L SimpleMultiAnalysis.C");
+  SimpleMultiAnalysis sa;
+  sa.SetNDoF(2);
+  
+  sa.Execute(mark,maf,100,0);
+
+
+
+  /*
+
+  // Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  SetDisco(disco, 5, false, 2.87e-7, 0.5);
+
+  gROOT->ProcessLine(".L DetectionStudy.C");
+  */
+
+ 
+  return 1; // signal correct finish of script
+}

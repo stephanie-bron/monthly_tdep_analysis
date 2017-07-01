@@ -1,0 +1,31 @@
+{
+
+char* filename = "mqso_posttrial_TS.txt";
+
+ifstream in;
+in.open(filename);
+
+double teststat;
+int buffer;
+
+
+
+TH1D hTestStatistic("hTestStatistic",";2 ln #lambda;trials",100,-1,20);
+
+
+
+while (1){
+in >> buffer >> teststat;
+
+if ( !in.good() ) break;
+
+hTestStatistic.Fill(teststat);
+
+}
+
+TFile *fout = new TFile("teststat_posttrial_proper.root","RECREATE");    
+  hTestStatistic.Write();    
+  fout->Close();
+  
+  
+}  

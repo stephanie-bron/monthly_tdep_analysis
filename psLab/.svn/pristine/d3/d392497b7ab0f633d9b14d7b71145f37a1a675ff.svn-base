@@ -1,0 +1,300 @@
+// This is a wrapper for making an all-sky flare search.
+// Like the time-integrated search, it uses first a coarse grid, then
+// runs back over the hotter spots with a fine grid.
+// It also produces a root file containing all the best-fit paramers
+// for the coarse grid in a directory skymaps/flare, and saves the coarse
+// and fine TH2Ds for the pretrial p-values.
+
+class AllSkyFlare {
+ public:
+  TH2D hAllSkyCoarse;
+  TH2D hAllSkyFine;
+  TH2D hAllSkyFineLLH;
+  TCanvas *canAllSkyCoarse;
+  TCanvas *canAllSkyFine;
+  EquatorialDeg searchLocation; // persistent, since llh references it
+  double decDegMax;
+  double raDegMax;
+  double resultMax;
+  double nsBest;
+  double gammaBest;
+  double sigmaBest;
+  double meanBest;
+  double llhBest;
+
+  double raLow;
+  double raHigh;
+  double decLow;
+  double decHigh;
+
+  bool optBatch;   // if set to true, will skip drawing plots
+  double resultThreshold;  // -LOG_P VALUE FOR FINE-BINNED FOLLOW-UP
+
+
+  AllSkyFlare() : 
+    canAllSkyCoarse(NULL),
+    canAllSkyFine(NULL),
+    optBatch(false),
+    resultThreshold(2.5) 
+  { 
+    SetRange(0, 360, -85, 85);
+  }
+  ~AllSkyFlare() { }
+
+  void SetRange(double ra_low, double ra_high, double dec_low, double dec_high)
+  {
+    raLow   = ra_low;
+    raHigh  = ra_high;
+    decLow  = dec_low;
+    decHigh = dec_high;
+  }
+
+  void Usage();
+  void Execute(I3Ark& ark, NewLlhGausTime& llh, int mapseed,
+	       int coarseBinsPerDeg = 2, int fineBinsPerDeg = 10);
+  bool Write(char*filename, char* fileoption="new");
+
+};
+
+
+void AllSkyFlare::Usage() {
+  cout << "AllSkyFlare as;\n";
+  cout << "  as.SetRange(0, 360, -85, 85);    [default ra, dec ranges]\n";
+  cout << "  as.Execute(Ark& ark, Analysis& llh, int mapseed,\n";
+  cout << "             int coarseBinsPerDeg = 2, int fineBinsPerDeg = 10)\n";
+  cout << "  as.Write(char*filename, char* fileoption=\"new\")\n";
+}
+
+
+void AllSkyFlare::Execute(I3Ark& ark, NewLlhGausTime& llh, int mapseed,
+		     int coarseBinsPerDeg, int fineBinsPerDeg) {
+  llh.SetAnalysisSet(ark.psData);
+
+  gStyle->SetPalette(1);
+  //  CreatePalette(5);
+
+  // SET COARSE BINNING
+  int nBinsCoarseRa = (raHigh-raLow)*coarseBinsPerDeg;
+  int nBinsCoarseDec = (decHigh-decLow)*coarseBinsPerDeg;
+
+  // SET FINE BINNING
+  int nBinsFineRa = (raHigh-raLow)*fineBinsPerDeg;
+  int nBinsFineDec = (decHigh-decLow)*fineBinsPerDeg;
+
+
+  decDegMax = 0.;
+  raDegMax = 0.;
+  resultMax = 0.;
+  nsBest = 0.;
+  gammaBest = 0.;
+  llhBest = 0.;
+
+  hAllSkyCoarse.Reset();
+  hAllSkyFine.Reset();
+  hAllSkyFineLLH.Reset();
+  hAllSkyCoarse.SetBins(nBinsCoarseRa,raLow,raHigh,
+			nBinsCoarseDec,decLow,decHigh);
+  hAllSkyCoarse.SetTitle("hAllSkyCoarse");
+  cout << "Coarse Grid: RA Bins: " << nBinsCoarseRa;
+  cout << "   Dec Bins: " << nBinsCoarseDec << endl;
+
+  hAllSkyFine.SetBins(nBinsFineRa,raLow,raHigh,
+			nBinsFineDec,decLow,decHigh);
+  hAllSkyFine.SetTitle("hAllSkyFine");
+  
+  hAllSkyFineLLH.SetBins(nBinsFineRa,raLow,raHigh,
+                        nBinsFineDec,decLow,decHigh);
+  hAllSkyFineLLH.SetTitle("hAllSkyFineLLH");
+  
+  cout << "Fine Grid: RA Bins: " << nBinsFineRa;
+  cout << "   Dec Bins: " << nBinsFineDec << endl;
+
+  cout << "\nResult Threshold for fine-grid follow-up: " << resultThreshold;
+  cout << "\n";
+
+  char mapfile[200];
+  //sprintf(mapfile,"skymaps/flare/tAllSkyBatch%d.root",mapseed);
+  // sprintf(mapfile,"AllSkyTimeDep/ScrambledSkyMaps/mapIC79_%i_ndof3.root",mapseed);
+  sprintf(mapfile,"mapIC86_unblinded_ndof3.root",mapseed);
+  TFile *f = new TFile( mapfile, "recreate");
+  TTree *t1 = new TTree("tAllSky","all sky");
+  double ira, idec, ilogl, iestp, ins, igamma, imean, isigma, iazbest, imeanguess, isigmaguess;
+  
+  double azbest;
+
+  t1->Branch("ra",   &ira,   "ra/D");
+  t1->Branch("dec",  &idec,  "dec/D");
+  t1->Branch("logl", &ilogl, "logl/D");
+  t1->Branch("estp", &iestp, "estp/D");
+  t1->Branch("ns",   &ins,   "ns/D");
+  t1->Branch("gamma",&igamma,"gamma/D");
+  t1->Branch("mean", &imean, "mean/D");
+  t1->Branch("sigma",&isigma,"sigma/D");
+  t1->Branch("azbest",&iazbest,"azbest/D");
+  t1->Branch("meanGuess", &imeanguess, "meanGuess/D");
+  t1->Branch("sigmaGuess",&isigmaguess,"sigmaGuess/D");
+
+
+  //
+  // COARSE GRID
+  //
+
+  resultMax = 0.;
+  for (int iDec=1; iDec<=nBinsCoarseDec; ++iDec) {
+    double decDeg = hAllSkyCoarse.GetYaxis()->GetBinCenter(iDec);
+    if (!optBatch) { cout << decDeg << "  " << flush; }
+
+    for (int iRa=1; iRa<=nBinsCoarseRa; ++iRa) {
+      double raDeg = hAllSkyCoarse.GetXaxis()->GetBinCenter(iRa);
+
+      searchLocation.SetCoords(raDeg, decDeg);
+      llh.SetSearchCoord(searchLocation);
+      llh.MaximizeLlh();
+
+      double result = -log10(llh.GetEstProb());
+      hAllSkyCoarse.SetBinContent(iRa, iDec, result);      
+      
+      if(result > 1) { cout << result << " (" << raDeg << ":" << decDeg << ") " << llh.Get_logLambdaBest() << " " << llh.GetPar(2) << " " << llh.GetPar(3) << endl; }
+      //azbest = TMath::RadToDeg()*SLACoordinateTransform::Equa2LocalAzimuth( searchLocation.GetRa()*TMath::DegToRad(), searchLocation.GetDec()*TMath::DegToRad(), llh.GetPar(2) );
+
+      ira=raDeg, 
+      idec=decDeg, 
+      ilogl=llh.Get_logLambdaBest();
+      iestp=llh.GetEstProb();      
+      ins=llh.GetPar(0);
+      igamma=llh.GetPar(1);
+      imean=llh.GetPar(2);
+      isigma=pow(10.,llh.GetPar(3));
+
+      iazbest = azbest;
+      imeanguess=llh.GetMeanGuess();
+      isigmaguess=llh.GetSigmaGuess();
+      t1->Fill();      
+
+
+      if (result>resultMax) { 
+	resultMax = result;
+	decDegMax = decDeg;
+	raDegMax = raDeg;
+	nsBest = llh.GetPar(0);
+	gammaBest = llh.GetPar(1);
+	meanBest = llh.GetPar(2);
+	sigmaBest = llh.GetPar(3);
+	llhBest = llh.Get_logLambdaBest();
+      }
+    }
+  }
+  cout << endl;
+
+  if (!optBatch) {
+    // only make new canvas if it didn't already exist:
+    if ( !canAllSkyCoarse ) {
+      canAllSkyCoarse =
+	new TCanvas("canAllSkyCoarse","canAllSkyCoarse",800,400);
+    }
+    canAllSkyCoarse->cd();
+    hAllSkyCoarse.Draw("colz");
+    canAllSkyCoarse->Update();
+  }  
+
+  cout << "Coarse Grid Hottest Spot:\n";
+  cout << "   Ra: " << raDegMax << " , Dec: " << decDegMax << endl;
+  cout << "   logLambda =  " << llhBest << "      ";
+  cout << "   -log10(p) =  " << resultMax << endl;
+  cout << "          ns = " << nsBest << endl;
+  cout << "       gamma = " << gammaBest << "\n\n";
+
+
+  t1->Write();
+  cout << endl;
+
+  //
+  // FINE GRID
+  //
+
+  // keep same resultMax from above:
+  // in case no coarse bin is over threshold, the max results from above
+  // still apply
+
+  //*
+  resultMax = 0.;
+  for (int iDec=1; iDec<=nBinsFineDec; ++iDec) {
+    double decDeg = hAllSkyFine.GetYaxis()->GetBinCenter(iDec);
+    if (!optBatch) { cout << decDeg << "  " << flush; }
+
+    for (int iRa=1; iRa<=nBinsFineRa; ++iRa) {
+      double raDeg = hAllSkyFine.GetXaxis()->GetBinCenter(iRa);
+
+      double result;
+      double resultLLH;
+      // Check if follow-up required
+      double coarseResult = 
+	hAllSkyCoarse.GetBinContent( hAllSkyCoarse.FindBin(raDeg,decDeg) );
+      cout << "coarseResult " << coarseResult << endl;
+      if (coarseResult > resultThreshold) {
+	searchLocation.SetCoords(raDeg, decDeg);
+	llh.SetSearchCoord(searchLocation);
+	llh.MaximizeLlh();
+	result = -log10(llh.GetEstProb());
+        resultLLH = 2*llh.GetTestStatistic();
+	if (result>resultMax) { 
+	  resultMax = result;
+	  decDegMax = decDeg;
+	  raDegMax = raDeg;
+	  nsBest = llh.GetPar(0);
+	  gammaBest = llh.GetPar(1);
+          meanBest = llh.GetPar(2);
+          sigmaBest = llh.GetPar(3);
+
+	  llhBest = llh.Get_logLambdaBest();
+	}
+      } else {
+	result = coarseResult;
+      }
+      hAllSkyFine.SetBinContent(iRa, iDec, result);
+      hAllSkyFineLLH.SetBinContent(iRa, iDec, resultLLH);
+
+
+    }
+  }
+
+  cout << endl;
+
+  if (!optBatch) {
+    // only make new canvas if it didn't already exist:
+    if ( !canAllSkyFine ) {
+      canAllSkyFine = 
+	new TCanvas("canAllSkyFine","canAllSkyFine",20,40,800,400);
+    }
+
+    canAllSkyFine->cd();
+    hAllSkyFine.Draw("colz");
+    canAllSkyFine->Update();
+  }
+
+  cout << "Fine Grid Hottest Spot:\n";
+  cout << "   Ra: " << raDegMax << " , Dec: " << decDegMax << endl;
+  cout << "   logLambda =  " << llhBest << "      ";
+  cout << "   -log10(p) =  " << resultMax << endl;
+  cout << "          ns = " << nsBest << endl;
+  cout << "       gamma = " << gammaBest << "\n"; //*/
+  cout << "  meanBest   = " << meanBest << endl;
+  cout << "  sigmaBest  = " << pow(10,sigmaBest) << "\n"; //*/
+  
+}
+
+
+bool AllSkyFlare::Write(char*filename, char* fileoption) {
+  TFile *fileOutput = new TFile(filename, fileoption);
+  if (fileOutput->IsZombie()) {
+    cout << "Try using 'recreate' option?\n";
+    return false; // no file saved
+  }
+
+  cout << "Writing hAllSkyCoarse and hAllSkyFine to: " << filename << endl;
+  hAllSkyCoarse.Write("hAllSkyCoarse");
+  hAllSkyFine.Write("hAllSkyFine");
+  hAllSkyFineLLH.Write("hAllSkyFineLLH");
+  fileOutput->Close();
+  return true;  // file saved (apparently!)
+}

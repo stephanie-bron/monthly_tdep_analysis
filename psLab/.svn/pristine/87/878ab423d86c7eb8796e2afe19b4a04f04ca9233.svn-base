@@ -1,0 +1,10 @@
+#!/bin/bash
+
+for i in $(seq 0 22)
+do
+  echo "/net/user/mfbaker/testlab/branches/multi_time/npx-start.sh root -b -q /net/user/mfbaker/testlab/branches/multi_time/macro_llh/ic59/npx/rootSubmitMacro_lcMulti.C'($i)'" > /net/user/mfbaker/testlab/branches/multi_time/macro_llh/ic59/npx/scripts/npx-lcflares$i.sh
+  echo $i
+  chmod a+x /net/user/mfbaker/testlab/branches/multi_time/macro_llh/ic59/npx/scripts/npx-lcflares$i.sh
+  ./scriptSubmit_npx2-uwa.sh $i /net/user/mfbaker/testlab/branches/multi_time/macro_llh/ic59/npx/scripts/npx-lcflares$i.sh
+  sleep 240 
+done

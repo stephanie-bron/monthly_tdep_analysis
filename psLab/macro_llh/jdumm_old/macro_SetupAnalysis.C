@@ -1,0 +1,32 @@
+
+{
+  bool optUseRealData = true;
+
+  psData->SetBaseEvents(baseEvents);
+
+  cout << "psData:\n";
+  if (optUseRealData) {
+    psData->UseRealData();   
+    cout << "  * * * * *   U S I N G   R E A L   D A T A  ! !  * * * * *\n";
+  } else {
+    psData->GenerateDataSet_with_nSrcEvents(0);
+    cout << "  Using scrambled data\n";
+  }
+
+  bool llhUseEnergy = true;
+  double llhOptimizeTolerance = 0.01;
+  double llhOptimizeAngleDeg = 10.;
+  
+  LlhEnergy llhEnergyFn;
+  llhEnergyFn.SetUseEnergy(llhUseEnergy);
+  llhEnergyFn.SetOptimizeAngleDeg(llhOptimizeAngleDeg);
+  llhEnergyFn.SetOptimizeTolerance(llhOptimizeTolerance);
+  //  llhEnergyFn.SetParDef(1,2.,0.,2.,2.,true);
+  llhEnergyFn->SetMonitorLevel(0);
+  cout << "LlhEnergy:\n";
+  cout << "  using energy (0 or 1): " << llhUseEnergy << endl;
+  cout << "  OptimizeAngleDeg: " << llhOptimizeAngleDeg << endl;
+  cout << "  OptimizeTolerance: " << llhOptimizeTolerance << endl;
+
+  AnalysisLlh &llhFn = llhEnergyFn;
+}

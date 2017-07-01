@@ -1,0 +1,341 @@
+
+Processing Track_multi_40597986_discpot_northernsky.C...
+Preload: /net/user/mrameez/psLab_Debian_64/labcore/preload.C
+
+LAB_COORDINATE_PROJECT not specified....
+Will use coordinate-service as default.
+(See 'labcore/start_lab.sh' or 'llh/loadlibs.C' for how to change)
+
+Building/Loading:  rootExt/public
+Error in <TGClient::TGClient>: can't open display "", switching to batch mode...
+ In case you run from a remote ssh session, reconnect with ssh -Y
+Building/Loading:  fluxus/public
+Loading libcoordinate-service
+Building/Loading:  llh/public
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/SNRCat_PWN/./RescaledSigma_IC86_SplineMPE_C.so
+
+Initializing ran1 with random seed = -55
+
+-----  LOADING IC-40  -----
+Will load scrambled times for Base Data.
+Livetime (Days): 375.539
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 36900 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% (36900 entries in tree passed cuts)
+Background set has 36900 events.
+Filling Energy PDFs:
+----- IC-40 Loaded -----
+
+-----  LOADING IC-59 BDT  -----
+Loaded tree
+Will load scrambled times for Base Data.
+Livetime (Days): 348.138
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 107569 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (107569 entries in tree passed cuts)
+Background set has 107569 events.
+Filling Energy PDFs:
+Real time 0:00:38, CP time 38.150
+----- IC-59 BDT Loaded -----
+
+-----  LOADING IC-79 BDT  -----
+Loaded tree
+Will load scrambled times for Base Data.
+Livetime (Days): 316.153
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 109866 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (109866 entries in tree passed cuts)
+Background set has 109866 events.
+Filling Energy PDFs:
+Real time 0:00:40, CP time 40.010
+Warning in <TStreamerInfo::Compile>: Counter fNClusterRange should not be skipped from class TTree
+----- IC-79 BDT Loaded -----
+
+-----  LOADING IC-86 BDT -----
+Loaded tree
+Will load scrambled times for Base Data.
+Livetime (Days): 332.61
+Configuring Source Event Sample...
+Rescaling using SplineMPE...
+Loading Background Events: 
+Selecting events from 138323 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (138323 entries in tree passed cuts)
+Background set has 138323 events.
+Filling Energy PDFs:
+0.9 25.8419
+0.85 31.7883
+0.8 36.8699
+0.75 41.4096
+0.7 45.573
+0.65 49.4584
+0.6 53.1301
+0.55 56.633
+0.5 60
+0.45 63.2563
+0.4 66.4218
+0.35 69.5127
+0.3 72.5424
+0.25 75.5225
+0.2 78.463
+0.15 81.3731
+0.1 84.2608
+-2.08167e-16 90
+-0.2 101.537
+-0.4 113.578
+-0.6 126.87
+-0.8 143.13
+backfill
+set table gamma
+Real time 0:01:16, CP time 76.040
+----- IC-86 BDT Loaded -----
+Setting up Stacking Analysis Sources (Starburst Galaxies)...
+Weight source simulation by Integrated Gamma Flux: 1
+Weight search hypothesis by Integrated Gamma Flux: 1
+000    G054.1+00.3 292.63  18.87  0.07
+1 001    G093.3+06.9 313.10  55.35  0.03
+2 Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+2 total Starburst sources read.
+Loading Source Events... (This may take a while)
+Selecting events from 621908 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (621908 entries in tree passed cuts)
+Src at Zenith = 108.867 ,  selecting events with MCZenith in range ( 108.367 , 109.367 )
+Selected 50460 events using new ExtLoader with many dec bands.
+Selecting events from 1628617 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (1628617 entries in tree passed cuts)
+Src at Zenith = 108.867 ,  selecting events with MCZenith in range ( 108.367 , 109.367 )
+Selected 150660 events using new ExtLoader with many dec bands.
+Selecting events from 2146482 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (2146482 entries in tree passed cuts)
+Src at Zenith = 108.867 ,  selecting events with MCZenith in range ( 108.367 , 109.367 )
+Selected 192040 events using new ExtLoader with many dec bands.
+Selecting events from 1256458 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (1256458 entries in tree passed cuts)
+Src at Zenith = 108.867 ,  selecting events with MCZenith in range ( 108.367 , 109.367 )
+Selected 100800 events using new ExtLoader with many dec bands.
+.Src at Zenith = 145.35 ,  selecting events with MCZenith in range ( 144.85 , 145.85 )
+Selected 13980 events using new ExtLoader with many dec bands.
+Src at Zenith = 145.35 ,  selecting events with MCZenith in range ( 144.85 , 145.85 )
+Selected 51800 events using new ExtLoader with many dec bands.
+Src at Zenith = 145.35 ,  selecting events with MCZenith in range ( 144.85 , 145.85 )
+Selected 68780 events using new ExtLoader with many dec bands.
+Src at Zenith = 145.35 ,  selecting events with MCZenith in range ( 144.85 , 145.85 )
+Selected 39800 events using new ExtLoader with many dec bands.
+.
+
+Calculating Stacking Weight vs Gamma Tables...
+ Src at Zenith = 108.867 ,  selecting events with MCZenith in range ( 108.367 , 109.367 )
+Selected 2523 events.
+Src at Zenith = 145.35 ,  selecting events with MCZenith in range ( 144.85 , 145.85 )
+Selected 699 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.4868 0.5132 
+01:  0.4964 0.5036 
+02:  0.5069 0.4931 
+03:  0.5184 0.4816 
+04:  0.5308 0.4692 
+05:  0.5442 0.4558 
+06:  0.5585 0.4415 
+07:  0.5736 0.4264 
+08:  0.5895 0.4105 
+09:  0.6060 0.3940 
+10:  0.6230 0.3770 
+11:  0.6403 0.3597 
+12:  0.6577 0.3423 
+13:  0.6753 0.3247 
+14:  0.6929 0.3071 
+15:  0.7105 0.2895 
+16:  0.7280 0.2720 
+17:  0.7454 0.2546 
+18:  0.7628 0.2372 
+19:  0.7803 0.2197 
+20:  0.7978 0.2022 
+21:  0.8154 0.1846 
+22:  0.8330 0.1670 
+23:  0.8506 0.1494 
+24:  0.8681 0.1319 
+25:  0.8851 0.1149 
+26:  0.9014 0.0986 
+27:  0.9168 0.0832 
+28:  0.9308 0.0692 
+29:  0.9434 0.0566 
+Src at Zenith = 108.867 ,  selecting events with MCZenith in range ( 108.367 , 109.367 )
+Selected 7533 events.
+Src at Zenith = 145.35 ,  selecting events with MCZenith in range ( 144.85 , 145.85 )
+Selected 2590 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.6600 0.3400 
+01:  0.6593 0.3407 
+02:  0.6589 0.3411 
+03:  0.6589 0.3411 
+04:  0.6594 0.3406 
+05:  0.6604 0.3396 
+06:  0.6619 0.3381 
+07:  0.6641 0.3359 
+08:  0.6669 0.3331 
+09:  0.6703 0.3297 
+10:  0.6744 0.3256 
+11:  0.6792 0.3208 
+12:  0.6848 0.3152 
+13:  0.6912 0.3088 
+14:  0.6985 0.3015 
+15:  0.7068 0.2932 
+16:  0.7163 0.2837 
+17:  0.7271 0.2729 
+18:  0.7394 0.2606 
+19:  0.7534 0.2466 
+20:  0.7692 0.2308 
+21:  0.7867 0.2133 
+22:  0.8057 0.1943 
+23:  0.8259 0.1741 
+24:  0.8468 0.1532 
+25:  0.8676 0.1324 
+26:  0.8878 0.1122 
+27:  0.9066 0.0934 
+28:  0.9237 0.0763 
+29:  0.9387 0.0613 
+Src at Zenith = 108.867 ,  selecting events with MCZenith in range ( 108.367 , 109.367 )
+Selected 9602 events.
+Src at Zenith = 145.35 ,  selecting events with MCZenith in range ( 144.85 , 145.85 )
+Selected 3439 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.6477 0.3523 
+01:  0.6541 0.3459 
+02:  0.6599 0.3401 
+03:  0.6653 0.3347 
+04:  0.6702 0.3298 
+05:  0.6747 0.3253 
+06:  0.6788 0.3212 
+07:  0.6826 0.3174 
+08:  0.6862 0.3138 
+09:  0.6896 0.3104 
+10:  0.6930 0.3070 
+11:  0.6964 0.3036 
+12:  0.7001 0.2999 
+13:  0.7042 0.2958 
+14:  0.7090 0.2910 
+15:  0.7146 0.2854 
+16:  0.7213 0.2787 
+17:  0.7294 0.2706 
+18:  0.7392 0.2608 
+19:  0.7508 0.2492 
+20:  0.7644 0.2356 
+21:  0.7800 0.2200 
+22:  0.7974 0.2026 
+23:  0.8164 0.1836 
+24:  0.8365 0.1635 
+25:  0.8570 0.1430 
+26:  0.8773 0.1227 
+27:  0.8967 0.1033 
+28:  0.9146 0.0854 
+29:  0.9307 0.0693 
+Src at Zenith = 108.867 ,  selecting events with MCZenith in range ( 108.367 , 109.367 )
+Selected 5040 events.
+Src at Zenith = 145.35 ,  selecting events with MCZenith in range ( 144.85 , 145.85 )
+Selected 1990 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.6617 0.3383 
+01:  0.6623 0.3377 
+02:  0.6630 0.3370 
+03:  0.6637 0.3363 
+04:  0.6645 0.3355 
+05:  0.6654 0.3346 
+06:  0.6664 0.3336 
+07:  0.6676 0.3324 
+08:  0.6689 0.3311 
+09:  0.6706 0.3294 
+10:  0.6727 0.3273 
+11:  0.6752 0.3248 
+12:  0.6783 0.3217 
+13:  0.6822 0.3178 
+14:  0.6871 0.3129 
+15:  0.6931 0.3069 
+16:  0.7005 0.2995 
+17:  0.7095 0.2905 
+18:  0.7202 0.2798 
+19:  0.7330 0.2670 
+20:  0.7478 0.2522 
+21:  0.7647 0.2353 
+22:  0.7834 0.2166 
+23:  0.8037 0.1963 
+24:  0.8251 0.1749 
+25:  0.8471 0.1529 
+26:  0.8689 0.1311 
+27:  0.8899 0.1101 
+28:  0.9094 0.0906 
+29:  0.9269 0.0731 
+Weights for Gamma=1: 0.200938 0.256568 0.249883 0.292611  
+Weights for Gamma=1.1: 0.201813 0.255342 0.2508 0.292045  
+Weights for Gamma=1.2: 0.201924 0.253994 0.251877 0.292206  
+Weights for Gamma=1.3: 0.20126 0.252491 0.253145 0.293104  
+Weights for Gamma=1.4: 0.199807 0.250843 0.254646 0.294704  
+Weights for Gamma=1.5: 0.197543 0.249086 0.256428 0.296943  
+Weights for Gamma=1.6: 0.194444 0.247265 0.258539 0.299753  
+Weights for Gamma=1.7: 0.190495 0.24542 0.261014 0.303071  
+Weights for Gamma=1.8: 0.185706 0.243578 0.263874 0.306842  
+Weights for Gamma=1.9: 0.180118 0.241749 0.267115 0.311017  
+Weights for Gamma=2: 0.173806 0.239935 0.270713 0.315546  
+Weights for Gamma=2.1: 0.166874 0.238129 0.27462 0.320377  
+Weights for Gamma=2.2: 0.159448 0.23633 0.278771 0.325451  
+Weights for Gamma=2.3: 0.151666 0.234543 0.283085 0.330706  
+Weights for Gamma=2.4: 0.143672 0.232781 0.287478 0.336069  
+Weights for Gamma=2.5: 0.135605 0.231063 0.291866 0.341467  
+Weights for Gamma=2.6: 0.127597 0.229412 0.296171 0.346819  
+Weights for Gamma=2.7: 0.119767 0.227852 0.300329 0.352052  
+Weights for Gamma=2.8: 0.112214 0.226402 0.304291 0.357094  
+Weights for Gamma=2.9: 0.105018 0.225073 0.308025 0.361883  
+Weights for Gamma=3: 0.0982391 0.223871 0.311518 0.366372  
+Weights for Gamma=3.1: 0.0919133 0.222789 0.314773 0.370525  
+Weights for Gamma=3.2: 0.0860582 0.221818 0.317803 0.374321  
+Weights for Gamma=3.3: 0.0806734 0.220939 0.320637 0.37775  
+Weights for Gamma=3.4: 0.0757451 0.220131 0.323309 0.380815  
+Weights for Gamma=3.5: 0.0712488 0.21937 0.325858 0.383524  
+Weights for Gamma=3.6: 0.0671534 0.218632 0.328325 0.38589  
+Weights for Gamma=3.7: 0.0634236 0.217891 0.330754 0.387931  
+Weights for Gamma=3.8: 0.0600227 0.217126 0.333189 0.389662  
+Weights for Gamma=3.9: 0.0569143 0.216314 0.335671 0.391101  
+Weights for Gamma=4: 0.0540638 0.215438 0.338239 0.392259  
+ark_SetDisco:
+!! disco set with:
+   Loops: 15
+   Significance: 2.87e-07   Power: 0.5
+ Mean Number of Source events expected for source model: 4.78153e+09
+ Detection Significance: 2.87e-07  Detection Power: 0.5
+ Mean: 18   Power: 53.1352% +/-28.0283%
+ Mean: 19   Power: 47.2909% +/-23.0715%
+ Mean: 19.6   Power: 49.9736% +/-20.9846%
+ Mean: 19.6   Power: 50.2514% +/-16.9734%
+ Mean: 20.04   Power: 49.9731% +/-14.7225%
+ Mean: 22.6   Power: 50.0385% +/-14.425%
+ Mean: 21.44   Power: 50.0346% +/-8.52455%
+ Mean: 21.44   Power: 49.9855% +/-6.24084%
+ Mean: 21.712   Power: 50.0196% +/-5.18091%
+ Mean: 21.872   Power: 50.0151% +/-4.24744%
+ Mean: 22.008   Power: 50.0147% +/-3.48744%
+ Mean: 21.896   Power: 50.0012% +/-3.05918%
+ Mean: 21.936   Power: 49.993% +/-2.71215%
+ Mean: 21.92   Power: 49.9845% +/-2.50792%
+ Mean: 21.8176   Power: 50.0023% +/-2.37734%
+Poisson Mean nSrcEv for 50+/-2.27166 % detection probability: 21.6752
+Threshold significance for detection: 2.87e-07
+  Flux scale relative to model is: 4.53311e-09
+Info in <TCanvas::SaveAs>: ROOT file discpot.root has been created
+Info in <TCanvas::SaveSource>: C++ Macro file: discpot.C has been generated
+..q.qqq.qq.qqqq.qqq.qqqqqq

@@ -1,0 +1,179 @@
+TString LOADTREE_DIR = "/home/aguilar/IceCube/data/";
+
+TTree* LoadTree_IC79_nugen_numu_6308_small() {
+  
+  TString file1 = LOADTREE_DIR+"/final_up.v1.nugen_numu_6308_4991f.root";
+  
+  TChain *tree = new TChain("L3CutsTree");
+
+  tree->Add(file1);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+  int nFiles =  4991;
+  
+  TString bfile1 = LOADTREE_DIR+"/BDT_v2_up_final_up.v1.nugen_numu_6308_4991f.root";
+  TString bfile2 = LOADTREE_DIR+"/BDT_v2_ho_final_up.v1.nugen_numu_6308_4991f.root";
+  TString bfile3 = LOADTREE_DIR+"/BDT_v1_up_LOW_final_up.v1.nugen_numu_6308_4991f.root";
+  TString bfile4 = LOADTREE_DIR+"/BDT_v1_ho_LOW_final_up.v1.nugen_numu_6308_4991f.root";
+
+  
+  TChain *btree1 = new TChain("BDT1");
+  btree1->Add(bfile1);
+
+  TChain *btree2 = new TChain("BDT2");
+  btree2->Add(bfile2);
+
+  TChain *btree3 = new TChain("BDT1");
+  btree3->Add(bfile3);
+  btree3->SetName("BDT3");
+  
+
+  TChain *btree4 = new TChain("BDT2");
+  btree4->Add(bfile4);
+  btree4->SetName("BDT4");
+  
+  
+  assert(tree->GetNtrees() == btree1->GetNtrees());
+  assert(tree->GetNtrees() == btree2->GetNtrees());
+  assert(tree->GetNtrees() == btree3->GetNtrees());
+  assert(tree->GetNtrees() == btree4->GetNtrees());
+  
+  tree->AddFriend(btree1);
+  tree->AddFriend(btree2);
+  tree->AddFriend(btree3);
+  tree->AddFriend(btree4);
+
+
+  TString nufluxfile = LOADTREE_DIR+"/NuFlux_final_up.v1.nugen_numu_6308_4991f.root";
+  TChain *nufluxtree = new TChain("NuFlux");
+  nufluxtree->Add(nufluxfile);
+  
+  assert(tree->GetNtrees() == nufluxtree->GetNtrees());
+  tree->AddFriend(nufluxtree);
+  
+  
+  
+  tree->SetAlias("mcPrimary_Zenith_rad",  "MC_Zr");
+  tree->SetAlias("mcPrimary_Azimuth_rad", "MC_Ar");
+  tree->SetAlias("mcPrimary_Energy_GeV",  "MC_En");
+  tree->SetAlias("mcOneWeight",           "OW");
+  tree->SetAlias("mueEn",                 "MuE_FINAL_MUON_En");
+  tree->SetAlias("NChan",                 "NCh");
+  tree->SetAlias("mZd",                   "MPE_FINAL_MUON_Zd");
+  tree->SetAlias("mAd",                   "MPE_FINAL_MUON_Ad");
+  tree->SetAlias("mpbSigmaDeg",           "MPE_Pb_FINAL_MUON_SigmaDeg");
+  
+  
+  tree->SetAlias("z",                     "cos(mZd*TMath::DegToRad())");
+
+  //tree->SetAlias("BartolFluxWeight",      "BartolFluxWeightForOneFile");
+
+  tree->SetAlias("BartolFluxWeight",      "NuFlux.bartol_naumov");
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  TString mcTotalGeneratedEvents = "NEvents * " + TStringify(nFiles);
+  
+
+
+  tree->SetAlias("mcTotalGeneratedEvents", mcTotalGeneratedEvents);
+  tree->SetAlias("NFiles",TStringify(nFiles));
+  
+  //--------------------//
+
+
+  // OTHER, EXTRA ALIASES:
+
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+
+  return tree;
+}
+
+
+TTree* LoadTree_IC79_GoodRuns_BDT_12d_small() {
+  
+  TString files = LOADTREE_DIR+"/final_up.v1.GoodRunList_12.4d.root";
+  
+  TChain *tree = new TChain("L3CutsTree");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+  
+  
+  double livetimeTotal = 1075968.0; //seconds
+
+  double tmin = 54971.154549; //in MJD
+  double tmax = 55347.284392;
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+  
+  
+  TString bfile1 = LOADTREE_DIR+"/BDT_v2_up_final_up.v1.GoodRunList_12.4d.root";
+  TString bfile2 = LOADTREE_DIR+"/BDT_v2_ho_final_up.v1.GoodRunList_12.4d.root";
+  TString bfile3 = LOADTREE_DIR+"/BDT_v1_up_LOW_final_up.v1.GoodRunList_12.4d.root";
+  TString bfile4 = LOADTREE_DIR+"/BDT_v1_ho_LOW_final_up.v1.GoodRunList_12.4d.root";
+
+  
+  TChain *btree1 = new TChain("BDT1");
+  btree1->Add(bfile1);
+  
+  TChain *btree2 = new TChain("BDT2");
+  btree2->Add(bfile2);
+
+  TChain *btree3 = new TChain("BDT1");
+  btree3->Add(bfile3);
+  btree3->SetName("BDT3");
+  
+
+  TChain *btree4 = new TChain("BDT2");
+  btree4->Add(bfile4);
+  btree4->SetName("BDT4");
+  
+  
+  assert(tree->GetNtrees() == btree1->GetNtrees());
+  assert(tree->GetNtrees() == btree2->GetNtrees());
+  assert(tree->GetNtrees() == btree3->GetNtrees());
+  assert(tree->GetNtrees() == btree4->GetNtrees());
+  
+  tree->AddFriend(btree1);
+  tree->AddFriend(btree2);
+  tree->AddFriend(btree3);
+  tree->AddFriend(btree4);
+
+
+
+
+
+
+
+
+  tree->SetAlias("livetimeTotal", " 1075968.0 * NCh/NCh");
+  tree->SetAlias("tmin", TStringify(tmin));
+  tree->SetAlias("tmax", TStringify(tmax));
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("timeMJD","MJDay+(MJSec+MJNanoSec*1e-9)/86400.");
+
+
+
+  
+  tree->SetAlias("mueEn",                 "MuE_FINAL_MUON_En");
+  tree->SetAlias("NChan",                 "NCh");
+  tree->SetAlias("mZd",                   "MPE_FINAL_MUON_Zd");
+  tree->SetAlias("mAd",                   "MPE_FINAL_MUON_Ad");
+  tree->SetAlias("mpbSigmaDeg",           "MPE_Pb_FINAL_MUON_SigmaDeg");
+  
+
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+  tree->SetAlias("z","cos(mZd*TMath::DegToRad())");
+
+  return tree;
+}
+
+

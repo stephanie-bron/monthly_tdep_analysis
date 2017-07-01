@@ -1,0 +1,43 @@
+
+{
+  TCut weight = "OW*pow(mcEn,-3)";
+
+  if (1) {
+    TCut zenCut = "mcZd>120 && mcZd<150";
+    TCut azCut1 = "(mAd>50 && mAd<100)";
+    TCut azCut2 = "(mAd>130 && mAd<180)";
+  }
+
+  if (0) {
+    TCut zenCut = "mcZd>45 && mcZd<65";
+    TCut azCut1 = "(mAd>315 && mAd<325)";
+    TCut azCut2 = "(mAd>108 && mAd<110)*5";
+  }
+
+
+  TCut geoCut1 = zenCut*azCut1;
+  TCut geoCut2 = zenCut*azCut2;
+
+  srcTree->Draw("log10(mmueEn)>>gg2(24,2,8)",weight*geoCut2);
+  srcTree->Draw("log10(mmueEn)>>gg(24,2,8)", weight*geoCut1,"same");
+  gg2->SetLineColor(2);
+
+
+  srcTree->Draw("mpfSigmaDeg>>gg2(40,0,2)",weight*geoCut2);
+  srcTree->Draw("mpfSigmaDeg>>gg(40,0,2)", weight*geoCut1,"same");
+  gg2->SetLineColor(2);
+
+
+  TLegend legend(0.5,0.7,0.9,0.9);
+  legend.SetFillColor(0);
+  legend.AddEntry(gg,azCut1.GetTitle());
+  legend.AddEntry(gg2,azCut2.GetTitle());
+  legend.Draw();
+
+  /*
+  HistIntegral hi;
+  hi.Ascending(gg)->Draw();
+  hi.Ascending(gg)->DrawClone();
+  hi.Ascending(gg2)->Draw("same");
+  */
+}

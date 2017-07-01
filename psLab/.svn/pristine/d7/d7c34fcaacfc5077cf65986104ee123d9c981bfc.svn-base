@@ -1,0 +1,111 @@
+
+class Ark {
+ public:
+  AnalysisSet* psData;
+  EquatorialDeg mySrcLocation;
+
+  Ark() { }
+  virtual ~Ark() { }  // take care of psData in non-abstract derived classes
+
+  virtual void SetPointSource(EquatorialDeg srcCoord, const FluxBase& flux) = 0;
+
+  // just some user-friendly alternatives
+
+  void SetPointSource(double raDeg, double decDeg, 
+		      double fluxConstant, double index) {
+    PowerLawFlux flux(fluxConstant, index);
+    printf("FluxConstant: %lg   PowerLaw Index: %lg   (GeV^-1 cm^-2 s^-1)\n", 
+	   flux.GetSpectralIndex(), flux.GetFluxConstant() );
+    SetPointSource(EquatorialDeg(raDeg, decDeg), flux);
+  }
+
+  void SetPointSource(double raDeg, double decDeg, const char* formula) {
+    FormulaFlux flux(formula);
+    printf("Formula: %s\n  where x is GeV, and flux is GeV^-1 cm^-2 s^-1\n",
+	   flux.GetFormula() );
+    SetPointSource(EquatorialDeg(raDeg, decDeg), formula);
+  }
+};
+
+
+
+class MultiArk : public Ark {
+ public:
+  Ark* arkPtrArray[10];  // 10 is good for now!
+  int n;
+
+  MultiArk() {
+    psData = new MultiAnalysisSet();
+    for (int i=0; i<10; ++i) { 
+      arkPtrArray[i] = NULL;
+    }
+    n = 0;
+  }
+  ~MultiArk() { delete psData; }
+  
+  void AddArk(Ark& ark) {
+    arkPtrArray[n] = &ark;
+    (dynamic_cast<MultiAnalysisSet*> psData)->AddAnalysisSet(ark.psData);
+    ++n;
+  }
+
+  virtual void SetPointSource(EquatorialDeg srcCoord, const FluxBase& flux) {
+    mySrcLocation = srcCoord;
+    int i=0;
+    while (arkPtrArray[i]) {
+      arkPtrArray[i]->SetPointSource(srcCoord, flux);
+      ++i;
+    }
+  }
+};
+  
+
+
+/*
+  Instead of:
+    TTree* baseTree;
+    TTree* srcTree;
+  Now use:
+    evLoader.GetBkgTree();
+    evLoader.GetSourceTree();
+*/
+
+class I3Ark : public Ark {
+ public:
+  double livetime;
+  EventLoader evLoader;
+  vector<I3Event> baseEvents;
+  SimpleEnergyProb* eProb;
+  DecBkgProb decBkgProb;
+
+  double sourceZenWidthDeg;
+  // This is the +/- zenith range in degrees to select MC events from,
+  // and then rotate to desired source location.
+  // (Smaller range is more accurate, but trade-off is lower statistics
+  // for signal simulation.  You have to pick something appropriate for the 
+  // statistics you have.)
+
+  Ark() : 
+    livetime(0), 
+    sourceZenWidthDeg(0)
+  { }
+
+  ~Ark() {
+    if (psData) { delete psData; }
+    if (eProb) { delete eProb; }
+  }
+
+
+  virtual void SetPointSource(EquatorialDeg srcCoord, const FluxBase& flux) {
+    mySrcLocation = srcCoord;
+    cout << "mySrcLocation set to:  "<< mySrcLocation.GetRa()<<" r.a., ";
+    cout << mySrcLocation.GetDec() << " dec.\n";
+    
+    vector<I3Event> sourceEvents;
+    evLoader.LoadSourceEvents(sourceEvents, mySrcLocation);
+    i3point = I3PointGenerator(sourceEvents, flux, mySrcLocation, livetime);
+    (dynamic_cast<I3Analysis*> psData)->SetSource(i3point);
+    // psData set with Source; accessible via: psData.GetSource()
+  }
+  
+};

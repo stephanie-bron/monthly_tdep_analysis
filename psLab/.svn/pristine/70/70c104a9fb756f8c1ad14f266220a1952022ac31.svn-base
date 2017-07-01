@@ -1,0 +1,31 @@
+
+{
+
+
+  TimePdf * tPdf = new BlockTimePdf1();
+  tPdf->SetBlockLevels("/net/user/mfbaker/data/GOES/blockdata_a_hourly.txt",1e-8,0);
+  tPdf->CheckTimeBounds(55565.5, 55642.);
+  tPdf->fillHisto();
+  tPdf->GetHisto()->Draw();
+
+  vector<SNEvent> sVect = sna->GetEvents();
+  double sweight, bweight, soverb, str;
+  
+  for (int i=0;i<(int)sVect.size();i++) {
+    SNEvent * sev = &sVect[i];
+    sweight = 1.;
+    bweight = sev->GetSimpleProbFn()->GetProbBkg(sev);
+  
+    soverb = sweight / bweight;
+    str = sev->GetStrength() - 6.;
+  
+//    l = new TLine(sev->GetTime().GetMJD(), 1e-2, sev->GetTime().GetMJD(), log10(soverb) );
+    l = new TLine(sev->GetTime().GetMJD(), 1e-4, sev->GetTime().GetMJD(), str );  
+  
+    l->SetLineWidth(1);
+    l->SetLineColor(4);
+    l->Draw();
+  }
+    
+}
+  

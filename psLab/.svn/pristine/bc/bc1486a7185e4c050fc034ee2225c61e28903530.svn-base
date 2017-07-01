@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+use strict;
+
+
+my $first_ranSeed = 1000;
+my $last_ranSeed  = 1149;
+
+
+#my $sleepBetweenSubmit = 240;  # seconds
+my $sleepBetweenSubmit =   30;  # seconds
+
+
+
+my $envSh     = "/net/user/mfbaker/psLab/trunk/start-npx.sh";
+
+my $mainDir   = "/net/user/mfbaker/psLab/trunk/macro_llh/ic59/npx";
+
+my $scriptDir = "$mainDir/scripts";
+
+
+
+for (my $seed=$first_ranSeed; $seed<=$last_ranSeed; $seed++) # seed is pos here
+{
+    my $number = sprintf("%08d",abs($seed));
+    my $scriptFile = sprintf("%s/scriptMultiMap4059_%s.sh",$scriptDir,$number);
+    
+    if (-e $scriptFile) {
+	print "Warning: $number exists:  Overwriting  $scriptFile\n"; 
+    }
+
+    open OUTPUT, ">$scriptFile";
+
+    my $script = "$envSh root -b -q /net/user/mfbaker/psLab/trunk/macro_llh/ic59/npx/root_mapgen.C'($seed)'\n";    
+
+    print OUTPUT $script;
+
+    close OUTPUT;
+    system "chmod 744 $scriptFile";
+}
+
+
+print $last_ranSeed-$first_ranSeed+1 . " shell scripts written.\n";
+print "Type 'yes' to submit jobs, or anything else to quit.\n";
+
+my $choice = <STDIN>;
+
+
+if ($choice eq "yes\n") {
+
+    my $count = 0;
+    for (my $seed=$first_ranSeed; $seed<=$last_ranSeed; $seed++)
+    {
+	++$count;
+	my $number = sprintf("%08d",abs($seed));
+	my $scriptFile = sprintf("%s/scriptMultiMap4059_%s.sh",$scriptDir,$number);
+
+	print "Job being submitted: $count\n";
+	system "./scriptSubmit_npx2-uwa.sh $number $scriptFile";
+	
+	if ($sleepBetweenSubmit>0 && $seed<$last_ranSeed) {
+	  print "Pausing $sleepBetweenSubmit second(s) till next submit...\n";
+	  sleep $sleepBetweenSubmit;
+        }
+    }
+
+    print $last_ranSeed-$first_ranSeed+1 . " jobs submitted.\n";
+} else {
+    print "No jobs submitted.\n";
+}

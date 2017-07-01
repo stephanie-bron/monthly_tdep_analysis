@@ -1,0 +1,21 @@
+
+// Note: how to allow negative signal events
+//  llhEnergyFn.SetParDef(0,0,1,-2,100);
+
+void SetLlhEnergy(LlhEnergy& llhEnergyFn,
+		  bool useEnergy = true,
+		  double optimizeAngleDeg = 10.,
+		  double optimizeTolerance = 0.01)
+{
+  cout << "SetLlhEnergy:\n";
+  
+  llhEnergyFn.SetUseEnergy(useEnergy);
+  llhEnergyFn.SetOptimizeAngleDeg(optimizeAngleDeg);
+  llhEnergyFn.SetOptimizeTolerance(optimizeTolerance);
+
+  cout << "Set LlhEnergy with:\n";
+  cout << "  Using energy: ";
+  cout << ((llhEnergyFn.GetUseEnergy()) ? "true" : "false") << endl;
+  cout << "  OptimizeAngleDeg: " << llhEnergyFn.GetOptimizeAngleDeg() << endl;
+  cout << "  OptimizeTolerance: "<< llhEnergyFn.GetOptimizeTolerance() << endl;
+}

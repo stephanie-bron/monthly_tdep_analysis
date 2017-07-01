@@ -1,0 +1,235 @@
+#!/usr/bin/env python
+import ROOT,sys
+ROOT.PyConfig.IgnoreCommandLineOptions = True
+gROOT = ROOT.gROOT
+TCanvas = ROOT.TCanvas
+TH2D = ROOT.TH2D
+TH1D = ROOT.TH1D
+TGraph =ROOT.TGraph
+TFile = ROOT.TFile
+
+import argparse,os
+from math import sqrt,log10
+from ctypes import c_double
+
+import numpy as np
+import SimpleMultiAnalysis
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='run psLab for MESE',prefix_chars='@')
+    parser.add_argument('@ra', required=True,  type=float, help='RA of the source in degrees')
+    parser.add_argument('@dec',required=True,  type=float, help='DEC of the source in degrees')
+    parser.add_argument('@o', required=True,  type=str, help='output dir, if set to "auto" it will be IC86II_IV_MESE_PSsample_allSkyTimeDep_disco_RA_DEC')
+    parser.add_argument('@plot', action='store_true' )
+    args = parser.parse_args()
+    
+    source_ra=args.__dict__["ra"]
+    source_dec=args.__dict__["dec"]
+    outdir=args.__dict__["o"]
+    if not args.__dict__["plot"]:
+        gROOT.SetBatch()
+
+    print "search coordinates",source_ra,source_dec
+    
+    if outdir=="auto":
+        outdir="IC86II_IV_MESE_PSsample_allSkyTimeDep_DiscoSens_RA_"+str(source_ra)+"_DEC_"+str(source_dec)
+    try:
+        os.makedirs(outdir)
+    except Exception as e:
+        if e.errno == 17:
+            print outdir+" alredy exists"
+        else:
+            sys.exit(e)
+
+    ROOT.OPT_USEREALDATA=False
+    
+    gROOT.Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C")
+
+    ROOT.initialize_ran1(-156)
+    NbinsZen=1
+    NbinsAz=10
+    
+    gROOT.ProcessLine(".L $LAB_MAIN_DIR/macro_llh/IC86-IV_TDep/ArkTime.C+")
+    gROOT.ProcessLine(".L SetDisco.C")
+    gROOT.ProcessLine(".L DetectionStudy.C")
+    
+    #for MESE    
+    gROOT.ProcessLine(".L $LAB_MAIN_DIR/macro_llh/IC86-IV_TDep/RescaledSigma_IC79_86_I_to_IV_SplineMPE_MESE.C+")
+    gROOT.ProcessLine(".L $LAB_MAIN_DIR/macro_llh/IC86-IV_TDep/TreeLoader_IC79_86_I_to_IV_MESE_lc.C")
+    gROOT.ProcessLine("I3Ark MESEark;")
+    gROOT.ProcessLine(".x $LAB_MAIN_DIR/macro_llh/IC86-IV_TDep/load_ark_IC86_II_to_IV_MESE_tdep_lc_folded.C(MESEark, OPT_USEREALDATA,\"SplineMPE\","+str(NbinsZen)+","+str(NbinsAz)+")")
+    
+    gROOT.ProcessLine(".L $LAB_MAIN_DIR/macro_llh/IC86-IV_TDep/RescaledSigma_IC86_II_III_IV_SplineMPE.C+")
+    gROOT.ProcessLine(".L $LAB_MAIN_DIR/macro_llh/IC86-IV_TDep/TreeLoader_IC86_II_III_IV_lc.C")
+    gROOT.ProcessLine("I3Ark psark;")
+    gROOT.ProcessLine(".x $LAB_MAIN_DIR/macro_llh/IC86-IV_TDep/load_ark_ic86_II_III_IV_tdep_lc.C(psark, OPT_USEREALDATA,\"SplineMPE\")")
+
+    
+    newllh86II_to_IV=ROOT.NewLlhGausTime()
+    newllh86II_to_IV.SetUseEnergy(True)
+    #newllh86II_to_IV.SetOptimizeAngleDeg(10.)
+    newllh86II_to_IV.SetOptimizeTolerance(0.001)
+    newllh86II_to_IV.SetMonitorLevel(0)
+    newllh86II_to_IV.SetEMaxRatioWarnOnlyOnce(1)
+    newllh86II_to_IV.close_ = 10.
+    newllh86II_to_IV.JimsTerm_ = True
+    newllh86II_to_IV.SpectralPenalty_ = False
+    newllh86II_to_IV.ndof_ = 3.
+    newllh86II_to_IV.SetLivetime(ROOT.MESEark.livetime/86400.)
+    newllh86II_to_IV.SetLocalCoordBkgProb(ROOT.MESEark.lcBkgProb,True) #true is there for the folded option
+    newllh86II_to_IV.SetAnalysisSet(ROOT.MESEark.psData)
+    
+    
+    newllh86PSII_to_IV=ROOT.NewLlhGausTime()
+    newllh86PSII_to_IV.SetUseEnergy(True)
+    #newllh86PSII_to_IV.SetOptimizeAngleDeg(10.)
+    newllh86PSII_to_IV.SetOptimizeTolerance(0.01)
+    newllh86PSII_to_IV.SetMonitorLevel(0)
+    newllh86PSII_to_IV.SetEMaxRatioWarnOnlyOnce(1)
+    newllh86PSII_to_IV.close_ = 10.
+    newllh86PSII_to_IV.JimsTerm_ = True
+    newllh86PSII_to_IV.SpectralPenalty_ = False
+    newllh86PSII_to_IV.ndof_ = 3.
+    newllh86PSII_to_IV.SetLivetime(ROOT.psark.livetime/86400.)
+    newllh86PSII_to_IV.SetLocalCoordBkgProb(ROOT.psark.lcBkgProb) 
+    newllh86PSII_to_IV.SetAnalysisSet(ROOT.psark.psData)
+    
+    gROOT.ProcessLine("MultiArk mark;")
+    ROOT.mark.AddArk(ROOT.MESEark)
+    ROOT.mark.AddArk(ROOT.psark)          
+
+    maf=ROOT.MultiGaussAnalysisFn()
+    maf.AddAnalysisFn(newllh86II_to_IV)
+    maf.AddAnalysisFn(newllh86PSII_to_IV)
+    maf.SetTimeBounds(ROOT.MESEark.tmin,ROOT.MESEark.tmax )
+    maf.SetTimeBounds(ROOT.psark.tmin,ROOT.psark.tmax )
+
+    testSearch=ROOT.EquatorialDeg(source_ra, source_dec)
+    tmean = (ROOT.MESEark.tmax + ROOT.MESEark.tmin)/2.
+    tmean = (ROOT.psark.tmax + ROOT.psark.tmin)/2.
+    #tPdf = ROOT.GaussianTimePdf(ROOT.MESEark.tmin, ROOT.MESEark.tmax, tmean, 1., 1.)
+    tPdf = ROOT.GaussianTimePdf(ROOT.psark.tmin, ROOT.psark.tmax, tmean, 1e-5, 1.)
+    newllh86II_to_IV.SetTimeBounds(tPdf)
+    newllh86PSII_to_IV.SetTimeBounds(tPdf)
+    ROOT.mark.SetPointSource(testSearch, ROOT.PowerLawFlux(1,-2), tPdf)
+    maf.SetSearchCoord(testSearch)
+    
+    newllh86PSII_to_IV.SetAnalysis(ROOT.psark.psData, testSearch);
+    newllh86II_to_IV.SetAnalysis(ROOT.MESEark.psData, testSearch);
+
+    pt=ROOT.NewLlhGausTime_ParTranslator()
+    pt.SetRange(1,4,31) #gamma_min, gamma_max, nBins
+    gROOT.ProcessLine("MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);")
+
+    pt.SetTranslator(ROOT.mas)
+
+    maf.SetParTranslator(pt)
+    
+    disco=ROOT.DiscoveryPotential()
+  
+    #parameters:  loops, optMedianUpperLimit,  significance,  power);
+    ROOT.SetDisco(disco, 50, False, 2.87e-7, 0.5)
+  
+    dsigmas = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 3e-1, 1., 3., 5., 10, 1e2]
+    fscale =[]
+    n_disco=[]
+    c_fscale=c_double(0.)
+    gn_disco = TGraph(len(dsigmas))
+    gn_disco.SetNameTitle("disco","Discovery pot.;log_{10}(sigma [days]);n_{src}")
+    
+    gs_disco = TGraph(len(dsigmas))
+    gs_disco.SetNameTitle("fscale","Discovery pot.;log_{10}(sigma [days]);fscale")
+    spectralIndex=-2
+
+    for i in range(len(dsigmas)):
+        print "processing sigma", dsigmas[i],"for disco"
+        tPdf2 = ROOT.GaussianTimePdf(ROOT.psark.tmin, ROOT.psark.tmax, tmean,dsigmas[i],1.)
+        ROOT.psark.SetPointSource(testSearch, ROOT.PowerLawFlux(1.,spectralIndex), tPdf2)
+        nAzResetPS=ROOT.psark.lcBkgProb.nbAz
+        nAzResetMESE=ROOT.MESEark.lcBkgProb.nbAz
+        
+        if dsigmas[i] < 8e-2:
+            nAzResetPS=int(360./sqrt(dsigmas[i]))
+        if dsigmas[i] < 0.005:
+            nAzResetMESE=int(360./sqrt(dsigmas[i]))
+
+        ROOT.psark.psData.GetSource().SetTimeAzBins( nAzResetPS) 
+        ROOT.MESEark.psData.GetSource().SetTimeAzBins( nAzResetMESE) 
+        
+        newllh86II_to_IV.SetTimeBounds(tPdf2)
+        n_disco.append( ROOT.DetectionStudyGauss_d(ROOT.mark, maf, disco,c_fscale))
+        fscale.append(c_fscale.value)
+        print "sigma",dsigmas[i],"n_disco",n_disco[i],"fscale",fscale[i]
+        gn_disco.SetPoint(i,log10(dsigmas[i]),n_disco[i])
+        gs_disco.SetPoint(i,log10(dsigmas[i]),fscale[i])
+   
+   
+    ROOT.SetDisco(disco, 50, True, 0.5, 0.9)
+  
+    fscale_sens =[]
+    n_sens=[]
+
+    gn_sens = TGraph(len(dsigmas))
+    gn_sens.SetNameTitle("sens","Discovery pot.;log_{10}(sigma [days]);n_{src}")
+    
+    gs_sens = TGraph(len(dsigmas))
+    gs_sens.SetNameTitle("fscale_sens","Discovery pot.;log_{10}(sigma [days]);fscale")
+
+    for i in range(len(dsigmas)):
+        print "processing sigma", dsigmas[i],"for sens"
+        tPdf2 = ROOT.GaussianTimePdf(ROOT.psark.tmin, ROOT.psark.tmax, tmean,dsigmas[i],1.)
+        ROOT.psark.SetPointSource(testSearch, ROOT.PowerLawFlux(1.,spectralIndex), tPdf2)
+        nAzResetPS=ROOT.psark.lcBkgProb.nbAz
+        nAzResetMESE=ROOT.MESEark.lcBkgProb.nbAz
+        
+        if dsigmas[i] < 8e-2:
+            nAzResetPS=int(360./sqrt(dsigmas[i]))
+        if dsigmas[i] < 0.005:    
+            nAzResetMESE=int(360./sqrt(dsigmas[i]))
+        
+        ROOT.psark.psData.GetSource().SetTimeAzBins( nAzResetPS) 
+        ROOT.MESEark.psData.GetSource().SetTimeAzBins( nAzResetMESE) 
+        
+        newllh86II_to_IV.SetTimeBounds(tPdf2)
+        n_sens.append( ROOT.DetectionStudyGauss_d(ROOT.mark, maf, disco,c_fscale))
+
+        fscale_sens.append(c_fscale.value)
+        print "sigma",dsigmas[i],"n_sens",n_sens[i],"fscale",fscale_sens[i]
+        gn_sens.SetPoint(i,log10(dsigmas[i]),n_sens[i])
+        gs_sens.SetPoint(i,log10(dsigmas[i]),fscale_sens[i])
+   
+    fgr=TFile(outdir+"/disco_sens.root","recreate")
+    gn_disco.Write()
+    gs_disco.Write()
+    gn_sens.Write()
+    gs_sens.Write()
+    fgr.Close()
+    
+    outf=open(outdir+"/disco_sens.dat","w")
+    outf.write("sigma[days] ")
+    for i in range(len(dsigmas)):
+        outf.write(str(dsigmas[i])+" ")
+    outf.write("\n")
+    outf.write("disco_ns ")
+    for i in range(len(dsigmas)):
+        outf.write(str(n_disco[i])+" ")
+    outf.write("\n")
+    outf.write("disco_fs ")
+    for i in range(len(dsigmas)):
+        outf.write(str(fscale[i])+" ")
+    outf.write("\n")
+    outf.write("sens_ns ")
+    for i in range(len(dsigmas)):
+        outf.write(str(n_sens[i])+" ")
+    outf.write("\n")
+    outf.write("sens_fs ")
+    for i in range(len(dsigmas)):
+        outf.write(str(fscale_sens[i])+" ")
+    outf.write("\n")
+    outf.close()
+    if args.__dict__["plot"]:
+        raw_input("Press Enter to continue...")
+    
+    
+    
+    

@@ -1,0 +1,6 @@
+double RescaledSigma_IC86_SplineMPE_HESE(double Sigma, double Energy)
+{
+  double x = log10(Energy);
+  
+  return Sigma * (3.264 - 2.493 * pow(x,1.) + 1.813 * pow(x,2.) - 0.4131 * pow(x,3.) + 0.0315868 * pow(x,4.));
+}

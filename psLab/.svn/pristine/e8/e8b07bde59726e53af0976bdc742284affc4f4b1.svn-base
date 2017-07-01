@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import glob
+import socket
+
+def call(args, cwd=None, stdout=None, stderr=None, env=None):
+    """
+    Wrap the call function of the subprocess module for older pythons.
+    """
+
+    if not cwd:
+        cwd = os.getcwd()
+    if not stdout:
+        stdout = sys.stdout
+    if not stderr:
+        stderr = sys.stderr
+    if not env:
+        env = os.environ
+
+    try:
+        import subprocess
+        return subprocess.call(args,cwd=cwd,stdout=stdout,stderr=stderr,env=env)
+    except:
+        import popen2
+        if cwd:
+            os.chdir(cwd)
+        cmd = " ".join(args)
+        proc = popen2.Popen4(cmd)
+        for line in proc.fromchild:
+            stdout.write(line)
+        rc = proc.wait()
+        return rc
+
+
+if __name__ == "__main__":
+    """
+    Main function for the script.
+    """
+
+    host = socket.gethostname()
+
+    print "Submitting job with input and output files:"
+    
+    env = "/net/user/mrameez/trunk"
+    env += "/start.sh"
+    
+ 
+    if host == "npx4.icecube.wisc.edu":
+        
+        command = "\'/net/user/mrameez/trunk/macro_llh/ic79/Periodic/Track_mqso_ic405979_HESSJ0632plus057null_genTS_nomarg.C'"
+        print command
+        call(["/net/user/mrameez/submit_npx4.sh", env, "root", "-l", "-b", "-q", command])
+    else:
+        command = "/net/user/mrameez/trunk/macro_llh/ic79/Stacking/Starburst/Track_multi_405979_UNBLINDING_Sirin.C"
+        print command
+        call([env, "root", "-l", "-b", "-q", command])
+
+
+        #command = "\'/net/user/aguilar/work/IceCube/psLab_RHEL_6.0_amd64/macro_llh/ic79/Track_joint_IC79_IC59_IC40_discoE2_Sirin.C'"
+        #print command
+        #call(["/net/user/aguilar/submit_npx3.sh", env, "root", "-l", "-b", "-q", command])
+        
+        #command = "\'/net/user/aguilar/work/IceCube/psLab_RHEL_6.0_amd64/macro_llh/ic79/Track_joint_IC79_IC59_IC40_discoE3_Sirin.C'"
+        #print command
+        #call(["/net/user/aguilar/submit_npx3.sh", env, "root", "-l", "-b", "-q", command])
+            
+            

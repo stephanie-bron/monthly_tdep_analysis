@@ -1,0 +1,14 @@
+
+int ranSeed;
+
+void root_mapgen(int seed1){
+  
+  
+  ranSeed = -1 * seed1;
+  cout << "Using random seed " << ranSeed << "\n\n";
+  
+  gSystem->cd("/net/user/jfeintzeig/2013/psLab/macro_llh/ic86-I");
+  
+  gROOT->ProcessLine(".x Track_joint_IC86_SkyMap_Scrambled.C"); //everything is done and saved in here
+
+}

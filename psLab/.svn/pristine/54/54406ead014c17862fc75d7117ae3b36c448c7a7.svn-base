@@ -1,0 +1,80 @@
+
+{
+  gROOT->ProcessLine(".x $LAB_MAIN_DIR/astro_interface/loadlibs.C");
+  gROOT->ProcessLine(".L GetMonth.C");
+
+  TTree* atmTree = LoadTree_IC40_CutA5_nugen_numu_2326_small();
+  TCut atmWeight = "BartolFluxWeightForOneFile/5000*375*86400";
+  atmTree->SetLineColor(8);
+
+  TCanvas *can = new TCanvas("can","can",1000,800);
+  can->Divide(2,2,0.005,0.005);
+
+  if (0) {  
+    TH1D h1("h1","",450,54550,55000);
+    TH1D h2("h2","",450,54550,55000);
+    TH1D h3("h3","",450,54550,55000);
+    TH1D h4("h4","",450,54550,55000);
+    TString plotString = "timeMJD";
+    bool plotMC = false;
+  }
+
+  if (1) {
+    TH1D h1("h1","Feb-Mar-Apr;-cos(zen)",40,-1,1);
+    TH1D h2("h2","May-Jun-Jul;-cos(zen)",40,-1,1);
+    TH1D h3("h3","Aug-Sep-Oct;-cos(zen)",40,-1,1);
+    TH1D h4("h4","Nov-Dec-Jan;-cos(zen)",40,-1,1);
+    TString plotString = "-cos(mZr)";
+    bool plotMC = true;
+  }
+
+  can->cd(1);
+  baseTree->Draw(plotString+">>h1",
+		 "GetMonthFromMJD(timeMJD)>=2 && GetMonthFromMJD(timeMJD)<=4"
+		 );
+  h1.SetMinimum(0);
+  if (plotMC) {
+    double livetime_fraction = double(h1.GetEntries()) / baseTree.GetEntries();
+    TCut livetime_weight = TCut(TStringify(livetime_fraction));
+    atmTree->Draw(plotString,atmWeight*livetime_weight,"same");
+  }
+  can->Update();
+
+  can->cd(2);
+  baseTree->Draw(plotString+">>h2",
+		 "GetMonthFromMJD(timeMJD)>=5 && GetMonthFromMJD(timeMJD)<=7"
+		 );
+  h2.SetMinimum(0);
+  if (plotMC) {
+    double livetime_fraction = double(h1.GetEntries()) / baseTree.GetEntries();
+    TCut livetime_weight = TCut(TStringify(livetime_fraction));
+    atmTree->Draw(plotString,atmWeight*livetime_weight,"same");
+  }
+  can->Update();
+
+  can->cd(3);
+  baseTree->Draw(plotString+">>h3",
+		 "GetMonthFromMJD(timeMJD)>=8 && GetMonthFromMJD(timeMJD)<=10"
+		 );
+  h3.SetMinimum(0);
+  if (plotMC) {
+    double livetime_fraction = double(h1.GetEntries()) / baseTree.GetEntries();
+    TCut livetime_weight = TCut(TStringify(livetime_fraction));
+    atmTree->Draw(plotString,atmWeight*livetime_weight,"same");
+  }
+  can->Update();
+
+  can->cd(4);
+  baseTree->Draw(plotString+">>h4",
+		 "GetMonthFromMJD(timeMJD)>=11 || GetMonthFromMJD(timeMJD)==1"
+		 );
+  h4.SetMinimum(0);
+  if (plotMC) {
+    double livetime_fraction = double(h1.GetEntries()) / baseTree.GetEntries();
+    TCut livetime_weight = TCut(TStringify(livetime_fraction));
+    atmTree->Draw(plotString,atmWeight*livetime_weight,"same");
+  }
+  can->Update();
+
+
+}

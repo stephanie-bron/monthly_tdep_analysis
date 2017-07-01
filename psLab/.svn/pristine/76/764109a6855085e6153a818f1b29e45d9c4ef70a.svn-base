@@ -1,0 +1,129 @@
+{
+  bool RELOAD;
+
+  ofstream pFile40("IC40_events_noPoles_ASCII.txt", ios::out);
+
+  ofstream pFile59("IC59_events_noPoles_ASCII.txt", ios::out);
+
+  ofstream pFile79("IC79_events_noPoles_ASCII.txt", ios::out);
+
+  ofstream pFile86("IC86_events_noPoles_ASCII.txt", ios::out);
+
+  ofstream pFileAll("IC86_joint_events_noPoles_ASCII.txt", ios::out);
+  
+  if(!RELOAD)
+    {
+      RELOAD = true;
+      
+
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MuEX.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_SplineMPE.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MPE.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79Sirin.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaled2.C+");
+      gROOT->ProcessLine(".L DownFn1.C+");
+      gROOT->ProcessLine(".L DownFn2.C+");
+      gROOT->ProcessLine(".L ScoreCut.C+");
+
+      //it fails if i don't load my sigma first!
+      //gROOT->ProcessLine(".L RescaledSigma_IC86_SplineMPE.C+");
+      gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+      if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+      
+      SetPrettyStyle();
+      SetRootPalette(1);
+      
+      if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+      else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+      int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+      gROOT->ProcessLine(".L Ark.C");
+      
+      bool OPT_USEREALDATA = true;
+
+    
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MuEX.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_SplineMPE.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MPE.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79Sirin.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaled2.C+");
+
+      gROOT->ProcessLine(".L TreeLoader_IC86.C");
+      I3Ark arkIC86;
+      TString RecoName = "SplineMPE";
+      gROOT->ProcessLine(".x load_ark_ic86_BDT.C(arkIC86, OPT_USEREALDATA, RecoName)");
+
+      gROOT->ProcessLine(".L TreeLoader_IC79_Final.C");
+      gROOT->ProcessLine(".L TreeLoader_IC59_Final.C");
+      gROOT->ProcessLine(".L TreeLoader_IC40_CutA6_Fix_final.C");
+
+      I3Ark arkIC40;
+      gROOT->ProcessLine(".x load_ark_ic40.C(arkIC40, OPT_USEREALDATA)");
+      
+      I3Ark arkIC59;
+      gROOT->ProcessLine(".x load_ark_ic59_BDT.C(arkIC59, OPT_USEREALDATA)");
+      
+      I3Ark arkIC79;
+      gROOT->ProcessLine(".x load_ark_ic79_Sirin.C(arkIC79, OPT_USEREALDATA)");
+
+      double raDeg;
+      double decDeg;
+
+      for(int i = 0; i < arkIC40.baseEvents.size(); i++)
+        {
+
+          raDeg = arkIC40.baseEvents[i].GetEquatorialDeg().GetRa();
+          decDeg = arkIC40.baseEvents[i].GetEquatorialDeg().GetDec();
+
+
+          pFile40 << raDeg << "\t" << decDeg << "\n";
+          pFileAll << raDeg << "\t" << decDeg << "\n";
+        }
+
+      double raDeg;
+      double decDeg;
+
+      for(int i = 0; i < arkIC59.baseEvents.size(); i++)
+        {
+
+          raDeg = arkIC59.baseEvents[i].GetEquatorialDeg().GetRa();
+          decDeg = arkIC59.baseEvents[i].GetEquatorialDeg().GetDec();
+
+
+          pFile59 << raDeg << "\t" << decDeg << "\n";
+          pFileAll << raDeg << "\t" << decDeg << "\n";
+        }
+
+      double raDeg;
+      double decDeg;
+
+      for(int i = 0; i < arkIC79.baseEvents.size(); i++)
+        {
+
+          raDeg = arkIC79.baseEvents[i].GetEquatorialDeg().GetRa();
+          decDeg = arkIC79.baseEvents[i].GetEquatorialDeg().GetDec();
+
+
+          pFile79 << raDeg << "\t" << decDeg << "\n";
+          pFileAll << raDeg << "\t" << decDeg << "\n";
+        }
+
+      double raDeg;
+      double decDeg;
+
+      for(int i = 0; i < arkIC86.baseEvents.size(); i++)
+        {
+
+          raDeg = arkIC86.baseEvents[i].GetEquatorialDeg().GetRa();
+          decDeg = arkIC86.baseEvents[i].GetEquatorialDeg().GetDec();
+
+
+          pFile86 << raDeg << "\t" << decDeg << "\n";
+          pFileAll << raDeg << "\t" << decDeg << "\n";
+        }
+    }
+
+  return 1; // signal correct finish of script
+  }

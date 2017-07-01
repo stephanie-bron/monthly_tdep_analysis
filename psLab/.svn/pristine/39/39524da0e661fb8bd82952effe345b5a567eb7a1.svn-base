@@ -1,0 +1,14 @@
+
+TObject* GetObjectFromFile(TString filename, TString objectname) {
+  void* ptr;
+  TFile *f = new TFile(filename);
+  f->GetObject(objectname,ptr);
+  gROOT->cd();
+  TObject* obj = (dynamic_cast<TObject*> ptr)->Clone(filename);
+  f->Close();
+  return obj;
+}
+
+TH1D* GetTH1DFromFile(TString filename, TString hname) {
+  return dynamic_cast<TH1D*> GetObjectFromFile(filename,hname);
+}

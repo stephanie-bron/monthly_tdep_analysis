@@ -1,0 +1,155 @@
+
+void PointSource_UpperLimits_Read(char* filename) {
+
+  FILE *fp = fopen(filename,"r");
+  if (!fp) {
+    cout << filename << " cannot be opened.\n";
+    return;
+  }
+
+
+  TString texOutputString;
+  TString plainOutputString;
+
+
+  int bestSource = 0;
+  TString bestName;
+  double bestPMin = 1.;
+
+
+
+  // This has to match what was written by the Write program, of course
+
+  double psList_SpectralIndex;
+  double bkgDistance;
+  double loops;
+  double power;
+  char name[1000];
+  double raDeg;
+  double decDeg;
+  double bkgCount;
+  double pvalue;
+  double nSrc;
+  double nSrcUpLimit;
+  double fluxUpLimitOrig;
+
+  int j = 0;
+
+  while ( fscanf(fp, "%lg %lg %lg %lg ",
+		 &psList_SpectralIndex,
+		 &bkgDistance,
+		 &loops,
+		 &power) == 4 
+	  &&
+	  fscanf(fp, "%s %lg %lg %lg %lg %lg %lg %lg\n",
+		 name,
+		 &raDeg, 
+		 &decDeg,
+		 &bkgCount,
+		 &pvalue,
+		 &nSrc,
+		 &nSrcUpLimit,
+		 &fluxUpLimitOrig) == 8)
+  {
+
+    // Make name look nice
+    TString sName = name;
+    sName.ReplaceAll("_"," ");
+
+    // Check if this is best source so far
+    if (pvalue < bestPMin) { 
+      bestPMin = pvalue; 
+      bestSource = j;
+      bestName = sName;
+    }
+
+    // Convert fluxes from GeV to whatever is desired
+    double old_EnUnits = 1e9;
+    double old_EnReference = 1e9;
+    // report things in units of TeV
+    double new_EnUnits = 1e12;
+    double new_EnReference = 1e12;
+    double scaleFactor = (new_EnUnits/old_EnUnits) * 
+      pow(new_EnReference/old_EnReference , psList_SpectralIndex);
+    convertedFluxUpLimit = fluxUpLimitOrig * scaleFactor * new_EnUnits; 
+
+
+    char buffer[1000];
+
+
+    //
+    // Format for Plain Output
+    //
+
+
+    // replace 0.5 pvalues with '---'
+    char pvalueChar[20];
+    if (pvalue < 0.495) {
+      sprintf(pvalueChar,"%.5lf",pvalue);
+    } else {
+      sprintf(pvalueChar,"  ---  ");
+    }
+
+    if (j==0) {
+      sprintf(buffer,
+	      "%20s  (%7s , %7s)  :  %6s  %s  %4s   %3s\n",
+	      "Name",
+	      "ra(deg)", "dec",
+	      "PhiUp",
+	      "p-value",
+	      "Nsrc",
+	      "Bkg");
+      plainOutputString = buffer;
+    }
+
+    sprintf(buffer,
+	    "%20s  (%7.3f , %7.3f)  :  %6.2f  %s  %4.1f   %3.1f\n",
+	    dynamic_cast<char*>(sName),
+	    raDeg,
+	    decDeg,
+	    convertedFluxUpLimit,
+	    pvalueChar,
+	    nSrc,
+	    bkgCount);
+    plainOutputString += buffer;
+
+
+    //
+    // Format For TeX
+    //
+
+    char pvalueChar[20];
+    if (pvalue < 0.495) {
+      sprintf(pvalueChar,"%.2lg",pvalue);
+    } else {
+      sprintf(pvalueChar,"--");
+    }
+    sprintf(buffer,
+	    "%20s & %6.2f & %5.2f & %5.2f & %s & %3.1f & %3.1f\\\\\n",
+	    dynamic_cast<char*>(sName),
+	    raDeg,
+	    decDeg,
+	    convertedFluxUpLimit,
+	    pvalueChar,
+	    nSrc,
+	    bkgCount);
+    texOutputString += buffer;
+    
+
+    ++j;
+  }
+
+
+
+  cout << "\n\nTEX OUTPUT:\n" << (char*)texOutputString;
+
+  cout << "\n\nPLAIN OUTPUT:\n" << plainOutputString << endl;
+
+  cout << "Number of Sources Read: " << j << endl;
+  cout << "Smallest p-value = " <<bestPMin << endl;
+  cout << "for SourceID " << bestSource << " (" << dynamic_cast<char*>(bestName) << ")\n";
+
+
+}
+
+

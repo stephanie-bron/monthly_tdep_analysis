@@ -1,0 +1,110 @@
+// Variables declared outside the functions will have global scope
+// and can be accessed after function exit.
+//
+// Note that if they are declared again (either by re-running this 
+// script or another one which declares the same variables)
+// their values may be reset, and should not be relied upon.
+
+
+char tempCharBuffer[1000] = "";
+
+
+// Default macro, gives user instructions
+
+void macro_SetPointSource() {
+  cout <<"\nUsage options for Power Law:\n";
+  cout <<".x macro_SetPointSource.C(double raDeg, double decDeg,\n";
+  cout <<"                          double index, double fluxConstant = 1.)";
+  cout <<"\n";
+  cout <<".x macro_SetPointSource.C(EquatorialDeg srcCoord,\n";
+  cout <<"                          double index, double fluxConstant = 1.)";
+  cout <<"\n\nUsage options for Formula String:\n";
+  cout <<".x macro_SetPointSource.C(double raDeg, double decDeg,\n";
+  cout <<"                          const *char formula)";
+  cout <<"\n";
+  cout <<".x macro_SetPointSource.C(EquatorialDeg srcCoord,\n";
+  cout <<"                          const *char formula)";
+  cout <<"\n\nGeneral Usage:\n";
+  cout <<".x macro_SetPointSource.C(double raDeg, double decDeg,\n";
+  cout <<"                          const FluxBase& flux)";
+  cout <<"\n";
+  cout <<".x macro_SetPointSource.C(EquatorialDeg srcCoord,\n";
+  cout <<"                          const FluxBase& flux)";
+  cout <<"\n";
+}
+
+
+// POWER LAW
+
+
+void macro_SetPointSource(double raDeg, double decDeg, 
+			  double index, double fluxConstant = 1.)
+{
+  macro_SetPointSource(EquatorialDeg(raDeg,decDeg), index, fluxConstant);
+}
+
+
+void macro_SetPointSource(EquatorialDeg srcCoord, 
+			  double index, double fluxConstant = 1.)
+{
+  PowerLawFlux flux(fluxConstant, index);
+  sprintf(tempCharBuffer,"  Power Law Index: %lg ,  FluxConstant: %lg"
+	  "  (GeV^-1 cm^-2 s^-1)\n", 
+	  flux.GetSpectralIndex(), flux.GetFluxConstant() );
+  macro_SetPointSource(srcCoord, flux);
+}
+ 
+
+// FORMULA FLUX
+
+
+void macro_SetPointSource(double raDeg, double decDeg,
+			  const char* formula)
+{
+  macro_SetPointSource(EquatorialDeg(raDeg, decDeg), formula);
+}
+
+
+void macro_SetPointSource(EquatorialDeg srcCoord, const char* formula)
+{
+  FormulaFlux flux(formula);
+  sprintf(tempCharBuffer, "  Formula: %s\n"
+	  "  where x is GeV, and flux is GeV^-1 cm^-2 s^-1\n",
+	  flux.GetFormula() );
+  macro_SetPointSource(srcCoord, flux);
+}
+
+
+// THE GENERAL CASE:  FLUXBASE CLASS
+
+
+void macro_SetPointSource(double raDeg, double decDeg,
+			  const FluxBase& flux)
+{
+  macro_SetPointSource(EquatorialDeg(raDeg, decDeg), flux);
+}
+
+
+void macro_SetPointSource(EquatorialDeg srcCoord, const FluxBase& flux)
+{
+  // Must have already defined these elsewhere
+  extern EventLoader evLoader;
+  extern double livetime;
+  extern I3Analysis psData;
+  extern EquatorialDeg mySrcLocation;
+
+  cout << "macro_SetPointSource:\n" << tempCharBuffer;
+
+  mySrcLocation = srcCoord;
+  cout << "!! mySrcLocation set to:  "<<mySrcLocation.GetRa()<<" r.a., ";
+  cout << mySrcLocation.GetDec() << " dec.\n";
+
+  vector<I3Event> sourceEvents;
+  evLoader.LoadSourceEvents(sourceEvents, mySrcLocation);
+
+  i3point= I3PointGenerator(sourceEvents, flux, mySrcLocation, livetime);
+
+  psData.SetSource(i3point);
+  cout << "!! psData set with Source; accessible via: psData.GetSource()\n";
+}
+

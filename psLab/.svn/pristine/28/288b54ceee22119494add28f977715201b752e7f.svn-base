@@ -1,0 +1,187 @@
+
+{
+  //TString dataDirIC40 = "/home/cfinley/data/ic40/";
+  TString dataDirIC40 = "/net/user/jdumm/testlab/macro_llh/ic40_full/";
+
+  gROOT->ProcessLine(".L "+dataDirIC40+"TreeLoader_IC40_CutA5_Full_final.C");
+
+  gROOT->ProcessLine(".L "+dataDirIC40+"mpfSigmaDegRescaled2.C+");
+
+  // Globals: filled in this script, and later referred to by other scripts
+  double livetime = 0;
+
+  TTree *baseTree;
+  TTree *srcTree;
+
+  EventLoader evLoader;
+
+  bool OPT_USEREALDATA;  // default false, unless set somewhere else to true
+
+
+  //
+  // CONFIGURE EVENTLOADER WITH BACKGROUND / REAL DATA SAMPLE
+  //
+
+  cout << "Configuring Base Data Sample...\n";
+
+  if (1) {
+    baseTree = LoadTree_IC40_CutA5_data_Full_GoodRuns_small();
+    livetime = GetValueFromTree(baseTree,"livetimeTotal");
+
+    evLoader.SetBkgLoadMethod_Exact();
+
+    if (OPT_USEREALDATA) {
+/*
+      char input[100];
+      printf("\n\nREADY TO UNBLIND DATA?  TYPE 'unblind' TO CONTINUE\n");
+      scanf("%s",input);
+      TString st(input);
+      if (st == "unblind") {
+*/
+   
+	evLoader.SetTimeMethod_Actual("timeMJD"); 
+	cout << "\n\nLOADING UNBLINDED TIMES!!!\n\n";
+	cout << "\n\nPROTECTION HAS BEEN REMOVED (for batch processing) !!!\n\n";
+/*
+      } else {
+	cout << "input not accepted.\n";
+	gSystem->Exit(1);
+      }
+*/
+    }
+    else {
+      evLoader.SetTimeMethod_Scramble();  // for blindness!
+      cout << "Loading scrambled times.\n";
+    }
+
+    cout << "Livetime (Days): " << livetime/86400. << "\n\n";
+    evLoader.SetBkgTree(baseTree);
+  }
+
+
+  //
+  // CONFIGURE EVENTLOADER WITH SIGNAL SIMULATION DATA SAMPLE
+  //
+
+  // evLoader will load signal events for any specified declination
+
+  double sourceZenWidthDeg;
+  // This is the +/- zenith range in degrees to select MC events from,
+  // and then rotate to desired source location.
+  // (Smaller range is more accurate, but trade-off is lower statistics
+  // for signal simulation.  You have to pick something appropriate for the 
+  // statistics you have.)
+
+  cout << "Configuring Source Event Sample...\n";
+
+  // Example 1:  E^-1 nuGen file
+  if (1) {
+    srcTree = LoadTree_IC40_CutA5_nugen_numu_2075_small();
+    sourceZenWidthDeg = 0.5;
+  }
+
+  evLoader.SetSourceTree(srcTree);
+  evLoader.SetSourceZenWidthDeg(sourceZenWidthDeg);
+
+
+
+  //
+  // SPECIFY CUTS
+  //
+
+  if (1) {
+    TCut testCut = "1";
+    cout << "\n   *** NOT APPLYING CUTS ...";
+    cout << "   ASSUMING THEY WERE ARE APPLIED TO FILES !!!\n";
+  }
+
+  // Cuts can be added or reset any time, and events re-loaded with new cuts
+  // (cuts are also evaluated in order, for possible efficiency gain)
+
+  //  evLoader.AddCut("NChan>20");  // example of additional cut
+  evLoader.AddCut(testCut);
+
+
+
+  //
+  // SET NAMES OF VARIABLES TO BE USED FROM ROOT FILES
+  //
+
+  TString recoZenRadName = "mZr"; // needed for eProb below
+  evLoader.SetName_recoZenith_rad(recoZenRadName);
+  evLoader.SetName_recoAzimuth_rad("mAr");
+  evLoader.SetName_sigmaDeg("mpfSigmaDegRescaled2(mpfSigmaDeg,mmueEn)");
+  evLoader.SetName_runID("RunID");
+  evLoader.SetName_eventID("EventID");
+  // EXAMPLE: How to load different vars for source and bkg, if necessary
+  //  dsBkg->tree->SetAlias("myRecoSigmaDeg","pf32SigmaDeg")
+  //  dsSrc->tree->SetAlias("myRecoSigmaDeg","pf32SigmaDeg*1.4");
+  //  evLoader.SetName_sigmaDeg("myRecoSigmaDeg");
+
+
+  // The choice here has consequences for how to fill eProb, below
+  if (1) { TString energyVar = "log10(mueEn)"; }
+
+  evLoader.SetName_energyValue(energyVar);
+
+
+
+  //
+  // LOAD EVENTS, SET UP ENERGY PDFs
+  // 
+
+  cout << "\nLoading Background Events -- " << baseTree->GetTitle() << endl;
+  cout << "Using cut: " << evLoader.GetCuts()->GetTitle() << endl;
+  vector<I3Event> baseEvents;
+  evLoader.LoadBkgEvents(baseEvents);
+
+  cout << "\nFilling Energy PDFs:\n";
+  if (1) {
+    ZenithEnergyProb eProb;
+    eProb.SetSourceZenWidthDeg(sourceZenWidthDeg);
+    eProb.SetName_recoZenith_rad(recoZenRadName);
+    if (1) {
+      vector<double> zenMinDegVect;
+      
+      // Fill vector with bin edges that match "CutDMS" bin edges
+      // 0 - 90  zen added
+      double tempBot=1;
+      for(int i=0; i<21;i++){
+	//cout << tempBot << " " << acos(tempBot)*TMath::RadToDeg() << endl;
+	zenMinDegVect.push_back(acos(tempBot)*TMath::RadToDeg());
+	tempBot-=0.05;
+      }
+
+      // A reasonable split for the upgoing range
+      zenMinDegVect.push_back(105.00); //? Follow Chad's example
+      zenMinDegVect.push_back(180.);
+      eProb.SetZenithBandsDeg(zenMinDegVect);
+    }
+  }
+
+  eProb.SetLoadModeNew(true); // true is now faster
+
+  if (1) { } // new default is to constrain signal inside histogram
+  if (0) { eProb.SetConstrainSignal(false); }  // the old way
+
+  if (energyVar == "log10(mueEn)") {
+    int nBackFill = 35; // don't backfill previous bins
+    eProb.SetEnergyGammaRangeAndBackFill(40,2.,9., 30,1.,4., nBackFill);
+  }
+
+  eProb.SetTableBkg(baseEvents);
+  TStopwatch ts;
+  eProb.SetTableGamma(srcTree, evLoader.GetCuts(), energyVar);
+  ts.Print();
+
+  // 
+  // STORE EVERYTHING IN psData
+  //
+
+  I3Analysis psData;  
+  psData.SetDecMapParameters(180,1); // 1. deg map bins and smoothing
+  // This seems to be okay for ~ 5000 events or more.
+  psData.SetBaseEvents(baseEvents);
+  psData.SetEnergyProb(eProb);
+
+}

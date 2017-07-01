@@ -1,0 +1,91 @@
+TString LOADTREE_DIR = "/net/user/naoko/IC79_PS/StraightCuts/Cuts_FINAL_v3";
+
+TTree* LoadTree_IC79_nugen_numu_6308() {
+  TString file1 = LOADTREE_DIR+"/nugen_step4.root";
+  
+  TChain *tree = new TChain("L3CutsTree");
+
+  tree->Add(file1);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+  tree->SetAlias("mcPrimary_Zenith_rad",  "MC_Zr");
+  tree->SetAlias("mcPrimary_Azimuth_rad", "MC_Ar");
+  tree->SetAlias("mcPrimary_Energy_GeV",  "MC_En");
+  tree->SetAlias("mcOneWeight",           "OW");
+  tree->SetAlias("mueEn",                 "MuEX_FINAL_MUON_En");
+  tree->SetAlias("NChan",                 "NCh_FINAL_MUON");
+  tree->SetAlias("mZd",                   "MPE_FINAL_MUON_Zd");
+  tree->SetAlias("mAd",                   "MPE_FINAL_MUON_Ad");
+  tree->SetAlias("mpbSigmaDeg",           "MPE_Pb_FINAL_MUON_SigmaDeg");
+  
+  
+  tree->SetAlias("z",                     "cos(mZd*TMath::DegToRad())");
+
+  //tree->SetAlias("BartolFluxWeight",      "BartolFluxWeightForOneFile");
+
+  //tree->SetAlias("BartolFluxWeight",      "NuFlux.bartol_naumov");
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+
+  double mcTotalGeneratedEvents = 2.49550000000000000e+07;
+  mcTotalGeneratedEvents = mcTotalGeneratedEvents*2; //numu and numubar both
+
+  tree->SetAlias("mcTotalGeneratedEvents", "24955000.0*2.*NCh/NCh");
+  //tree->SetAlias("NFiles",TStringify(nFiles));
+  
+  //--------------------//
+
+
+  // OTHER, EXTRA ALIASES:
+
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+
+  return tree;
+}
+
+
+TTree* LoadTree_IC79_GoodRuns() {
+  
+  TString files = LOADTREE_DIR+"/data_step4.root";
+  
+  TChain *tree = new TChain("L3CutsTree");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+  
+  
+  double livetimeTotal = 2.89940600000000000e+06; //seconds
+
+  double tmin = 54971.154549; //in MJD
+  double tmax = 55347.284392;
+
+  tree->SetAlias("livetimeTotal", " 2.89940600000000000e+06 * NCh/NCh");
+  tree->SetAlias("tmin", TStringify(tmin));
+  tree->SetAlias("tmax", TStringify(tmax));
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("timeMJD","MJDay+(MJSec+MJNanoSec*1e-9)/86400.");
+
+
+
+  
+  tree->SetAlias("mueEn",                 "MuEX_FINAL_MUON_En");
+  tree->SetAlias("NChan",                 "NCh_FINAL_MUON");
+  tree->SetAlias("mZd",                   "MPE_FINAL_MUON_Zd");
+  tree->SetAlias("mAd",                   "MPE_FINAL_MUON_Ad");
+  tree->SetAlias("mpbSigmaDeg",           "MPE_Pb_FINAL_MUON_SigmaDeg");
+  
+
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+  tree->SetAlias("z","cos(mZd*TMath::DegToRad())");
+
+  return tree;
+}
+
+

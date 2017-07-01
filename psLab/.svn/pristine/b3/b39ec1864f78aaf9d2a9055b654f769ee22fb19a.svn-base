@@ -1,0 +1,23 @@
+
+{
+
+  cout << "\nLoading Source Events...\n ";
+  vector<I3Event> sourceEvents;
+  //  EquatorialDeg srcLocation(90.,22.01); // Crab, off-source
+  EquatorialDeg srcLocation(90.,15.00);  // MGRO 1908+06, off-source
+
+// MERGED FUNCTIONS... //   evLoader.SetSourceEqDeg(srcLocation);
+  evLoader.LoadSourceEvents(sourceEvents, srcLocation);
+
+  // Example 1: Use PowerLawFlux
+  PowerLawFlux pflux(1,spectralIndex);  //  1 GeV^-1 cm^-2 s^-1;  index = -2
+
+  // Example 2: Can express same power law flux using Formula
+  //  FormulaFlux formflux("1*pow(x,-2)");
+
+  FluxBase *myFluxPtr = &pflux;
+
+  I3PointGenerator i3point(sourceEvents, *myFluxPtr, srcLocation, livetime);
+  I3SignalGenerator *mySignalPtr = &i3point;
+
+}

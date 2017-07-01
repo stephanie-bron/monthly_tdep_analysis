@@ -1,0 +1,65 @@
+from ROOTtoPython import GraphToLine
+import ROOT
+from pylab import *
+
+fig = plt.figure()
+fig.subplots_adjust(bottom=0.13)
+ax = fig.add_subplot(111)
+
+#ax = subplot(111)
+
+rootfilesens = sys.argv[1]
+rootfiledisc = sys.argv[2]
+
+
+
+fMUL = ROOT.TFile(rootfilesens)
+gmul= fMUL.Get("Sensitivity")
+
+fdisco = ROOT.TFile(rootfiledisc)
+gdisco= fdisco.Get("sensit")
+
+
+declination = float(sys.argv[3])
+
+fMULInt = ROOT.TFile("../ic79/IC79_IC59_IC40_allsky_mulE2_v19.root")
+fDiscoInt = ROOT.TFile("../ic79/IC79_IC59_IC40_allsky_discoE2_v19.root")
+
+hMUL = fMULInt.Get("hDetectEvents")
+hDisco = fDiscoInt.Get("hDetectEvents")
+
+nbin = hMUL.GetXaxis().FindBin(sin(declination*np.pi/180.))
+
+mulInt = hMUL.GetBinContent(nbin)
+
+nbin = hDisco.GetXaxis().FindBin(sin(declination*np.pi/180.))
+discoInt = hDisco.GetBinContent(nbin)
+
+
+
+#GraphToLine(gmulsS, ax, lw=2, ls="--", color="blue", label="Munich $\delta = -16^{\circ}$")
+
+
+ax.axhline(y=mulInt, lw=2, ls="--", color ="black", label="IC79+IC59+IC40 Time-integrated MUL (90% C.L.)")
+ax.axhline(y=discoInt, lw=3, ls=":", color ="black", label="IC79+IC59+IC40 Time-integrated Disco (5$\sigma$)")
+
+GraphToLine(gmul, ax, lw=2, color="red", label="IC79+IC59+IC40 Periodic MUL (90%C.L.)")
+GraphToLine(gdisco, ax, lw=2, color="blue", label="IC79+IC59+IC40 Disco (5$\sigma$)")
+
+
+ax.set_ylabel("Number of events", fontsize=15)
+#ax.set_ylabel("Fluence (GeV/cm) for sensitivity", fontsize=20)
+#ax.set_xlabel("log$_{10}$ [$\sigma_{w}$ (days)] ", fontsize=20)
+ax.set_xlabel("$\sigma_{w}$ (As a fraction of period)", fontsize=15)
+ax.set_xscale("log")
+ax.set_ylim(0, 30)
+ax.set_xlim(1e-2, 1)
+grid()
+legend(loc="upper right")
+
+outfile=rootfiledisc.replace(".root", ",png")
+
+savefig(outfile)
+
+show()
+

@@ -1,0 +1,25 @@
+Fri Mar  8 08:04:25 CST 2013
+node031
+
+Welcome to the lab.
+   LAB_MAIN_DIR = /net/user/mrameez/trunk
+   LAB_LIB_DIR  = /net/user/mrameez/trunk/lib64
+   LAB_CORE_DIR = /net/user/mrameez/trunk/labcore
+   LAB_PRELOAD  = /net/user/mrameez/trunk/labcore/preload.C
+   LAB_DATA_LOCATION = Unige
+   LAB_DATA_DIR = /home/aguilar/IceCube/data
+   ICETRAY_ENV  = /net/user/aguilar/icetray/meta-projects/std-processing/11-01-00/build_RHEL_6.0_amd64/env-shell.sh
+   LAB_COORDINATE_PROJECT = coord_interface
+
+
+Processing /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C...
+Preload: /net/user/mrameez/trunk/labcore/preload.C
+Building/Loading:  rootExt/public
+Building/Loading:  fluxus/public
+Loading libcoordinate-service
+Building/Loading:  llh/public
+
+Initializing ran1 with random seed = -55
+Setting up Stacking Analysis Sources (Supermassive Black Holes)...
+You are exiting the lab.
+Fri Mar  8 08:04:55 CST 2013

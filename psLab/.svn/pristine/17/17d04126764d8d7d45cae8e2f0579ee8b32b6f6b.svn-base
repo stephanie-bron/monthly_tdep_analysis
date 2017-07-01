@@ -1,0 +1,283 @@
+#include "llh/public/NewLlhExt.h"
+
+#include "TGraph.h"
+
+#include "rootExt/public/generalfunctions.h"
+#include "rootExt/public/log_report.h"
+#include "rootExt/public/ModDistanceFn.h"
+
+#include "fluxus/public/FluxFunction.h"
+
+#include "llh/public/BkgSpaceProb.h"
+#include "llh/public/EnergyProb.h"
+#include "llh/public/I3Event.h"
+
+
+
+
+double NewLlhExtFCN::operator() (const vector<double>& par) const {
+  double nSrc = par[0];
+  double gamma = par[1];
+
+  if (ptr->optStoreRatios_) { ptr->eventRatioVect_.clear(); }
+
+
+  double srcFrac = nSrc/ptr->nEventsTot_;   // relative weight of src term
+  if (srcFrac > ptr->srcFracMax_) {
+    log_warn("Trying to evaluate srcFrac=%f which is > srcFracMax_=%f",
+             srcFrac,ptr->srcFracMax_);
+    log_warn("Check your parameter settings and make them consistent.");
+    log_warn("(If running optimized, logLambda tolerance could be exceeded.)");
+  }
+
+  if (ptr->optUseEnergy_ && (gamma >= ptr->eProbVect_[0]->GetGammaMax() || gamma < ptr->eProbVect_[0]->GetGammaMin() || TMath::IsNaN(gamma) ) ) {
+    return 1e50;
+  }
+
+  double logLambda=0.;
+  for (int i=0; i<ptr->selectedList_.GetSize(); ++i) {
+
+    double eRatio = 1.;
+    if (ptr->optUseEnergy_) {
+      const Event* event = ptr->selectedList_.GetEvent(i);
+      eRatio = ptr->eProbVect_[i]->GetEnergyProbGamma(*event, gamma) /
+        ptr->eProbVect_[i]->GetEnergyProbBkg(*event);
+    }
+    // CAN USE THIS STOPWATCH TO ISOLATE ONE PIECE OF THE LLH CALC.
+    //  stopwatch_minuitFCN_.Start(false);  //  false = don't reset
+
+    logLambda += log( srcFrac * ( ptr->spaceRatioVect_[i] * eRatio - 1) + 1);
+
+    // DON'T FORGET TO STOP AFTERWARDS!
+    //    stopwatch_minuitFCN_.Stop();
+
+    if (ptr->optStoreRatios_) {
+      ptr->eventRatioVect_.push_back(ptr->spaceRatioVect_[i]*eRatio);
+    }
+  }
+
+  if (ptr->optimizeTolerance_ > 0.) {
+    // correction for events skipped in optimization
+    logLambda += (ptr->nEventsTot_ - ptr->selectedList_.GetSize())*log(1.-srcFrac);
+  }
+
+  if (ptr->monitorLevel_>1) {
+    printf("LogLambda=%12.6lg  :  nSrc=%9.4lg  :  gamma=%5.4lg\n",
+           logLambda, nSrc, gamma);
+  }
+
+  return -logLambda;   // What Minuit minimizes: -log L
+
+
+}
+
+
+
+
+NewLlhExt::NewLlhExt()
+{
+  optUseEnergy_ = true;
+  eMaxRatioWarnStatus_ = -1;  // default -1 means warn every time
+  optStoreRatios_ = false;
+  icstatWarnLevel_ = 0;
+  nSrcMin_ = 0.;
+  srcFracMax_ = 0.5; // default is half of total nEvents
+  gammaMin_ = 0.;
+  gammaMax_ = 0.;
+  logLambdaBest_ = 0.;
+  nSrcBest_ = 0.;
+  gammaBest_ = 0.;
+  chiSq_ = 0.;
+  chiSqProb_ = 0.;
+  nEventsTot_ = 0;
+  monitorLevel_ = 0;
+  optimizeTolerance_ = 0.;
+  optimizeAngleDeg_ = 0.;
+
+  fcn_ = new NewLlhExtFCN();
+  fcn_->Point(this);
+
+  minuit_ = new TFitterMinuit();
+  minuit_->SetMinuitFCN(fcn_);
+  // minuit_ takes over fcn_, so later we only delete minuit_, not fcn_
+
+  // Call Migrad with 500 iterations maximum 
+  minuit_->SetMaxIterations(500);
+  // Set error Definition (1 for Chi square; 0.5 for negative log likelihood) 
+  minuit_->SetErrorDef(0.5); 
+  // Set Print Level (-1 no output; 1 standard output)
+  minuit_->SetPrintLevel(-1);
+
+  optParAuto_[0] = true;
+  optParAuto_[1] = true;
+
+  // These start when created, so stop immediately
+  stopwatch_MaximizeLlh_.Stop();
+  stopwatch_optimize_.Stop();
+  stopwatch_minuitMigrad_.Stop();
+  stopwatch_minuitFCN_.Stop();
+}
+
+void NewLlhExt::SetSourceSigma(double sourceSigma) {
+  srcSigma_ = sourceSigma;
+  return;
+}
+
+void NewLlhExt::OptimizeEventSelection() {
+  const EquatorialDeg *srcEqDeg =
+    ( dynamic_cast<const EquatorialDeg*>(srcCoord_) );
+
+  double decMinDeg = -90.;
+  double decMaxDeg =  90.;
+  double raRangeDeg = 360.;
+  if (optimizeAngleDeg_ > 0.) {
+    decMinDeg = srcEqDeg->GetDec() - optimizeAngleDeg_;
+    decMaxDeg = srcEqDeg->GetDec() + optimizeAngleDeg_;
+    if (decMinDeg < -90.) { decMinDeg = -90.; }
+    if (decMaxDeg >  90.) { decMaxDeg =  90.; }
+    // scale the ra range according to the dec closest to one of the poles
+    double cosFactor = cos(decMinDeg*TMath::DegToRad());
+    double cosFactorAlt = cos(decMaxDeg*TMath::DegToRad());
+    if (cosFactorAlt < cosFactor) { cosFactor = cosFactorAlt; }
+    if (cosFactor>0) {
+      raRangeDeg = optimizeAngleDeg_ / cosFactor;
+    }
+  }
+
+  double threshold =
+    (1./srcFracMax_ - 1.) * ( exp(optimizeTolerance_/nEventsTot_) -1. );
+
+  const EventPtrList* evList = aSet_->GetEventPtrList();
+
+  for (int i=0; i<nEventsTot_; ++i) {
+    const I3Event* event =
+      (dynamic_cast<const I3Event*> (evList->GetEvent(i)));
+    if (!event) { log_fatal("OptimizeEventSelection: failed cast to event.\n");}
+
+    double eventRaDeg = event->GetEquatorialDeg().GetRa();
+    // use this function to test whether ra is within range
+    if ( ModDistanceFn(eventRaDeg,srcEqDeg->GetRa(),360.) > raRangeDeg ) {
+      continue;  // skip this event
+    }
+    double eventDecDeg = event->GetEquatorialDeg().GetDec();
+    if (eventDecDeg < decMinDeg || eventDecDeg > decMaxDeg) {
+      continue;  // skip this event
+    }
+
+    // NK: repeat the same here as not optimized
+    // JD: I'm taking Spatial Prob out of "Event" and into "Llh"
+    //  since it is a function of the size of source and the reco of event
+    //double sigSpaceProb = event->ProbFrom(*iter); // OLD
+    double r = event->GetCoord().DistanceTo(*srcCoord_);
+    double es = event->GetParams().parafitSigmaDeg; // event sigma
+    double ss = srcSigma_; // source sigma 
+    double sigma = sqrt( (es*es + ss*ss) ); // Convolved Gaussians
+    double sigSpaceProb = exp(-r*r/(sigma*sigma*2)) / (2.*TMath::Pi()*sigma*sigma);
+
+    double bkgSpaceProb = event->GetBkgSpaceProbFn()->GetBkgProbDensity(*event);
+    //    if event is in region with b=0 (what to do?)
+    if (bkgSpaceProb <=0) { log_fatal("bkgSpaceProb <= 0\n"); }
+    double spaceRatio = sigSpaceProb / bkgSpaceProb;
+
+    double eMaxRatio;
+    const EnergyProb* eProb(NULL);
+    if (optUseEnergy_) {
+      eProb = event->GetEnergyProbFn();
+      eMaxRatio = eProb->GetEnergyMaxRatio(*event);
+      if (eMaxRatio <= 0.) {
+        // Decide what sort of warning to give:
+        if (eMaxRatioWarnStatus_ < 0) {          // Always warn
+          log_error("Error: gamma table is zero for this energy.  "
+                    "Max Ratio=0.\n");
+        } else if (eMaxRatioWarnStatus_ == 0) {  // Warn Once
+          log_error("***\nWARNING!\nAt LEAST one data event has zero for "
+                    "its gamma energy pdf.\nAll such events will be "
+                    "effectively ELIMINATED when using llh with energy.\n"
+                    "Llh is currently set so that you will receive this "
+                    "warning ONLY ONE TIME.\n***\n");
+          eMaxRatioWarnStatus_ = 1;
+        }
+        // else don't warn again
+      }
+    } else {
+      eMaxRatio = 1.;
+    }
+    if (spaceRatio*eMaxRatio > threshold) {  // select this event
+      selectedList_.AddEvent(event);
+      eProbVect_.push_back(eProb);
+      spaceRatioVect_.push_back(spaceRatio);
+    }
+  }
+
+  if (monitorLevel_ > 0) {
+    printf("Optimizing: %d events selected with maxRatio >%lg"
+           "  out of %d Ntotal.\n",
+           selectedList_.GetSize(), threshold, nEventsTot_);
+  }
+}
+
+
+
+void NewLlhExt::PrepareAnalysis() {
+  if (!aSet_) { log_fatal("PrepareAnalysis: AnalysisSet was not set.\n"); }
+  if (!srcCoord_) { log_fatal("PrepareAnalysis: srcCoords were not set.\n"); }
+  if (!srcSigma_) { log_fatal("PrepareAnalysis: srcSigmas were not set.\n"); }
+
+  const EventPtrList* evList = aSet_->GetEventPtrList();
+  if (!evList) { log_fatal("PrepareAnalysis: EventPtrList was not set.\n"); }
+  nEventsTot_ = evList->GetSize();
+  if (!nEventsTot_) { log_fatal("PrepareAnalysis: EventPtrList was empty.\n"); }
+  // or, is there a reason to allow zero events?
+
+  selectedList_.Clear();
+  eProbVect_.clear();
+  spaceRatioVect_.clear();
+
+  eventRatioVect_.clear();
+
+  if (optimizeTolerance_ > 0.) {
+    OptimizeEventSelection();
+  }
+  else
+  { // no optimization
+    for (int i=0; i<nEventsTot_; ++i) {
+      const I3Event* event =
+    		(dynamic_cast<const I3Event*> (evList->GetEvent(i)));
+      assert(event);
+
+      // JD: I'm taking Spatial Prob out of "Event" and into "Llh"
+      //  since it is a function of the size of source and the reco of event
+      //double sigSpaceProb = event->ProbFrom(*iter); // OLD
+      double r = event->GetCoord().DistanceTo(*srcCoord_);
+      double es = event->GetParams().parafitSigmaDeg; // event sigma
+      double ss = srcSigma_; // source sigma
+      double sigma = sqrt( (es*es + ss*ss) ); // Convolved Gaussians
+      double sigSpaceProb = exp(-r*r/(sigma*sigma*2)) / (2.*TMath::Pi()*sigma*sigma);
+
+      double bkgSpaceProb = event->GetBkgSpaceProbFn()->GetBkgProbDensity(*event);
+      //    if event is in region with b=0 (what to do?)
+      if (bkgSpaceProb <=0) { log_fatal("bkgSpaceProb <= 0\n"); }
+      double spaceRatio = sigSpaceProb / bkgSpaceProb;
+      const EnergyProb* eProb(NULL);
+      if (optUseEnergy_) {
+    	eProb = event->GetEnergyProbFn();
+      }
+      selectedList_.AddEvent(event);
+      eProbVect_.push_back(eProb);
+      spaceRatioVect_.push_back(spaceRatio);
+    }
+  } // End of no optimization option
+
+}
+
+double NewLlhExt::EvalFCN(const vector<double>& parVect) const {
+  return (*fcn_)(parVect);
+}
+
+double NewLlhExt::EvaluateLlh(double nSrc, double gamma) {
+  vector<double> parVect;
+  parVect.push_back(nSrc);
+  parVect.push_back(gamma);
+  double minusLlh = EvalFCN(parVect);
+  return -minusLlh;   // that is, max llh = - (minimizer result)
+}

@@ -1,0 +1,223 @@
+000 (3425563.000.000) 03/14 05:00:09 Job submitted from host: <10.128.12.110:43336>
+...
+001 (3425563.000.000) 03/14 05:05:01 Job executing on host: <10.128.10.45:49340>
+...
+006 (3425563.000.000) 03/14 05:05:09 Image size of job updated: 167012
+	29  -  MemoryUsage of job (MB)
+	29048  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 05:10:09 Image size of job updated: 2805192
+	1706  -  MemoryUsage of job (MB)
+	1746832  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 05:15:10 Image size of job updated: 3567472
+	2411  -  MemoryUsage of job (MB)
+	2468656  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 05:20:10 Image size of job updated: 4223468
+	3052  -  MemoryUsage of job (MB)
+	3124656  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 05:25:10 Image size of job updated: 4923060
+	3735  -  MemoryUsage of job (MB)
+	3824248  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 05:30:11 Image size of job updated: 5608768
+	4409  -  MemoryUsage of job (MB)
+	4514052  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 05:35:12 Image size of job updated: 6335824
+	5119  -  MemoryUsage of job (MB)
+	5241108  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 05:40:12 Image size of job updated: 7100744
+	5869  -  MemoryUsage of job (MB)
+	6008896  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 05:45:13 Image size of job updated: 7749816
+	6544  -  MemoryUsage of job (MB)
+	6700340  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 05:50:14 Image size of job updated: 8586760
+	7365  -  MemoryUsage of job (MB)
+	7541552  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 05:55:14 Image size of job updated: 9181060
+	7910  -  MemoryUsage of job (MB)
+	8099092  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:00:15 Image size of job updated: 9782180
+	8474  -  MemoryUsage of job (MB)
+	8677164  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:05:16 Image size of job updated: 10527536
+	9199  -  MemoryUsage of job (MB)
+	9419536  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:10:16 Image size of job updated: 11286532
+	9917  -  MemoryUsage of job (MB)
+	10154136  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:15:16 Image size of job updated: 11924012
+	10563  -  MemoryUsage of job (MB)
+	10816004  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:20:17 Image size of job updated: 12529008
+	11150  -  MemoryUsage of job (MB)
+	11417380  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:25:17 Image size of job updated: 13246952
+	11847  -  MemoryUsage of job (MB)
+	12131232  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:30:17 Image size of job updated: 13897004
+	12482  -  MemoryUsage of job (MB)
+	12781284  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:35:18 Image size of job updated: 14573668
+	13118  -  MemoryUsage of job (MB)
+	13432644  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:40:19 Image size of job updated: 15224832
+	13742  -  MemoryUsage of job (MB)
+	14071532  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:45:19 Image size of job updated: 15928232
+	14417  -  MemoryUsage of job (MB)
+	14762644  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:50:20 Image size of job updated: 16701752
+	15157  -  MemoryUsage of job (MB)
+	15519792  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 06:55:21 Image size of job updated: 17269320
+	15688  -  MemoryUsage of job (MB)
+	16064192  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:00:21 Image size of job updated: 17939404
+	16303  -  MemoryUsage of job (MB)
+	16694144  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:05:22 Image size of job updated: 18707384
+	16879  -  MemoryUsage of job (MB)
+	17283316  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:10:23 Image size of job updated: 19314936
+	17517  -  MemoryUsage of job (MB)
+	17936608  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:15:23 Image size of job updated: 20038144
+	18023  -  MemoryUsage of job (MB)
+	18454692  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:20:24 Image size of job updated: 20645148
+	18504  -  MemoryUsage of job (MB)
+	18947652  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:25:25 Image size of job updated: 21360096
+	19040  -  MemoryUsage of job (MB)
+	19496280  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:30:25 Image size of job updated: 21989524
+	19478  -  MemoryUsage of job (MB)
+	19945432  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:35:25 Image size of job updated: 22570368
+	19941  -  MemoryUsage of job (MB)
+	20418932  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:40:26 Image size of job updated: 23406700
+	20668  -  MemoryUsage of job (MB)
+	21163308  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:45:26 Image size of job updated: 23964084
+	21146  -  MemoryUsage of job (MB)
+	21653140  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:50:26 Image size of job updated: 24603236
+	21588  -  MemoryUsage of job (MB)
+	22105496  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 07:55:27 Image size of job updated: 25309208
+	22161  -  MemoryUsage of job (MB)
+	22692176  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 08:00:28 Image size of job updated: 25960920
+	22607  -  MemoryUsage of job (MB)
+	23149092  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 08:05:28 Image size of job updated: 26697340
+	23326  -  MemoryUsage of job (MB)
+	23885512  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 08:10:29 Image size of job updated: 27369836
+	23909  -  MemoryUsage of job (MB)
+	24482448  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 08:15:30 Image size of job updated: 28034260
+	24542  -  MemoryUsage of job (MB)
+	25130548  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 08:20:30 Image size of job updated: 28767644
+	25257  -  MemoryUsage of job (MB)
+	25862484  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 08:25:31 Image size of job updated: 29104008
+	25568  -  MemoryUsage of job (MB)
+	26181352  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 08:30:32 Image size of job updated: 37079228
+	33515  -  MemoryUsage of job (MB)
+	34319052  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 08:35:32 Image size of job updated: 55239756
+	50173  -  MemoryUsage of job (MB)
+	51377060  -  ResidentSetSize of job (KB)
+...
+006 (3425563.000.000) 03/14 08:45:34 Image size of job updated: 55838292
+	50263  -  MemoryUsage of job (MB)
+	51469152  -  ResidentSetSize of job (KB)
+...
+001 (3425563.000.000) 03/15 12:36:54 Job executing on host: <10.128.10.39:34097>
+...
+001 (3425563.000.000) 03/15 13:42:14 Job executing on host: <10.128.10.15:45686>
+...
+022 (3425563.000.000) 03/15 18:37:54 Job disconnected, attempting to reconnect
+    Local schedd and job shadow died, schedd now running again
+    Trying to reconnect to slot1@node015.icecube.wisc.edu <10.128.10.15:45686>
+...
+023 (3425563.000.000) 03/15 18:37:58 Job reconnected to slot1@node015.icecube.wisc.edu
+    startd address: <10.128.10.15:45686>
+    starter address: <10.128.10.15:59046>
+...
+022 (3425563.000.000) 03/15 20:43:52 Job disconnected, attempting to reconnect
+    Local schedd and job shadow died, schedd now running again
+    Trying to reconnect to slot1@node015.icecube.wisc.edu <10.128.10.15:45686>
+...
+023 (3425563.000.000) 03/15 20:43:57 Job reconnected to slot1@node015.icecube.wisc.edu
+    startd address: <10.128.10.15:45686>
+    starter address: <10.128.10.15:59046>
+...
+022 (3425563.000.000) 03/18 14:22:36 Job disconnected, attempting to reconnect
+    Local schedd and job shadow died, schedd now running again
+    Trying to reconnect to slot1@node015.icecube.wisc.edu <10.128.10.15:45686>
+...
+023 (3425563.000.000) 03/18 14:22:55 Job reconnected to slot1@node015.icecube.wisc.edu
+    startd address: <10.128.10.15:45686>
+    starter address: <10.128.10.15:59046>
+...
+005 (3425563.000.000) 03/19 10:21:39 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 3 20:11:43, Sys 0 00:06:58  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 3 20:11:43, Sys 0 00:06:58  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request          
+	   Cpus                 :                 1          
+	   Disk (KB)            :        3 10000000          
+	   Memory (MB)          :    73243     4021          
+...

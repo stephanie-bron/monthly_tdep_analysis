@@ -1,0 +1,101 @@
+
+void PointSource_UpperLimits_Write(char* filename) {
+
+  gROOT->ProcessLine(".x macro_loadPointSources.C");
+
+  // Model Parameters for Upper Limits
+  double psList_SpectralIndex = -2.;  // model to test for upper limits
+
+  // Report mean bkg events in a search radius of:
+  double bkgDistance = 1.; // degrees
+
+  // Disco Parameters
+  int loops = 50;  // 5 for test , 100 for highest accuracy
+  double power = 0.90;  // 0.9 for 90% upper limit
+
+
+  extern AnalysisLlh *llhPtr;
+  extern I3Analysis psData;
+  extern double livetime;
+
+  DiscoveryPotential disco;
+  {
+    disco.monitor_ = true;
+    disco.method_ = 2;
+    disco.loops_ = loops;
+    cout << "!! disco set with:\n   Loops: " << disco.loops_ << endl;
+    disco.SetDetectionPower(power);
+    cout << "   Power: " << disco.GetDetectionPower() << endl;
+  }  
+
+  bool OPT_UPPERLIMITS = true;  // can turn this off for testing
+
+
+  //  MAIN CODE  // 
+
+
+  if (fopen(filename,"r")) {
+    cout << filename << " already exists.  Won't overwrite.\n";
+    return;
+  }
+  FILE *fp = fopen(filename,"w");
+
+
+  for (int j=0; j<nPsList; ++j) {
+
+    cout << j << " : " << dynamic_cast<char*>(psNameArray[j]) << endl;
+      
+    EquatorialDeg searchLocation = psEqCoordArray[j];
+
+    double bkgCount = psData.BkgNumberDensity(searchLocation)
+      * (bkgDistance)*(bkgDistance)*TMath::Pi();
+
+    psData.UseRealData();
+    llhPtr->SetAnalysis(psData,searchLocation);
+    llhPtr->MaximizeLlh();
+    double pvalue = llhPtr->GetEstProb();
+    double nSrc = llhPtr->GetPar(0);
+
+    double nSrcUpLimit = 0.;
+    double fluxUpLimit = 0.;
+
+    if (OPT_UPPERLIMITS) {
+      vector<I3Event> sourceEvents;
+      evLoader.LoadSourceEvents(sourceEvents, searchLocation);
+      double fluxConstant = 1.;  // 1 per GeV^-1 cm^-2 s^-1
+      PowerLawFlux flux(fluxConstant, psList_SpectralIndex);
+      I3PointGenerator i3point = 
+	I3PointGenerator(sourceEvents, flux, searchLocation, livetime);
+      psData.SetSource(i3point);
+
+      disco.SetDetectionSignificance(pvalue);  // from result on real data
+      disco.SetLogLikelihood(*llhPtr);
+      disco.AnalyzeDiscoveryPotential(&psData, searchLocation);
+
+      nSrcUpLimit = disco.MeanSrcEv_ForDetection_;
+      fluxUpLimit = i3point.GetFluxScaleForNev(nSrcUpLimit);
+    }
+
+
+    fprintf(fp,"%lg %lg %lg %lg "
+	    "%s %lg %lg %lg %lg %lg %lg %lg\n",
+
+	    // same for all
+	    psList_SpectralIndex,
+	    bkgDistance,
+	    loops,
+	    power,
+
+	    // individual results
+	    dynamic_cast<char*>(psNameArray[j]),
+	    searchLocation.GetRa(), 
+	    searchLocation.GetDec(),
+	    bkgCount,
+	    pvalue,
+	    nSrc,
+	    nSrcUpLimit,
+	    fluxUpLimit);
+  }
+
+  fclose(fp);
+}

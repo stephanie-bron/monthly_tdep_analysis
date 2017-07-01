@@ -1,0 +1,7 @@
+double mpfSigmaDegRescaledIC79(double mpfSigmaDegOld, double mmueEn)
+{
+  //IC79 MPE sigma correction
+  double x = log10(mmueEn);
+  
+  return mpfSigmaDegOld * (89.62 - 86.0538 * pow(x,1.) + 31.2119 * pow(x,2.) - 5.00 * pow(x,3.) + 0.30158 * pow(x,4.));
+}

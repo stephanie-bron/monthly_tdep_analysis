@@ -1,0 +1,21 @@
+
+{
+  gSystem->cd("..");
+  gROOT->ProcessLine(".x loadlibs.C");
+
+  if (0) {
+    int ranSeed = -55;
+    initialize_ran1(ranSeed);
+  } else {
+    random_uniform(0,1);  // without seed, will initialize to clock time
+  }
+
+  bool OPT_USEREALDATA = true;
+
+  gSystem->cd("ic40");
+
+  gROOT->ProcessLine(".x macro_loadClean_6months_final.C");
+
+  gROOT->ProcessLine(".x macro_SetupAnalysis.C");
+
+}

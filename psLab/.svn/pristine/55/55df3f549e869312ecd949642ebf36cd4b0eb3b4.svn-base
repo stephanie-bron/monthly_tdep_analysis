@@ -1,0 +1,36 @@
+
+{
+  TCanvas can1;
+  TH1D hBkg = eProb.GetHistProbBkg();
+  hBkg.SetLineColor(1);
+  hBkg.Draw();
+  TH1D* hgamma2 = eProb.GetHistProbGamma(2.0);
+  hgamma2->SetLineColor(51);
+  hgamma2->Draw("same");
+  TH1D* hgamma3 = eProb.GetHistProbGamma(3.0);
+  hgamma3->SetLineColor(kViolet);
+  hgamma3->Draw("same");
+  gPad->SetLogy();
+  TH1D* hgamma3_7 = eProb.GetHistProbGamma(3.7);
+  hgamma3_7->SetLineColor(kBlue);
+  hgamma3_7->Draw("same");
+  gPad->SetLogy();
+
+
+
+  TH1D* hBartol = new TH1D("hBartol","hBartol",
+			   hBkg.GetNbinsX(),
+			   hBkg.GetXaxis()->GetXmin(),
+			   hBkg.GetXaxis()->GetXmax());
+  hBartol->SetLineColor(8);
+  // should really get this variable name from eProb...
+  srcTree->Draw("NChan>>hBartol", evLoader.GetCuts()*"BartolFluxWeight","goff");
+  double sum = hBartol->GetSum();
+  hBartol->Scale(1./sum);
+  hBartol->Draw("same");
+			      
+  TCanvas can2;
+  TH2D hGamma = eProb.GetHistProbGamma();
+  hGamma.Draw("surf");
+  gPad->SetLogz();
+}

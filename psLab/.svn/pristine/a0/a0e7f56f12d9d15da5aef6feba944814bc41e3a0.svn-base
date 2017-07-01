@@ -1,0 +1,24 @@
+
+{
+  gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+  if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+
+  if (0) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+  else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+  int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+
+  bool OPT_USEREALDATA = true;
+
+
+  //  char* loadFile = "macro_loadClean_6months_final_moreZenBins.C";
+  char* loadFile = "macro_loadClean_6months_final.C";
+  cout << "loadFile: " << loadFile << endl;
+  gROOT->Macro(loadFile);
+
+
+  gROOT->ProcessLine(".x macro_SetupAnalysis.C");
+
+  AnalysisLlh *llhPtr = &llhEnergyFn;
+}

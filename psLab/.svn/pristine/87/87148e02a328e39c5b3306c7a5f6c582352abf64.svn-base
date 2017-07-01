@@ -1,0 +1,79 @@
+{
+
+  //gROOT->ProcessLine(".L ../../llh/public/I3TH2FGenerator.C+");
+
+  // Set up I3TH2FGenerator //
+
+  FormulaFlux formflux("1*pow(x,-2)");
+  FluxBase *myFluxPtr = &formflux;
+
+  ark40.evLoader->SetMonitor(0);;
+  I3TH2FGenerator *th2gen = new I3TH2FGenerator(ark40.evLoader, *myFluxPtr, ark40.livetime);
+  th2gen.convRadToDeg_ = 1; // histo is in radians and will be converted to deg
+  th2gen.shiftThetaToDec_ = 1; // histo is Phi,Theta so switch to Ra,Dec
+  th2gen.convGalToEq_ = 0; // histo already in equatorial coords (ra, dec)
+
+  // Load Source PDF from a Kent distribution //
+
+  double kentMeanRaDeg = 90;
+  double kentMeanDecDeg = 0;
+  double kentSigmaDeg = 10.;
+  int kentNbins = 10;
+  TH2F *hKent = (TH2F*)Kent(kentMeanDecDeg+90., kentMeanRaDeg,  
+                            kentSigmaDeg, kentNbins);
+
+  th2gen->SetBinning(hKent);
+  th2gen->fluxModelWeightsTableIsSet_=0;
+  // hKent is source PDF, this creates detector response in same binning
+  //  and multiplies bin-by-bin to get distribution of true source locations
+  th2gen->CreateSrcWeightsTable(hKent);
+
+  // Test I3TH2FGenerator //
+
+  vector<I3Event> sourceEvents;
+  sourceEvents.clear();
+  const int nSrcEvents = 100;
+  double ras[nSrcEvents];
+  double decs[nSrcEvents];
+  double phis[nSrcEvents];
+  double thetas[nSrcEvents];
+  // Generate signal events
+  for (int i=0; i<nSrcEvents; i++) {
+    sourceEvents.push_back( th2gen->GenerateEvent() );
+    ras[i] = sourceEvents[i].GetEquatorialDeg().GetRa();
+    decs[i] = sourceEvents[i].GetEquatorialDeg().GetDec();
+    // Convert from ra,dec in deg, back to phi, theta in radians
+    phis[i] = sourceEvents[i].GetEquatorialDeg().GetRa() * TMath::DegToRad();
+    thetas[i] = (sourceEvents[i].GetEquatorialDeg().GetDec()+90.) * TMath::DegToRad();
+  }
+
+  // And make plots
+  //TGraph *gEvents = new TGraph(nSrcEvents, ras, decs); // If you want in ra,dec
+  TGraph *gEventsKent = new TGraph(nSrcEvents, phis, thetas); //Same coord frame as Kent
+
+  //gEvents->Draw("A*");
+
+  gStyle->SetPalette(1);
+
+  TCanvas *can = new TCanvas("can","can",600,650);
+  can->Divide(1,3);
+
+  can->cd(1);
+  gEventsKent->GetHistogram()->Draw(); // just axes
+  gEventsKent->GetXaxis()->SetTitle("RA [rad]");
+  gEventsKent->GetYaxis()->SetTitle("Dec [rad]");
+  gEventsKent->SetTitle("hKent");
+
+  hKent->Draw("colzsame");
+
+  can->cd(2);
+  gEventsKent->GetHistogram()->Draw(); // just axes
+  th2gen->GetFluxModelWeightsTable()->Draw("colz");
+
+  can->cd(3);
+  gEventsKent->GetHistogram()->Draw(); // just axes
+  th2gen->GetSrcWeightsTable()->Draw("colz");
+  gEventsKent->Draw("*");
+
+
+}

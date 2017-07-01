@@ -1,0 +1,24 @@
+
+{
+  gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+  if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+  initialize_ran1(RANSEED); // seed has to be a *NEGATIVE* integer
+
+  bool OPT_USEREALDATA = false;
+
+  char* loadFile = "macro_loadClean_6months_final_moreZenBins.C";
+  cout << "loadFile: " << loadFile << endl;
+  gROOT->Macro(loadFile);
+
+
+  // Llh Function
+
+  LlhEnergy llhEnergyFn;
+  llhEnergyFn.SetUseEnergy(true);
+  llhEnergyFn.SetOptimizeAngleDeg(10.);
+  llhEnergyFn.SetOptimizeTolerance(0.01);
+  AnalysisLlh* llhPtr = &llhEnergyFn; // Base-class pointer to any Llh fn.
+
+  return 1; // signal correct finish of script
+}

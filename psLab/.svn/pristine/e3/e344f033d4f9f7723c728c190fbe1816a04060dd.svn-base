@@ -1,0 +1,41 @@
+
+{
+  extern I3Analysis psData;  
+  extern AnalysisLlh* llhPtr;
+  extern EquatorialDeg mySrcLocation;
+  extern DiscoveryPotential disco;
+
+
+
+  
+  disco.SetLogLikelihood(*llhPtr);
+  disco.AnalyzeDiscoveryPotential(&psData, mySrcLocation);
+
+
+
+  cout << "Threshold significance for detection: ";
+  cout  << disco.GetDetectionSignificance() << endl;
+
+  double meanSrcEv_ForDetection = disco.MeanSrcEv_ForDetection_;
+  double fluxScale = 
+    psData.GetSource()->GetFluxScaleForNev(meanSrcEv_ForDetection);
+
+  double meanGamma = 0.;
+  int nLoops = 100;
+  for (int i=0; i<nLoops; ++i) {
+    int nEvents = random_poisson(meanSrcEv_ForDetection);
+    psData.GenerateDataSet_with_nSrcEvents(nEvents);
+    llhPtr->SetAnalysis(psData, mySrcLocation);
+    llhPtr->MaximizeLlh();
+    printf("gamma=%3.1f  sigma=%4.2f  p-value: %lg\n",
+	   llhPtr->GetPar(1),
+	   PValueToOneSidedSigma(llhPtr->GetEstProb()),
+	   llhPtr->GetEstProb());
+    meanGamma += llhPtr->GetPar(1) / nLoops;
+  }
+  cout << "Mean Gamma: " << meanGamma << endl;
+  cout << "  Mean source events: " << meanSrcEv_ForDetection << endl;
+  cout << "  Flux scale relative to model is: " << fluxScale << endl;
+
+
+}

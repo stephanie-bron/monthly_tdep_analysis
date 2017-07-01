@@ -1,0 +1,24 @@
+
+TH1* Plot_I3PointGenerator_Energy(const I3SignalGenerator* signalPtr, 
+				  TH1* h = NULL) {
+  I3PointGenerator *i3pointPtr = dynamic_cast<I3PointGenerator*> signalPtr;
+  if (!i3pointPtr) {
+    cout << "Error: could not cast signalPtr to I3PointGenerator*.\n";
+    return NULL;
+  }
+
+  if (!h) { 
+    h = new TH1D("h_I3PointGenerator_Energy","h_I3PointGenerator_Energy",
+		 45,1,10);
+  }
+
+  h->Reset();
+  const vector<I3Event>* eVectPtr = i3pointPtr->GetCandidateEvents();
+  for (int i=0; i<eVectPtr->size(); ++i) {
+    double mcEnergy    = ((*eVectPtr)[i]).GetMCParams().mcEnergy;
+    double srcWeight = ((*eVectPtr)[i]).GetMCParams().srcWeight;
+    h->Fill(log10(mcEnergy),srcWeight);
+  }
+  h->Scale(i3pointPtr->GetLivetime());
+  return h;
+}

@@ -1,0 +1,165 @@
+//
+// ACTUAL DATA FILES SHOULD BE LOCATED (OR LINKED) IN: 
+// 
+//   $LAB_DATA_DIR/ic40ps
+
+
+
+// Recommended signal dataset for analysis (L2b) [1000 E^-1 files, 5000 events/file]
+TTree* LoadTree_IC40_CutA5_nugen_numu_2075_small() {
+
+  char *files = "$LAB_DATA_DIR/ic40ps/CutA5_v3_nugen_numu_2075_01000_small.root";
+  TChain *tree = new TChain("Level2");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+
+  int nFiles = 1000; 
+  int generatedEventsPerFile = 5000; // NuMu + NuMuBar per file
+  int mcTotalGeneratedEvents = nFiles * generatedEventsPerFile;
+
+
+  // SET HANDLES:
+  // These aliases provide consistent handles across different 
+  // types root files (analysis-tree, flat-ntuple, simple-extractor, small-tree),
+  // so set accordingly:
+
+  tree->SetAlias("mcPrimary_Zenith_rad",  "mcZr");
+  tree->SetAlias("mcPrimary_Azimuth_rad", "mcAr");
+  tree->SetAlias("mcPrimary_Energy_GeV",  "mcEn");
+  tree->SetAlias("mcOneWeight",           "OW");
+  tree->SetAlias("mueEn",                 "mmueEn");
+  tree->SetAlias("NChan",                 "NCh");
+
+  tree->SetAlias("z",                     "cos(mZd*TMath::DegToRad())");
+
+  tree->SetAlias("BartolFluxWeight",      "BartolFluxWeightForOneFile");
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("mcTotalGeneratedEvents", TStringify(mcTotalGeneratedEvents));
+
+
+  //--------------------//
+
+
+  // OTHER, EXTRA ALIASES:
+
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+
+  return tree;
+}
+
+// For testing (L2b) [5000 E^-2 files, 200000 events/file]
+TTree* LoadTree_IC40_CutA5_nugen_numu_2326_small() {
+
+  char *files = "$LAB_DATA_DIR/ic40ps/CutA5_v3_nugen_numu_2326_05000_small.root";
+  TChain *tree = new TChain("Level2");
+  tree->Add(files);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+
+  int nFiles = 5000; 
+  int generatedEventsPerFile = 200000; // NuMu + NuMuBar per file
+  int mcTotalGeneratedEvents = nFiles * generatedEventsPerFile;
+
+
+  // SET HANDLES:
+  // These aliases provide consistent handles across different 
+  // types root files (analysis-tree, flat-ntuple, simple-extractor, small-tree),
+  // so set accordingly:
+
+  tree->SetAlias("mcPrimary_Zenith_rad",  "mcZr");
+  tree->SetAlias("mcPrimary_Azimuth_rad", "mcAr");
+  tree->SetAlias("mcPrimary_Energy_GeV",  "mcEn");
+  tree->SetAlias("mcOneWeight",           "OW");
+  tree->SetAlias("mueEn",                 "mmueEn");
+  tree->SetAlias("NChan",                 "NCh");
+
+  tree->SetAlias("z",                     "cos(mZd*TMath::DegToRad())");
+
+  tree->SetAlias("BartolFluxWeight",      "BartolFluxWeightForOneFile");
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("mcTotalGeneratedEvents", TStringify(mcTotalGeneratedEvents));
+
+
+  //--------------------//
+
+
+  // OTHER, EXTRA ALIASES:
+
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+
+  return tree;
+}
+
+
+// Full IC40 dataset, L2 reprocessed
+TTree* LoadTree_IC40_CutA5_data_Full_GoodRuns_small() {
+
+   char *filespec10 = "$LAB_DATA_DIR/ic40ps/CutA5_v3_Full_GoodRuns_small.root";
+  TChain *tree = new TChain("Level2");
+  tree->Add(filespec10);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+  double livetimeTotal = 375.539 * 86400.; // seconds
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("livetimeTotal", TStringify(livetimeTotal));
+
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("timeMJD","MJDay+(MJSec+MJNanoSec*1e-9)/86400.");
+
+  tree->SetAlias("NChan","NCh");
+  tree->SetAlias("mueEn","mmueEn");
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+  tree->SetAlias("z","cos(mZd*TMath::DegToRad())");
+
+  return tree;
+}
+
+// Original 1-month burn sample for IC40 dataset, L2 reprocessed
+TTree* LoadTree_IC40_CutA5_data_Burn_GoodRuns_small() {
+
+   char *filespec10 = "/net/user/jdumm/std-processing/releases/V03-02-00/release64/CutA5_v3/CutA5_v3_Burn_GoodRuns_small.root";
+  TChain *tree = new TChain("Level2");
+  tree->Add(filespec10);
+  tree->GetEntries();  // REQUIRED TO "INITIALIZE" CHAIN
+
+  double livetimeTotal = 29.79 * 86400.; // seconds
+
+  // SET META-INFORMATION:
+  // These aliases store meta-information for the tree
+
+  tree->SetAlias("livetimeTotal", TStringify(livetimeTotal));
+
+  //--------------------//
+
+  // OTHER, EXTRA ALIASES:
+  tree->SetAlias("timeMJD","MJDay+(MJSec+MJNanoSec*1e-9)/86400.");
+
+  tree->SetAlias("NChan","NCh");
+  tree->SetAlias("mueEn","mmueEn");
+  tree->SetAlias("mZr","mZd*TMath::DegToRad()");
+  tree->SetAlias("mAr","mAd*TMath::DegToRad()");
+
+  tree->SetAlias("z","cos(mZd*TMath::DegToRad())");
+
+  return tree;
+}
+
+

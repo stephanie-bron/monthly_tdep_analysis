@@ -1,0 +1,13 @@
+
+int nsrc;
+
+void rootSubmitMacro_lcMulti(int nsrc1) {
+
+//  initialize_ran1(ranSeed);
+
+  nsrc = nsrc1;
+  
+  gSystem->cd("/net/user/mfbaker/testlab/branches/multi_time/macro_llh/ic59");
+  gROOT->ProcessLine(".x Clusterize_lcflares_ic4059.C");
+  
+}

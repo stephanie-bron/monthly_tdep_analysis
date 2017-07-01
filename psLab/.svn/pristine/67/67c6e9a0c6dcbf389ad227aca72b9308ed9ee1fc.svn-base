@@ -1,0 +1,80 @@
+from pylab import *
+
+
+ax = subplot(111)
+
+file = open("modified.txt")
+
+sourceenergies = []
+sourceparabsigmas = []
+sourceweights = []
+
+eventsX=[]
+eventsY=[]
+
+sourcesX = []
+sourcesY = []
+events59X = []
+events59Y = []
+events79X = []
+events79Y = []
+events86X = []
+events86Y = []
+w59 = []
+w79 = []
+w86 = []
+
+for line in file:
+    
+    if len(line.split()) == 2:
+        sourcesX.append(float(line.split()[0]))
+        sourcesY.append(float(line.split()[1]))
+        
+    else:
+        sourceenergies.append(float(line.split()[7]))
+        sourceparabsigmas.append(float(line.split()[8]))
+        sourceweights.append(float(line.split()[1])*float(line.split()[2]))
+        eventsX.append(float(line.split()[5]))
+        eventsY.append(float(line.split()[6]))
+
+
+for line in file:
+    if len(line.split()) == 2:
+        
+        sourcesX.append(float(line.split()[0]))
+        sourcesY.append(float(line.split()[1]))
+        
+    else:
+        if line.split()[0] == "IC59":
+            events59X.append(float(line.split()[5]))
+            events59Y.append(float(line.split()[6]))
+            w59.append(float(line.split()[1])*float(line.split()[2]))
+        elif line.split()[0] == "IC79":
+            events79X.append(float(line.split()[5]))
+            events79Y.append(float(line.split()[6]))
+            w79.append(float(line.split()[1])*float(line.split()[2]))
+        elif line.split()[0] == "IC86":
+            events86X.append(float(line.split()[5]))
+            events86Y.append(float(line.split()[6]))
+            w86.append(float(line.split()[1])*float(line.split()[2]))
+
+
+
+#plt = ax.scatter(eventsX, eventsY, marker="*", c = sourceweights ,s=30, vmin=1000, vmax=40000, label="IC86 + 79 + 59 Milagro 6 Fitted Events")
+#plt2 = ax.scatter(events79X, events79Y, marker="v", c=w79, s=30, vmin=1000, vmax=3000, label="IC79 Events")
+#plt3 = ax.scatter(events86X, events86Y, marker="*", c=w86, s=30, vmin=1000, vmax=3000, label="IC86 Events")
+#ax.scatter(sourcesX, sourcesY, s=250, c="", marker='o', label="Milagro Sources")
+
+plt = ax.scatter(sourceenergies, sourceweights, marker="*", label ="IC86-I + IC79 + IC59 Milagro 6 Fitted Events")
+
+ax.set_ylabel("Event Weights", fontsize='25')
+ax.set_xlabel("MuEx Energy(log10(GeV))", fontsize='25')
+#ax.set_yscale("log")
+#cb = colorbar(plt)
+#cb.set_label('Event weight')
+legend(scatterpoints=1, loc="upper left")
+#ax.set_xlim(305, 315)
+#ax.set_ylim(30, 40)
+grid()
+
+show()

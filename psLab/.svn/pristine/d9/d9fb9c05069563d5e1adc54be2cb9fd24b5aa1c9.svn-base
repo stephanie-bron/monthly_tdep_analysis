@@ -1,0 +1,492 @@
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+  //  TString macroPath = gROOT->GetMacroPath();
+  //  macroPath += gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh:");
+  //  gROOT->SetMacroPath(macroPath);
+
+
+    if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic59/Ark.C");
+
+    bool OPT_USEREALDATA = false;
+      
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79V2.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaled2.C+");
+      
+      gROOT->ProcessLine(".L TreeLoader_IC79_Final.C");
+      gROOT->ProcessLine(".L TreeLoader_IC59_Final.C");
+      gROOT->ProcessLine(".L TreeLoader_IC40_CutA6_Fix_final.C");
+
+//    I3Ark ark22;
+//    gROOT->ProcessLine(".x load_ark_ic22.C(ark22, OPT_USEREALDATA)");
+
+    I3Ark ark40;
+    gROOT->ProcessLine(".x load_ark_ic40.C(arkIC40, OPT_USEREALDATA)");
+
+    I3Ark ark59;
+    gROOT->ProcessLine(".x load_ark_ic59_BDT.C(ark59, OPT_USEREALDATA)");
+      
+    I3Ark ark79;
+    gROOT->ProcessLine(".x load_ark_ic79_Final.C(ark79, OPT_USEREALDATA)");
+
+  //gROOT->ProcessLine(".L AllSky.C");
+  //AllSky as;
+  //as.SetRange(148, 158, 5, 15);
+
+    MultiArk mark;
+    //mark.AddArk(ark22);
+    mark.AddArk(ark40);
+    mark.AddArk(ark59);
+    
+    MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+
+    int monLev = 0;
+
+    // Specific to Starburst:
+    printf("Setting up Stacking Analysis Sources (Starburst Galaxies)...\n");
+
+    bool OPT_LOADSIGNAL = true;
+
+    I3MultiSignalGenerator msg40;
+    I3MultiSignalGenerator msg59;
+    I3MultiSignalGenerator msg79;
+    vector<I3Event> sourceEvents;
+
+    double spectralIndex = -2; //for injection, for llh, this is fitted 
+    PowerLawFlux pflux(1,spectralIndex); // 1 GeV^-1 cm^-2 s^-1;  index = configurable
+
+    int nStarburstListExpected = 127; // Just a precaution // Just a precaution
+    int nStarburstList = 0;
+
+    char* filename = "stacking/Starburst/20mJy_sample_181208.csv";
+
+    // Can configure analysis to use Flux at 60um as weight, defaults to false
+    bool OPT_USE_THEORY_WEIGHT_SOURCE = 1;  // Source Simulation Weight
+    bool OPT_USE_THEORY_WEIGHT_SEARCH = 1;  // Search Hypothesis Weight
+
+    printf("Weight source simulation by 60um Flux: %i\n",
+         OPT_USE_THEORY_WEIGHT_SOURCE);
+    printf("Weight search hypothesis by 60um Flux: %i\n",
+         OPT_USE_THEORY_WEIGHT_SEARCH);
+
+    //FILE *fp = fopen(filename,"r");
+    ifstream in;
+    in.open(filename);
+
+    char buffer[100];
+    double raDeg, decDeg, Flux60um;
+    double dummy=0;
+
+    // Source locations, read from txt file
+    vector<EquatorialDeg> srcLocations;
+    srcLocations.clear();
+
+    // Theoretical enhancements for I3MultiSignalGenerator signal generation
+    vector<double> enhancementFactors;
+    enhancementFactors.clear();
+ 
+    // Size of sources (all point-sources here)
+    vector<double> srcSigmas;
+    srcSigmas.clear();
+ 
+    // Search enhancements for likelihood pdfs
+    vector<double> pdfEnhancements;
+    pdfEnhancements.clear();
+
+    // Read the Starburst catalogue, store all info in vectors
+    int srcIndex=0;
+    //while( fscanf(fp,"%s %lf %lf\n", buffer, &raDeg, &decDeg) == 3) 
+    // Read in header
+    for (int i=0; i<21; i++) {
+      in >> buffer;
+    }
+    while (1){
+      in >> buffer >> raDeg >> decDeg >> dummy >> dummy >> dummy >> dummy >> dummy >> Flux60um >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy;
+      if ( !in.good() ) break;
+      printf("%03d %14s %6.2f %6.2f %5.2f\n",srcIndex,buffer,raDeg,decDeg,Flux60um);
+ 
+      srcLocations.push_back( EquatorialDeg(raDeg, decDeg) );
+      srcSigmas.push_back(0.0); // all are point-like
+ 
+      // These vectors are normalized a bit later
+      if (OPT_USE_THEORY_WEIGHT_SOURCE) { enhancementFactors.push_back(Flux60um); }
+      else { enhancementFactors.push_back(1.); }
+      if (OPT_USE_THEORY_WEIGHT_SEARCH) { pdfEnhancements.push_back(Flux60um);}
+      else { pdfEnhancements.push_back(1.); }
+ 
+      ++srcIndex;
+      cout << srcIndex << " " << flush;
+    }
+    nStarburstList = srcIndex;
+ 
+    // At least make sure vector lengths are same size
+    assert ( nStarburstList == nStarburstListExpected );
+    assert ( nStarburstList == srcLocations.size());
+    assert ( srcSigmas.size() == srcLocations.size() ); // else misconfigured
+    assert ( enhancementFactors.size() == srcLocations.size() ); // else misconfigured
+    assert ( pdfEnhancements.size() == srcLocations.size() ); // else misconfigured
+ 
+    cout << nStarburstList << " total Starburst sources read.\n";
+    //fclose(fp);
+    in.close();
+
+    // Normalize the enhancement factors (easier to interpret final flux)
+    double sumEF=0;
+    double sumPE=0;
+    for (int i=0; i<nStarburstList; i++){
+      sumEF += enhancementFactors[i];
+      sumPE += pdfEnhancements[i];
+    }
+    for (int i=0; i<nStarburstList; i++){
+      enhancementFactors[i]/=sumEF;
+      pdfEnhancements[i]/=sumPE;
+    }
+
+    // Each Ark has its own event loader.  Each ark needs its own msg... 
+    //  (I.e. its own list of candidate source events)
+    EventLoaderExt evLoader40 = dynamic_cast<const EventLoaderExt&>(ark40.evLoader);
+    evLoader40.SetNUpSamples(20); // Default number of times each signal event is moved
+    EventLoaderExt evLoader59 = dynamic_cast<const EventLoaderExt&>(ark59.evLoader);
+    evLoader59.SetNUpSamples(20); // Default number of times each signal event is moved
+    EventLoaderExt evLoader79 = dynamic_cast<const EventLoaderExt&>(ark79.evLoader);
+    evLoader79.SetNUpSamples(20); // Default number of times each signal event is moved
+    srcIndex = 0;
+
+    // Loop again, adding source to I3MultiSignalGenerator
+    if (OPT_LOADSIGNAL) {
+        cout << "Loading Source Events... (This may take a while)\n";
+        for (int i=0; i<nStarburstList; i++){
+          //printf("%03d %6.2f %6.2f %5.2f, %5.2f\n",srcIndex,srcLocations[srcIndex]->GetRa(),srcLocations[srcIndex]->GetDec(),enhancementFactors[srcIndex],pdfEnhancements[srcIndex]);
+          evLoader40.LoadSourcePdf_Kent(srcLocations[srcIndex], srcSigmas[srcIndex]);
+          evLoader40.LoadSourceEvents(sourceEvents);
+          I3PointGenerator i3point(sourceEvents, pflux, srcLocations[srcIndex], ark40.livetime);
+          msg40.AddSignal(i3point,enhancementFactors[srcIndex]); 
+          evLoader59.LoadSourcePdf_Kent(srcLocations[srcIndex], srcSigmas[srcIndex]);
+          evLoader59.LoadSourceEvents(sourceEvents);
+          I3PointGenerator i3point(sourceEvents, pflux, srcLocations[srcIndex], ark59.livetime);
+          msg59.AddSignal(i3point,enhancementFactors[srcIndex]);
+          evLoader79.LoadSourcePdf_Kent(srcLocations[srcIndex], srcSigmas[srcIndex]);
+          evLoader79.LoadSourceEvents(sourceEvents);
+          I3PointGenerator i3point(sourceEvents, pflux, srcLocations[srcIndex], ark79.livetime);
+            msg79.AddSignal(i3point,enhancementFactors[srcIndex]);
+
+          cout << "." << flush;
+          srcIndex++;
+        }
+    }
+    cout << endl;
+
+    // ... finished adding sources
+ 
+    I3SignalGenerator *mySignalPtr40 = &msg40;
+    SourceModule *srcMod40 = mySignalPtr40; // one more base class deep
+ 
+    I3SignalGenerator *mySignalPtr59 = &msg59;
+    SourceModule *srcMod59 = mySignalPtr59;
+      
+    I3SignalGenerator *mySignalPtr79 = &msg79;
+    SourceModule *srcMod79 = mySignalPtr79;
+ 
+ 
+    // CALCULATE STACKING WEIGHTS VS GAMMA TABLE
+    // Set theoretical bias, i.e. if you have reason to believe one source emits 
+    //  a higher flux, add that enhancement factor here and the stacking search
+    //  will use that enhancement factor to construct the signal spatial pdfs
+    //  e.g., if you believe one source emits twice as much flux as another, the 
+    //  srcWeightsArray will scale that source pdf up by a factor of 2 if set here.
+    //  (It will not inject more flux, such as setting the enhancement factor
+    //   of the I3PointGenerator)
+ 
+    // At least make sure these are the same length as number of sources
+    assert ( srcSigmas.size() == srcLocations.size() ); // else misconfigured
+    assert ( enhancementFactors.size() == srcLocations.size() ); // else misconfigured
+    assert ( pdfEnhancements.size() == srcLocations.size() ); // else misconfigured
+
+    cout << "\nCalculating Stacking Weight vs Gamma Tables...\n ";
+ 
+    double gammaMin = -4;
+    double gammaMax = -1;
+    int nGammaBins  = 30;
+ 
+ 
+    vector<vector<double> > srcWeightsArray40;
+    int vSize = srcLocations.size();
+    srcWeightsArray40.resize( vSize );
+    double srcWeight=0, testGamma=0;
+    for (int srcIndex=0; srcIndex < srcLocations.size(); srcIndex++) {
+ 
+      evLoader40.LoadSourceEvents(sourceEvents, srcLocations[srcIndex]);
+ 
+      for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+        double testGamma = (gammaIndex+0.5)*(gammaMax-gammaMin)/nGammaBins + gammaMin;
+        PowerLawFlux testFlux(1,testGamma);  //  1 GeV^-1 cm^-2 s^-1;  index = testGamma
+        FluxBase *myFluxPtr = &testFlux;
+ 
+        I3PointGenerator i3point(sourceEvents, *myFluxPtr, srcLocations[srcIndex], ark40.livetime);
+        srcWeight = i3point->GetMeanSrcNev();
+        //srcWeight = 1;
+        //cout <<srcIndex<<"  "<<gammaIndex<<"  "
+        //     <<testGamma<<"  "<<srcWeight*pdfEnhancements[srcIndex]<< endl;
+        srcWeightsArray40[srcIndex].push_back(srcWeight*pdfEnhancements[srcIndex]);
+      }
+ 
+    }
+
+    // Normalize each row for sanity's sake (stacking method does not require this)
+    cout << endl;
+    cout << "Normalized table of Src Weights for different gamma:" << endl;
+    cout << "x-axis = Source Index, y-axis = gamma index (soft to hard)"<<endl;
+    cout << endl;
+    for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+      printf("%02d:  ",gammaIndex);
+      //cout << gammaIndex << ": ";
+      double sumRow = 0;
+      // Find norm constant
+      for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+        sumRow += srcWeightsArray40[srcIndex][gammaIndex];
+      }
+      // And normalize
+      for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+        srcWeightsArray40[srcIndex][gammaIndex]/=sumRow;
+        printf("%.4f ",srcWeightsArray40[srcIndex][gammaIndex]);
+      }
+ 
+      cout << endl;
+ 
+    }
+    vector<vector<double> > srcWeightsArray59;
+    int vSize = srcLocations.size();
+    srcWeightsArray59.resize( vSize );
+    double srcWeight=0, testGamma=0;
+    for (int srcIndex=0; srcIndex < srcLocations.size(); srcIndex++) {
+ 
+      evLoader59.LoadSourceEvents(sourceEvents, srcLocations[srcIndex]);
+ 
+      for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+        double testGamma = (gammaIndex+0.5)*(gammaMax-gammaMin)/nGammaBins + gammaMin;
+        PowerLawFlux testFlux(1,testGamma);  //  1 GeV^-1 cm^-2 s^-1;  index = testGamma
+        FluxBase *myFluxPtr = &testFlux;
+ 
+        I3PointGenerator i3point(sourceEvents, *myFluxPtr, srcLocations[srcIndex], ark59.livetime);
+        srcWeight = i3point->GetMeanSrcNev();
+        //srcWeight = 1;
+        //cout <<srcIndex<<"  "<<gammaIndex<<"  "
+        //     <<testGamma<<"  "<<srcWeight*pdfEnhancements[srcIndex]<< endl;
+        srcWeightsArray59[srcIndex].push_back(srcWeight*pdfEnhancements[srcIndex]);
+      }
+ 
+    }
+
+    // Normalize each row for sanity's sake (stacking method does not require this)
+    cout << endl;
+    cout << "Normalized table of Src Weights for different gamma:" << endl;
+    cout << "x-axis = Source Index, y-axis = gamma index (soft to hard)"<<endl;
+    cout << endl;
+    for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+      printf("%02d:  ",gammaIndex);
+      //cout << gammaIndex << ": ";
+      double sumRow = 0;
+      // Find norm constant
+      for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+        sumRow += srcWeightsArray59[srcIndex][gammaIndex];
+      }
+      // And normalize
+      for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+        srcWeightsArray59[srcIndex][gammaIndex]/=sumRow;
+        printf("%.4f ",srcWeightsArray59[srcIndex][gammaIndex]);
+      }
+ 
+      cout << endl;
+ 
+    }
+   
+      vector<vector<double> > srcWeightsArray79;
+      int vSize = srcLocations.size();
+      srcWeightsArray79.resize( vSize );
+      double srcWeight=0, testGamma=0;
+      for (int srcIndex=0; srcIndex < srcLocations.size(); srcIndex++) {
+          
+          evLoader40.LoadSourceEvents(sourceEvents, srcLocations[srcIndex]);
+          
+          for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+              double testGamma = (gammaIndex+0.5)*(gammaMax-gammaMin)/nGammaBins + gammaMin;
+              PowerLawFlux testFlux(1,testGamma);  //  1 GeV^-1 cm^-2 s^-1;  index = testGamma
+              FluxBase *myFluxPtr = &testFlux;
+              
+              I3PointGenerator i3point(sourceEvents, *myFluxPtr, srcLocations[srcIndex], ark79.livetime);
+              srcWeight = i3point->GetMeanSrcNev();
+              //srcWeight = 1;
+              //cout <<srcIndex<<"  "<<gammaIndex<<"  "
+              //     <<testGamma<<"  "<<srcWeight*pdfEnhancements[srcIndex]<< endl;
+              srcWeightsArray79[srcIndex].push_back(srcWeight*pdfEnhancements[srcIndex]);
+          }
+          
+      }
+      
+      // Normalize each row for sanity's sake (stacking method does not require this)
+      cout << endl;
+      cout << "Normalized table of Src Weights for different gamma:" << endl;
+      cout << "x-axis = Source Index, y-axis = gamma index (soft to hard)"<<endl;
+      cout << endl;
+      for ( int gammaIndex=0; gammaIndex<nGammaBins; gammaIndex++) {
+          printf("%02d:  ",gammaIndex);
+          //cout << gammaIndex << ": ";
+          double sumRow = 0;
+          // Find norm constant
+          for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+              sumRow += srcWeightsArray79[srcIndex][gammaIndex];
+          }
+          // And normalize
+          for (int srcIndex=0; srcIndex<vSize; srcIndex++){
+              srcWeightsArray79[srcIndex][gammaIndex]/=sumRow;
+              printf("%.4f ",srcWeightsArray79[srcIndex][gammaIndex]);
+          }
+          
+          cout << endl;
+          
+      }
+ 
+    NewLlhStack newllhstack40;
+    newllhstack40.SetUseEnergy(true);
+    newllhstack40.SetOptimizeTolerance(0.00);
+    newllhstack40.SetMonitorLevel(monLev);
+
+    // NEW FOR STACKING
+    newllhstack40.SetAnalysisSet(ark40.psData);
+    newllhstack40.SetSourceCoords(srcLocations);
+    newllhstack40.SetStackedWeightTable(srcWeightsArray40);
+    // NEW FOR EXT 
+    newllhstack40.SetSourceSigmas(srcSigmas);
+
+    NewLlhStack newllhstack59;
+    newllhstack59.SetUseEnergy(true);
+    newllhstack59.SetOptimizeTolerance(0.00);
+    newllhstack59.SetMonitorLevel(monLev);
+
+    // NEW FOR STACKING
+    newllhstack59.SetAnalysisSet(ark59.psData);
+    newllhstack59.SetSourceCoords(srcLocations);
+    newllhstack59.SetStackedWeightTable(srcWeightsArray59);
+    // NEW FOR EXT 
+    newllhstack59.SetSourceSigmas(srcSigmas);
+      
+    NewLlhStack newllhstack79;
+    newllhstack79.SetUseEnergy(true);
+    newllhstack79.SetOptimizeTolerance(0.00);
+    newllhstack79.SetMonitorLevel(monLev);
+      
+    // NEW FOR STACKING
+    newllhstack79.SetAnalysisSet(ark79.psData);
+    newllhstack79.SetSourceCoords(srcLocations);
+    newllhstack79.SetStackedWeightTable(srcWeightsArray79);
+    // NEW FOR EXT
+    newllhstack79.SetSourceSigmas(srcSigmas);
+
+
+    MultiAnalysisFn maf;
+    //maf.AddAnalysisFn(&newllh22);
+    maf.AddAnalysisFn(&newllhstack40);
+    maf.AddAnalysisFn(&newllhstack59);
+    maf.AddAnalysisFn(&newllhstack79);
+  
+    //gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic59/SimpleMultiAnalysis.C");
+  
+  }
+
+  //EquatorialDeg testSearch(153.375, 11.375);
+  //EquatorialDeg testSearch(343.491,16.148);
+
+  //mark.SetSource(mySignalPtr);
+  ark40.SetSource(srcMod40);
+  ark59.SetSource(srcMod59);
+  ark79.SetSource(srcMod79);
+  //maf.SetSearchCoord(testSearch); // Not needed for stacking
+
+  //MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData); //already defined
+  
+  NewLlhEnergy_ParTranslator pt;
+  pt.SetRange(1,4,31);
+  pt.SetTranslator(mas);
+  
+  maf.SetParTranslator(&pt);
+
+  vector<MinuitParDef> pdv;
+  pdv.push_back( MinuitParDef("nSrc",2,0.1, 0.,100.) );
+  pdv.push_back( MinuitParDef("gamma",2.5,0.5, 1., 4.) );
+  maf.SetParDefs(pdv);
+
+  //SimpleMultiAnalysis sa;
+  //sa.SetNDoF(2);
+   
+  //cout << "Starting trials" << endl;
+  //sa.Execute(mark,maf,1000,0);
+
+
+  // Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  SetDisco(disco, 15, false, 2.87e-7, 0.5);
+  //SetDisco(disco, 20, false, 0.5, 0.9);
+
+  gROOT->ProcessLine(".L MultiDetectionStudy.C");
+ 
+  TCanvas *c = MultiDetectionStudy(mark, maf, mas, disco); //
+  /* previous outputs
+ark_SetDisco:
+!! disco set with:
+   Loops: 30
+   Setting for Median Upper Limit with nBkgTrials: 1500
+   Significance: T.B.D.   Power: 0.9
+ Mean Number of Source events expected for source model: 1.6654e+09
+ Calculating Median Bkg. p-value (1500 trials):
+ 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+ Set Detection Significance to median bkg p-value: 0.5
+ Detection Power: 0.9
+You are exiting the lab.
+Fri Apr 22 04:02:32 CDT 2011
+
+
+  */
+
+  /*
+  Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  // SetDisco(disco, 20, false, 2.87e-7, 0.5);
+   SetDisco(disco, 30, true, 0.5, 0.9);
+  
+  gROOT->ProcessLine(".L DetectionZenith.C");
+
+  DetectionZenith dz;
+  dz.searchDecDegMin = -85.;   //(skip any bins beyond this range);
+  dz.searchDecDegMax = +85.;   //(skip any bins beyond this range);
+  dz.nBins = 40;
+
+//  dz.Execute(ark59, newllh59, disco, PowerLawFlux(1,-2));
+  dz.Execute(mark, maf, disco, PowerLawFlux(1,-2));
+  
+  
+//  dz.Write("IC59_SC_Zenith.root","recreate");
+  dz.Write("IC59_SC_IT2B_Zenith_sensEm2.root","recreate");
+//  dz.Write("Multi_BDT_Zenith_sensEm2.root","recreate");
+
+  //dz.Write("IC59_discovery.root","recreate"); //
+  */
+
+ 
+//  return 1; // signal correct finish of script
+}

@@ -1,0 +1,74 @@
+{
+
+char* filename = "SNRCat_SNR.csv";
+
+    // Can configure analysis to use Flux at 60um as weight, defaults to false
+    bool OPT_USE_THEORY_WEIGHT_SOURCE = 1;  // Source Simulation Weight
+    bool OPT_USE_THEORY_WEIGHT_SEARCH = 1;  // Search Hypothesis Weight
+
+    printf("Weight source simulation by Integrated Gamma Flux: %i\n",
+         OPT_USE_THEORY_WEIGHT_SOURCE);
+    printf("Weight search hypothesis by Integrated Gamma Flux: %i\n",
+         OPT_USE_THEORY_WEIGHT_SEARCH);
+
+    //FILE *fp = fopen(filename,"r");
+    ifstream in;
+    in.open(filename);
+
+    char buffer[100];
+    double distance[30], disterr[30], age[30], agerr[30];
+    double raDeg, decDeg, Flux60um;
+    double dummy=0;
+
+    // Source locations, read from txt file
+//     vector<EquatorialDeg> srcLocations;
+//     srcLocations.clear();
+//     // Theoretical enhancements for I3MultiSignalGenerator signal generation
+//     vector<double> enhancementFactors;
+//     enhancementFactors.clear();
+//  
+//     // Size of sources (all point-sources here)
+//     vector<double> srcSigmas;
+//     srcSigmas.clear();
+//  
+//     // Search enhancements for likelihood pdfs
+//     vector<double> pdfEnhancements;
+//     pdfEnhancements.clear();
+
+    // Read the Starburst catalogue, store all info in vectors
+    int srcIndex=0;
+    //while( fscanf(fp,"%s %lf %lf\n", buffer, &raDeg, &decDeg) == 3) 
+    // Read in header
+    //    for (int i=0; i<21; i++) {
+    //  in >> buffer;
+    // }
+    while (1){
+      //      in >> buffer >> raDeg >> decDeg >> dummy >> dummy >> dummy >> dummy >> dummy >> Flux60um >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy;
+
+      in >> buffer >> raDeg >> decDeg >> Flux60um >> age[srcIndex] >> agerr[srcIndex] >> distance[srcIndex] >> disterr[srcIndex];
+      
+      if ( !in.good() ) break;
+      printf("%03d %14s %6.2f %6.2f %5.2f\n",srcIndex,buffer,raDeg,decDeg,Flux60um);
+ 
+//       srcLocations.push_back( EquatorialDeg(raDeg, decDeg) );
+//       srcSigmas.push_back(0.0); // all are point-like
+//  
+//       // These vectors are normalized a bit later
+//       if (OPT_USE_THEORY_WEIGHT_SOURCE) { enhancementFactors.push_back(Flux60um); }
+//       else { enhancementFactors.push_back(1.); }
+//       if (OPT_USE_THEORY_WEIGHT_SEARCH) { pdfEnhancements.push_back(Flux60um);}
+//       else { pdfEnhancements.push_back(1.); }
+ 
+      ++srcIndex;
+      cout << srcIndex << " " << flush;
+    }
+
+    TGraphErrors * s = new TGraphErrors(30, age, distance, agerr, disterr);
+    s->GetXaxis()->SetTitle("Age (Years)");
+    s->GetYaxis()->SetTitle("Distance(kpc)");
+    s->SetNameTitle("agedist", "Young SNRs");
+    s->Draw("AP");
+    
+    
+    
+}

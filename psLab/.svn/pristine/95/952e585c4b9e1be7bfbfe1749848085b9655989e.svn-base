@@ -1,0 +1,47 @@
+{
+TFile *_file0 = TFile::Open("mqso_teststat_405979_XTEJ1118plus480null.root");
+TH1D *hTestStatistic = (TH1D*)_file0.Get("hTestStatistic");
+
+
+
+int nTrials = 10000;
+
+  double xRange = hTestStatistic.GetXaxis()->GetXmax() -
+    hTestStatistic.GetXaxis()->GetXmin();
+  double binsPerUnit = hTestStatistic.GetNbinsX() / xRange;
+  double normFactor = (nTrials/2.) / binsPerUnit; // to match histogram plot
+  // divide by 2 because we only count excess tail contribution to chi2
+  //fchi2->SetParameter(0,normFactor);
+  //fchi2->SetLineColor(kBlue);
+
+  TF1 *fchi2_2d = new TF1("fchi2_2d","[0] * (1./2.) * exp(-x/2)",0,50);
+  TF1 *fchi2_3d = new TF1("fchi2_3d","[0] * [1] * ( sqrt([1]*x) * exp(-[1]*x/2) )",0,50);
+  TF1 *fchi2_4d = new TF1("fchi2_4d","[0] * [1] * ([1]*x) * (1./(2)) * exp(-[1]*x/2)",0,50);
+
+  fchi2_2d->SetParameter(0,normFactor);
+  fchi2_2d->SetParameter(1,2);
+  fchi2_2d->SetLineColor(kRed);
+
+  fchi2_3d->SetParameter(0,normFactor);
+  fchi2_3d->SetParameter(1,2); // correction for chi = 2 * log lambda
+  fchi2_3d->SetLineColor(kBlue);
+ 
+  fchi2_4d->SetParameter(0,normFactor);
+  fchi2_4d->SetParameter(1,2); // correction for chi = 2 * log lambda
+  fchi2_4d->SetLineColor(kGreen);
+  
+ TLegend *legend = new TLegend(.75,.80,.95,.95);
+ legend->AddEntry(fchi2_2d, "2d Chi Square");
+ legend->AddEntry(fchi2_3d, "3d Chi Square");
+ legend->AddEntry(fchi2_4d, "4d Chi Square");
+ 
+  hTestStatistic.Draw();
+fchi2_2d->Draw("same");
+fchi2_3d->Draw("same");
+fchi2_4d->Draw("same");  
+legend->Draw("same");
+
+gPad->SetLogy();
+
+}
+

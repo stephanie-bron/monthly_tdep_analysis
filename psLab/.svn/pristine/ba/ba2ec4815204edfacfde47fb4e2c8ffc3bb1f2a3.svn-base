@@ -1,0 +1,27 @@
+
+{
+  double searchRadiusDeg = 2.;
+
+  EquatorialDeg srcLocation(153.375,11.375); // hotspot
+  psData.UseRealData();
+
+  EventList* evList = psData.GetEventList();
+  int nCount = 0;
+  for (int i=0; i<evList->GetSize(); ++i) {
+    I3Event* evPtr = dynamic_cast<I3Event*>(evList->GetEvent(i));
+    double distance = evPtr->GetCoord().DistanceTo(srcLocation);
+    if (distance < searchRadiusDeg) {
+      ++nCount;
+      cout << "EnergyValue: " << evPtr->GetParams().energyValue;
+      cout << "   distance (deg): " << distance << endl;
+    }
+  }
+  cout << nCount << " events less than " << searchRadiusDeg;
+  cout << " degrees from r.a: " << srcLocation.GetRa();
+  cout << " dec: " << srcLocation.GetDec() << endl;
+
+  double meanBkg = psData.BkgNumberDensity(srcLocation) *
+    searchRadiusDeg*searchRadiusDeg *TMath::Pi();
+  cout << "Bkg events expected: " << meanBkg << endl;
+
+}

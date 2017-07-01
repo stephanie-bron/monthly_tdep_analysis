@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if [ $1 == 'SkyMap' ]; then
+# 200 scrambled maps
+  echo "skymap scrambles!"
+  for seed in `seq 1101 1 1200`; do
+    ./submit_npx3.sh /net/user/jfeintzeig/2013/psLab/start.sh '"root -l -b -q root_mapgen.C('$seed')"'
+  done
+fi
+
+if [ $1 == 'SourceList' ]; then
+  echo "source list scrambles!"
+  for seed in `seq 2201 1 2400`; do
+    ./submit_npx3.sh /net/user/jfeintzeig/2013/psLab/start.sh '"root -l -b -q root_slgen.C('$seed')"'
+  done
+fi
+
+if [ $1 == 'SkyMap_IC86Only' ]; then
+# 200 scrambled maps
+  echo "ic86 only skymap scrambles!"
+  for seed in `seq 2000 1 2200`; do
+    ./submit_npx3.sh /net/user/jfeintzeig/2013/psLab/start.sh '"root -l -b -q root_mapgen.C('$seed')"'
+  done
+fi

@@ -1,0 +1,207 @@
+
+class DetectionZenithMulti {
+ public:
+  TH1D hBkgEvents;
+  TH1D hFixedFluxEvents;
+  TH1D hDetectEvents;
+  TH1D hDetectFlux;
+  TCanvas* can;
+
+  // will skip bins if they involve search outside this range:
+  double searchDecDegMin;
+  double searchDecDegMax;
+
+  // how histograms will span declination range
+  bool optSinDec;
+  int nBins;
+  double xMin;
+  double xMax;
+
+  DetectionZenithMulti() : can(NULL),
+		      searchDecDegMin(-85.),
+		      searchDecDegMax(+85.),
+		      optSinDec(true),
+		      nBins(20),
+		      xMin(-1),
+		      xMax(1)
+  { }
+
+
+  ~DetectionZenithMulti() { }
+
+  void Usage();
+  void Execute(MultiArk& ark, MultiAnalysisFn& llh, 
+	       DiscoveryPotential& disco, FluxBase& flux);
+
+  void Write(char* filename, char* fileoption="new");
+};
+
+
+void DetectionZenithMulti::Usage() {
+  cout << "DetectionZenithMulti dz;\n";
+  cout << "  dz.Execute(Ark& ark, AnalysisFn& llh,\n"; 
+  cout << "             DiscoveryPotential& disco, FluxBase& flux)\n";
+  cout << "\n";
+  cout << "Configurable options (default settings shown):\n";
+  cout << "  dz.searchDecDegMin = -85.;   (skip any bins beyond this range)\n";
+  cout << "  dz.searchDecDegMax = +85.;   (skip any bins beyond this range)\n";
+  cout << "  dz.optSinDec = true;         (bin in sin(Dec) or just Dec)\n";
+  cout << "  dz.nBins = 20;          (histogram bins)\n";
+  cout << "  dz.xMin = -1.;          (typically -1 for sinDec, -90 for Dec)\n";
+  cout << "  dz.xMax = +1.;          (typically +1 for sinDec, +90 for Dec)\n";
+  cout << "\n";
+  cout << "  dz.Write(char*filename, char* fileoption=\"new\")\n";
+}
+
+
+void DetectionZenithMulti::Execute(MultiArk& ark, MultiAnalysisFn& llh, 
+			      DiscoveryPotential& disco, FluxBase& flux) 
+{
+  // Set Up Histograms
+
+  TString xLabel;
+  if (optSinDec) { xLabel = "sin(Dec.)"; }
+  else { xLabel = "Declination [#circ]"; }
+
+  hBkgEvents.Reset();
+  hFixedFluxEvents.Reset();
+  hDetectEvents.Reset();
+  hDetectFlux.Reset();
+
+  hBkgEvents.SetBins(nBins, xMin, xMax);
+  hBkgEvents.SetTitle("Bkg Events per sq. deg.;"+xLabel);
+  hFixedFluxEvents.SetBins(nBins, xMin, xMax);
+  hFixedFluxEvents.SetTitle("Mean Source Events for Fixed Flux ;"+xLabel);
+  hDetectEvents.SetBins(nBins, xMin, xMax);
+  hDetectEvents.SetTitle("Mean Source Events for Detectable Flux ;"+xLabel); 
+  hDetectFlux.SetBins(nBins, xMin, xMax);
+  hDetectFlux.SetTitle("Detectable Flux Scale Relative to Model ;"+xLabel);
+
+  // only make new canvas if it didn't already exist:
+  if ( !can ) {
+    can = 
+      new TCanvas("canDetectionZenith","canDetectionZenith",20,20,800,700);
+    can->Divide(2,2,0.005,0.005);
+  }
+
+
+  //
+  // MAIN LOOP
+  //
+
+  for (int iDec=1; iDec<=nBins; ++iDec) {
+
+    // determine what the next source declination is, depending on how
+    // we constructed our histogram
+    double srcDecDeg;
+    if (optSinDec) {
+      srcDecDeg = asin(hDetectFlux.GetBinCenter(iDec))*TMath::RadToDeg();
+    } else {
+      srcDecDeg = hDetectFlux.GetBinCenter(iDec);
+    }
+
+    if (srcDecDeg < searchDecDegMin) { 
+      cout << "Skipping srcDec=" << srcDecDeg;
+      cout << " < searchDecDegMin=" << searchDecDegMin << endl;
+      continue;
+    }
+    if (srcDecDeg > searchDecDegMax) { 
+      cout << "Skipping srcDec=" << srcDecDeg;
+      cout << " > searchDecDegMax=" << searchDecDegMax << endl;
+      continue; 
+    }
+
+
+    // Set up source simulation for this declination (use r.a. = 0)
+    ark.SetPointSource(EquatorialDeg(0., srcDecDeg), flux);
+
+    cout << "Source Declination: " << ark.mySrcLocation.GetDec() << " deg\n";
+    double meanSrcEv_ForInitialFlux = ark.psData->GetMeanSrcNev();
+    cout << "  Mean Src Events for Init. Flux: ";
+    cout << meanSrcEv_ForInitialFlux << endl;
+
+    NewLlhEnergy_ParTranslator *pt = new NewLlhEnergy_ParTranslator;
+    pt->SetRange(1,4,31); //gamma_min, gamma_max, nBins
+    pt->SetTranslator(dynamic_cast<MultiAnalysisSet*>(ark.psData));
+    llh.SetParTranslator(pt);
+
+
+    // Plot bkg density for this declination
+
+    // Have to make a clean sample first before evaluating bkg density:
+    ark.psData->GenerateDataSet_with_nSrcEvents(0); 
+    // ... since number density includes all events, even if src is added
+    // (hmm, maybe should remove the term 'bkg' from this next fn call).
+    double bkgPerSqDeg = ark.psData->BkgNumberDensity(ark.mySrcLocation);
+    can->cd(1);
+    hBkgEvents.SetBinContent(iDec, bkgPerSqDeg);
+    hBkgEvents.SetMinimum(0.); // helpful for drawing once all bins nonzero
+    hBkgEvents.Draw();
+
+    // Plot Signal rate for this source
+
+    can->cd(2);
+    hFixedFluxEvents.SetBinContent(iDec, meanSrcEv_ForInitialFlux);
+    // helpful for drawing once all bins nonzero:
+    hFixedFluxEvents.SetMinimum(0.); 
+    hFixedFluxEvents.Draw();
+    can->Update();  // update now, while waiting for disco loops next
+
+
+    llh.SetAnalysisSet(ark.psData);
+    llh.SetSearchCoord(ark.mySrcLocation);
+
+    disco.SetAnalysisSet(ark.psData);
+    disco.SetAnalysisFn(&llh);
+
+    disco.AnalyzeDiscoveryPotential();
+
+    double meanSrcEv_ForDetection = disco.MeanSrcEv_ForDetection_;
+    double fluxScale = 
+      ark.psData->GetFluxScaleForNev(meanSrcEv_ForDetection);
+
+
+    can->cd(3);
+    hDetectEvents.SetBinContent(iDec, meanSrcEv_ForDetection);
+    hDetectEvents.SetMinimum(0.); // helpful for drawing once all bins nonzero
+    hDetectEvents.Draw();
+
+    can->cd(4);
+    hDetectFlux.SetBinContent(iDec, fluxScale);
+    hDetectFlux.Draw();
+    can->Update();
+
+
+    cout << "Detection Power " << disco.GetDetectionPower()*100 << "%\n"; 
+    cout << "Detection Significance "<<disco.GetDetectionSignificance()<< endl;
+    cout << "Mean signal events detectable: " <<meanSrcEv_ForDetection << endl;
+    cout << "Flux scale relative to model is: " << fluxScale << endl;
+    cout << "Running average fluxScale: "<< hDetectFlux.GetSum()/iDec << endl;
+  
+    delete pt;
+
+  }
+
+  can->cd(4);  // hDetectFlux
+  gPad->SetLogy(true);
+  can->Update();
+}
+
+
+bool DetectionZenithMulti::Write(char* filename, char* fileoption) {
+  TFile *fileOutput = new TFile(filename, fileoption);
+  if (fileOutput->IsZombie()) {
+    cout << "Try using 'recreate' option?\n";
+    return false; // no file saved
+  }
+
+  cout << "Writing to " << filename << endl;
+  cout << "  hBkgEvents, hFixedFluxEvents, hDetectEvents, and hDetectFlux\n";
+  hBkgEvents.Write("hBkgEvents");
+  hFixedFluxEvents.Write("hFixedFluxEvents");
+  hDetectEvents.Write("hDetectEvents");
+  hDetectFlux.Write("hDetectFlux");
+
+  fileOutput->Close();
+  return true;  // file saved (apparently!)
+}

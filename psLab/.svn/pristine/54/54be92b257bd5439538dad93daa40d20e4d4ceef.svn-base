@@ -1,0 +1,15 @@
+
+int rs;
+
+void root_mapgen(int seed1){
+
+  //gSystem->cd("/net/user/mfbaker/psLab/trunk");
+  //gROOT->ProcessLine(".!./start-npx.sh");
+
+  rs = -1.0*seed1;
+  cout << "Using random seed " << rs << "\n\n";
+  
+  gSystem->cd("/net/user/mfbaker/psLab/trunk/macro_llh/ic59");
+  gROOT->ProcessLine(".x Track_multi_allsky.C"); //everything is done and saved in here
+
+}

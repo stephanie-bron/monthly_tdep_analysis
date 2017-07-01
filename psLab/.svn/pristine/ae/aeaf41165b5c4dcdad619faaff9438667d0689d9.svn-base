@@ -1,0 +1,466 @@
+
+Processing Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C...
+Preload: /net/user/mrameez/psLab_Debian_64/labcore/preload.C
+
+LAB_COORDINATE_PROJECT not specified....
+Will use coordinate-service as default.
+(See 'labcore/start_lab.sh' or 'llh/loadlibs.C' for how to change)
+
+Building/Loading:  rootExt/public
+Building/Loading:  fluxus/public
+Loading libcoordinate-service
+Building/Loading:  llh/public
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/Clusters/./RescaledSigma_IC86_SplineMPE_C.so
+
+Initializing ran1 with random seed = -39214118
+
+-----  LOADING IC-40  -----
+Will load scrambled times for Base Data.
+Livetime (Days): 375.539
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 36900 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% (36900 entries in tree passed cuts)
+Background set has 36900 events.
+Filling Energy PDFs:
+----- IC-40 Loaded -----
+
+-----  LOADING IC-59 BDT  -----
+Loaded tree
+Will load scrambled times for Base Data.
+Livetime (Days): 348.138
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 107569 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (107569 entries in tree passed cuts)
+Background set has 107569 events.
+Filling Energy PDFs:
+Real time 0:00:38, CP time 38.070
+----- IC-59 BDT Loaded -----
+
+-----  LOADING IC-79 BDT  -----
+Loaded tree
+Will load scrambled times for Base Data.
+Livetime (Days): 316.153
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 109866 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (109866 entries in tree passed cuts)
+Background set has 109866 events.
+Filling Energy PDFs:
+Real time 0:00:39, CP time 39.310
+Warning in <TStreamerInfo::Compile>: Counter fNClusterRange should not be skipped from class TTree
+----- IC-79 BDT Loaded -----
+
+-----  LOADING IC-86 BDT -----
+Loaded tree
+Will load scrambled times for Base Data.
+Livetime (Days): 332.61
+Configuring Source Event Sample...
+Rescaling using SplineMPE...
+Loading Background Events: 
+Selecting events from 138323 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (138323 entries in tree passed cuts)
+Background set has 138323 events.
+Filling Energy PDFs:
+0.9 25.8419
+0.85 31.7883
+0.8 36.8699
+0.75 41.4096
+0.7 45.573
+0.65 49.4584
+0.6 53.1301
+0.55 56.633
+0.5 60
+0.45 63.2563
+0.4 66.4218
+0.35 69.5127
+0.3 72.5424
+0.25 75.5225
+0.2 78.463
+0.15 81.3731
+0.1 84.2608
+-2.08167e-16 90
+-0.2 101.537
+-0.4 113.578
+-0.6 126.87
+-0.8 143.13
+backfill
+set table gamma
+Real time 0:01:11, CP time 71.320
+----- IC-86 BDT Loaded -----
+Setting up Stacking Analysis Sources (Galaxy Clusters)...
+Using CG Spatial Model: B
+Loading Broken Power Laws for each source, fit directly from simulated spectra sent by Murase
+Fitting: DataforIceCube/Virgo/NeuFluxB
+log10(Enu)=-0.001561, log10(NuMuFlux)=-1.170221e+01
+log10(Enu)=0.048438, log10(NuMuFlux)=-1.178072e+01
+log10(Enu)=0.098440, log10(NuMuFlux)=-1.185874e+01
+log10(Enu)=0.148439, log10(NuMuFlux)=-1.193640e+01
+log10(Enu)=0.198440, log10(NuMuFlux)=-1.201378e+01
+Infinite: -inf
+Infinite: -inf
+ FCN=9.99277 FROM MIGRAD    STATUS=CONVERGED     419 CALLS         420 TOTAL
+                     EDM=1.6583e-09    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  p0          -1.14011e+01   1.57827e-01   1.04939e-04  -3.73585e-05
+   2  p1          -1.92105e+00   3.45607e-02   1.77906e-05  -1.30660e-03
+   3  p2          -2.98861e+00   1.56743e-01   8.79722e-05  -7.40934e-04
+   4  p3           7.92736e+00   2.86816e-01   1.70630e-04  -2.82130e-04
+   5  p4          -8.48909e+00   7.20264e-01   5.86731e-04  -1.38825e-04
+   6  p5           1.08280e+01   9.22134e-02   6.42169e-05  -9.82310e-04
+Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+Norm: 3.97055e-12
+gamma1: -1.92105
+gamma2: -2.98861
+gamma3: -8.48909
+Ebreak1: 8.45987e+07
+Ebreak2: 6.72956e+10
+Fitting: DataforIceCube/Coma/NeuFluxB
+log10(Enu)=-0.009918, log10(NuMuFlux)=-1.362937e+01
+log10(Enu)=0.040084, log10(NuMuFlux)=-1.370788e+01
+log10(Enu)=0.090082, log10(NuMuFlux)=-1.378591e+01
+log10(Enu)=0.140080, log10(NuMuFlux)=-1.386356e+01
+log10(Enu)=0.190082, log10(NuMuFlux)=-1.394094e+01
+Infinite: -inf
+Infinite: -inf
+Infinite: -inf
+Infinite: -inf
+ FCN=6.38563 FROM MIGRAD    STATUS=CONVERGED     462 CALLS         463 TOTAL
+                     EDM=2.5944e-12    STRATEGY= 1  ERROR MATRIX UNCERTAINTY   2.4 per cent
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  p0          -1.33738e+01   1.61183e-01  -5.97096e-06  -5.82074e-06
+   2  p1          -1.90956e+00   3.70854e-02  -2.09990e-08  -9.31521e-06
+   3  p2          -2.79575e+00   1.49315e-01   1.00824e-05   1.76242e-05
+   4  p3           7.58191e+00   3.43428e-01  -2.46152e-06  -1.92053e-06
+   5  p4          -7.00799e+00   5.92750e-01  -1.22563e-05   7.66670e-06
+   6  p5           1.05813e+01   1.14063e-01  -3.11633e-06   3.95606e-05
+Norm: 4.22895e-14
+gamma1: -1.90956
+gamma2: -2.79575
+gamma3: -7.00799
+Ebreak1: 3.81865e+07
+Ebreak2: 3.81359e+10
+Fitting: DataforIceCube/Ophiuchus/NeuFluxB
+log10(Enu)=-0.011993, log10(NuMuFlux)=-1.359072e+01
+log10(Enu)=0.038008, log10(NuMuFlux)=-1.366922e+01
+log10(Enu)=0.088008, log10(NuMuFlux)=-1.374725e+01
+log10(Enu)=0.138006, log10(NuMuFlux)=-1.382490e+01
+log10(Enu)=0.188006, log10(NuMuFlux)=-1.390229e+01
+Infinite: -inf
+Infinite: -inf
+Infinite: -inf
+Infinite: -inf
+ FCN=6.50346 FROM MIGRAD    STATUS=CONVERGED     497 CALLS         498 TOTAL
+                     EDM=8.58224e-09    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  p0          -1.33353e+01   1.60531e-01   8.70653e-05  -4.93512e-04
+   2  p1          -1.91106e+00   3.66139e-02   1.51940e-05  -1.54142e-03
+   3  p2          -2.80583e+00   1.52779e-01   6.82964e-05  -9.23560e-04
+   4  p3           7.61077e+00   3.42561e-01   1.64073e-04  -3.81845e-04
+   5  p4          -7.02341e+00   5.89423e-01   4.04216e-04  -1.45996e-06
+   6  p5           1.05830e+01   1.13114e-01   6.47353e-05   4.75051e-04
+Norm: 4.62038e-14
+gamma1: -1.91106
+gamma2: -2.80583
+gamma3: -7.02341
+Ebreak1: 4.08105e+07
+Ebreak2: 3.82829e+10
+Fitting: DataforIceCube/Perseus/NeuFluxB
+log10(Enu)=-0.007705, log10(NuMuFlux)=-1.311269e+01
+log10(Enu)=0.042296, log10(NuMuFlux)=-1.319120e+01
+log10(Enu)=0.092296, log10(NuMuFlux)=-1.326923e+01
+log10(Enu)=0.142296, log10(NuMuFlux)=-1.334688e+01
+log10(Enu)=0.192294, log10(NuMuFlux)=-1.342426e+01
+Infinite: -inf
+Infinite: -inf
+Infinite: -inf
+Infinite: -inf
+ FCN=6.22004 FROM MIGRAD    STATUS=CONVERGED     464 CALLS         465 TOTAL
+                     EDM=3.13188e-10    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  p0          -1.28452e+01   1.60151e-01   8.54051e-05  -2.10695e-04
+   2  p1          -1.91261e+00   3.62576e-02   1.48309e-05  -1.01405e-03
+   3  p2          -2.83602e+00   1.52785e-01   6.80533e-05  -1.92177e-04
+   4  p3           7.66776e+00   3.31370e-01   1.56896e-04  -5.77017e-05
+   5  p4          -7.13434e+00   6.28309e-01   4.14307e-04  -4.63023e-05
+   6  p5           1.06213e+01   1.14004e-01   6.36476e-05  -4.10796e-04
+Norm: 1.42827e-13
+gamma1: -1.91261
+gamma2: -2.83602
+gamma3: -7.13434
+Ebreak1: 4.6533e+07
+Ebreak2: 4.1812e+10
+Fitting: DataforIceCube/Centaurus/NeuFluxB
+log10(Enu)=-0.004923, log10(NuMuFlux)=-1.242551e+01
+log10(Enu)=0.045076, log10(NuMuFlux)=-1.250401e+01
+log10(Enu)=0.095079, log10(NuMuFlux)=-1.258204e+01
+log10(Enu)=0.145078, log10(NuMuFlux)=-1.265969e+01
+log10(Enu)=0.195077, log10(NuMuFlux)=-1.273708e+01
+Infinite: -inf
+Infinite: -inf
+Infinite: -inf
+ FCN=7.52218 FROM MIGRAD    STATUS=CONVERGED     413 CALLS         414 TOTAL
+                     EDM=1.06142e-09    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  p0          -1.21401e+01   1.58717e-01   9.25915e-05   1.20865e-04
+   2  p1          -1.91753e+00   3.52231e-02   1.58680e-05  -7.88479e-04
+   3  p2          -2.91374e+00   1.56749e-01   7.61484e-05  -3.98004e-04
+   4  p3           7.81142e+00   3.09164e-01   1.60022e-04  -1.48759e-04
+   5  p4          -7.70841e+00   6.71672e-01   4.79753e-04  -3.94470e-06
+   6  p5           1.07219e+01   1.04279e-01   6.33813e-05  -3.58065e-04
+Norm: 7.24344e-13
+gamma1: -1.91753
+gamma2: -2.91374
+gamma3: -7.70841
+Ebreak1: 6.4777e+07
+Ebreak2: 5.27072e+10
+Selecting events from 621908 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (621908 entries in tree passed cuts)
+Src at Zenith = 102.72 ,  selecting events with MCZenith in range ( 102.22 , 103.22 )
+Selected 68560 events using new ExtLoader with many dec bands.
+Selecting events from 1628617 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (1628617 entries in tree passed cuts)
+Src at Zenith = 102.72 ,  selecting events with MCZenith in range ( 102.22 , 103.22 )
+Selected 179380 events using new ExtLoader with many dec bands.
+Selecting events from 2146482 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (2146482 entries in tree passed cuts)
+Src at Zenith = 102.72 ,  selecting events with MCZenith in range ( 102.22 , 103.22 )
+Selected 222960 events using new ExtLoader with many dec bands.
+Src at Zenith = 117.939 ,  selecting events with MCZenith in range ( 117.439 , 118.439 )
+Selected 35100 events using new ExtLoader with many dec bands.
+Src at Zenith = 117.939 ,  selecting events with MCZenith in range ( 117.439 , 118.439 )
+Selected 115880 events using new ExtLoader with many dec bands.
+Src at Zenith = 117.939 ,  selecting events with MCZenith in range ( 117.439 , 118.439 )
+Selected 153240 events using new ExtLoader with many dec bands.
+Src at Zenith = 66.6366 ,  selecting events with MCZenith in range ( 66.1366 , 67.1366 )
+Selected 154200 events using new ExtLoader with many dec bands.
+Src at Zenith = 66.6366 ,  selecting events with MCZenith in range ( 66.1366 , 67.1366 )
+Selected 421460 events using new ExtLoader with many dec bands.
+Src at Zenith = 66.6366 ,  selecting events with MCZenith in range ( 66.1366 , 67.1366 )
+Selected 565480 events using new ExtLoader with many dec bands.
+Src at Zenith = 131.515 ,  selecting events with MCZenith in range ( 131.015 , 132.015 )
+Selected 21700 events using new ExtLoader with many dec bands.
+Src at Zenith = 131.515 ,  selecting events with MCZenith in range ( 131.015 , 132.015 )
+Selected 81620 events using new ExtLoader with many dec bands.
+Src at Zenith = 131.515 ,  selecting events with MCZenith in range ( 131.015 , 132.015 )
+Selected 102360 events using new ExtLoader with many dec bands.
+Src at Zenith = 48.6913 ,  selecting events with MCZenith in range ( 48.1913 , 49.1913 )
+Selected 82140 events using new ExtLoader with many dec bands.
+Src at Zenith = 48.6913 ,  selecting events with MCZenith in range ( 48.1913 , 49.1913 )
+Selected 283820 events using new ExtLoader with many dec bands.
+Src at Zenith = 48.6913 ,  selecting events with MCZenith in range ( 48.1913 , 49.1913 )
+Selected 393620 events using new ExtLoader with many dec bands.
+
+Calculating Stacking Weight vs Gamma Tables...
+ Src at Zenith = 102.72 ,  selecting events with MCZenith in range ( 102.22 , 103.22 )
+Selected 3428 events.
+Src at Zenith = 117.939 ,  selecting events with MCZenith in range ( 117.439 , 118.439 )
+Selected 1755 events.
+Src at Zenith = 66.6366 ,  selecting events with MCZenith in range ( 66.1366 , 67.1366 )
+Selected 7710 events.
+Src at Zenith = 131.515 ,  selecting events with MCZenith in range ( 131.015 , 132.015 )
+Selected 1085 events.
+Src at Zenith = 48.6913 ,  selecting events with MCZenith in range ( 48.1913 , 49.1913 )
+Selected 4107 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.9531 0.0100 0.0000 0.0369 0.0000 
+01:  0.9529 0.0100 0.0000 0.0370 0.0000 
+02:  0.9528 0.0101 0.0000 0.0371 0.0000 
+03:  0.9527 0.0101 0.0000 0.0373 0.0000 
+04:  0.9526 0.0101 0.0000 0.0373 0.0000 
+05:  0.9527 0.0101 0.0000 0.0372 0.0000 
+06:  0.9529 0.0101 0.0000 0.0370 0.0000 
+07:  0.9533 0.0100 0.0000 0.0366 0.0000 
+08:  0.9540 0.0100 0.0000 0.0360 0.0000 
+09:  0.9550 0.0099 0.0000 0.0351 0.0000 
+10:  0.9561 0.0097 0.0000 0.0341 0.0000 
+11:  0.9576 0.0096 0.0000 0.0328 0.0001 
+12:  0.9592 0.0094 0.0000 0.0313 0.0001 
+13:  0.9609 0.0091 0.0000 0.0297 0.0002 
+14:  0.9628 0.0088 0.0001 0.0280 0.0003 
+15:  0.9647 0.0085 0.0001 0.0261 0.0006 
+16:  0.9665 0.0082 0.0001 0.0243 0.0009 
+17:  0.9682 0.0079 0.0002 0.0223 0.0014 
+18:  0.9697 0.0075 0.0003 0.0204 0.0021 
+19:  0.9708 0.0070 0.0005 0.0184 0.0032 
+20:  0.9715 0.0066 0.0007 0.0165 0.0048 
+21:  0.9714 0.0061 0.0010 0.0146 0.0069 
+22:  0.9704 0.0056 0.0014 0.0127 0.0098 
+23:  0.9683 0.0051 0.0020 0.0109 0.0137 
+24:  0.9647 0.0045 0.0027 0.0093 0.0188 
+25:  0.9593 0.0040 0.0037 0.0077 0.0253 
+26:  0.9518 0.0035 0.0051 0.0063 0.0334 
+27:  0.9419 0.0030 0.0068 0.0050 0.0432 
+28:  0.9292 0.0025 0.0092 0.0040 0.0552 
+29:  0.9133 0.0021 0.0122 0.0031 0.0694 
+Src at Zenith = 102.72 ,  selecting events with MCZenith in range ( 102.22 , 103.22 )
+Selected 8969 events.
+Src at Zenith = 117.939 ,  selecting events with MCZenith in range ( 117.439 , 118.439 )
+Selected 5794 events.
+Src at Zenith = 66.6366 ,  selecting events with MCZenith in range ( 66.1366 , 67.1366 )
+Selected 21073 events.
+Src at Zenith = 131.515 ,  selecting events with MCZenith in range ( 131.015 , 132.015 )
+Selected 4081 events.
+Src at Zenith = 48.6913 ,  selecting events with MCZenith in range ( 48.1913 , 49.1913 )
+Selected 14191 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.9515 0.0098 0.0000 0.0387 0.0000 
+01:  0.9521 0.0098 0.0000 0.0380 0.0000 
+02:  0.9528 0.0098 0.0000 0.0373 0.0000 
+03:  0.9535 0.0098 0.0000 0.0367 0.0000 
+04:  0.9542 0.0098 0.0000 0.0359 0.0000 
+05:  0.9550 0.0098 0.0000 0.0352 0.0000 
+06:  0.9558 0.0097 0.0000 0.0345 0.0000 
+07:  0.9566 0.0096 0.0000 0.0337 0.0000 
+08:  0.9574 0.0095 0.0000 0.0330 0.0001 
+09:  0.9583 0.0094 0.0000 0.0322 0.0001 
+10:  0.9591 0.0093 0.0000 0.0314 0.0001 
+11:  0.9600 0.0092 0.0000 0.0306 0.0002 
+12:  0.9608 0.0091 0.0000 0.0298 0.0003 
+13:  0.9617 0.0089 0.0001 0.0289 0.0004 
+14:  0.9625 0.0088 0.0001 0.0280 0.0007 
+15:  0.9632 0.0086 0.0001 0.0270 0.0010 
+16:  0.9639 0.0084 0.0002 0.0259 0.0016 
+17:  0.9643 0.0081 0.0003 0.0247 0.0025 
+18:  0.9645 0.0079 0.0005 0.0234 0.0037 
+19:  0.9643 0.0075 0.0007 0.0219 0.0056 
+20:  0.9633 0.0072 0.0010 0.0202 0.0083 
+21:  0.9614 0.0067 0.0015 0.0183 0.0122 
+22:  0.9580 0.0062 0.0021 0.0163 0.0175 
+23:  0.9526 0.0056 0.0029 0.0142 0.0248 
+24:  0.9444 0.0050 0.0040 0.0120 0.0345 
+25:  0.9328 0.0044 0.0055 0.0099 0.0473 
+26:  0.9170 0.0038 0.0075 0.0080 0.0638 
+27:  0.8962 0.0032 0.0099 0.0063 0.0844 
+28:  0.8701 0.0026 0.0129 0.0048 0.1095 
+29:  0.8387 0.0021 0.0165 0.0036 0.1391 
+Src at Zenith = 102.72 ,  selecting events with MCZenith in range ( 102.22 , 103.22 )
+Selected 11148 events.
+Src at Zenith = 117.939 ,  selecting events with MCZenith in range ( 117.439 , 118.439 )
+Selected 7662 events.
+Src at Zenith = 66.6366 ,  selecting events with MCZenith in range ( 66.1366 , 67.1366 )
+Selected 28274 events.
+Src at Zenith = 131.515 ,  selecting events with MCZenith in range ( 131.015 , 132.015 )
+Selected 5118 events.
+Src at Zenith = 48.6913 ,  selecting events with MCZenith in range ( 48.1913 , 49.1913 )
+Selected 19681 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.9527 0.0129 0.0000 0.0343 0.0000 
+01:  0.9536 0.0126 0.0000 0.0337 0.0000 
+02:  0.9545 0.0123 0.0000 0.0332 0.0000 
+03:  0.9554 0.0120 0.0000 0.0326 0.0000 
+04:  0.9562 0.0118 0.0000 0.0320 0.0000 
+05:  0.9571 0.0115 0.0000 0.0314 0.0000 
+06:  0.9579 0.0112 0.0000 0.0308 0.0000 
+07:  0.9588 0.0109 0.0000 0.0303 0.0000 
+08:  0.9596 0.0107 0.0000 0.0297 0.0000 
+09:  0.9604 0.0104 0.0000 0.0291 0.0001 
+10:  0.9612 0.0102 0.0000 0.0285 0.0001 
+11:  0.9620 0.0099 0.0000 0.0279 0.0001 
+12:  0.9628 0.0097 0.0000 0.0273 0.0002 
+13:  0.9635 0.0094 0.0001 0.0266 0.0004 
+14:  0.9642 0.0092 0.0001 0.0259 0.0006 
+15:  0.9648 0.0089 0.0001 0.0252 0.0010 
+16:  0.9652 0.0086 0.0002 0.0243 0.0016 
+17:  0.9654 0.0083 0.0003 0.0234 0.0025 
+18:  0.9652 0.0080 0.0005 0.0223 0.0040 
+19:  0.9644 0.0077 0.0008 0.0211 0.0061 
+20:  0.9627 0.0073 0.0011 0.0197 0.0092 
+21:  0.9597 0.0069 0.0017 0.0181 0.0137 
+22:  0.9550 0.0064 0.0024 0.0163 0.0200 
+23:  0.9477 0.0059 0.0034 0.0143 0.0287 
+24:  0.9371 0.0053 0.0047 0.0123 0.0407 
+25:  0.9220 0.0047 0.0064 0.0103 0.0566 
+26:  0.9015 0.0040 0.0087 0.0083 0.0774 
+27:  0.8746 0.0034 0.0117 0.0066 0.1038 
+28:  0.8410 0.0028 0.0152 0.0050 0.1360 
+29:  0.8008 0.0022 0.0194 0.0037 0.1738 
+Weights for Gamma=1: 0.227882 0.363564 0.408554  
+Weights for Gamma=1.1: 0.234296 0.362908 0.402796  
+Weights for Gamma=1.2: 0.242624 0.361121 0.396255  
+Weights for Gamma=1.3: 0.251296 0.358723 0.389981  
+Weights for Gamma=1.4: 0.258757 0.356291 0.384953  
+Weights for Gamma=1.5: 0.263863 0.354308 0.381829  
+Weights for Gamma=1.6: 0.266098 0.353052 0.380849  
+Weights for Gamma=1.7: 0.265505 0.352575 0.38192  
+Weights for Gamma=1.8: 0.262445 0.352759 0.384797  
+Weights for Gamma=1.9: 0.257374 0.353411 0.389215  
+Weights for Gamma=2: 0.250719 0.354331 0.394951  
+Weights for Gamma=2.1: 0.242829 0.355348 0.401822  
+Weights for Gamma=2.2: 0.233992 0.35634 0.409668  
+Weights for Gamma=2.3: 0.224446 0.357227 0.418328  
+Weights for Gamma=2.4: 0.2144 0.35797 0.42763  
+Weights for Gamma=2.5: 0.204049 0.358557 0.437393  
+Weights for Gamma=2.6: 0.193573 0.358996 0.447431  
+Weights for Gamma=2.7: 0.183139 0.359302 0.457559  
+Weights for Gamma=2.8: 0.172896 0.359495 0.467608  
+Weights for Gamma=2.9: 0.162975 0.359594 0.477431  
+Weights for Gamma=3: 0.153481 0.359614 0.486905  
+Weights for Gamma=3.1: 0.14449 0.359569 0.495941  
+Weights for Gamma=3.2: 0.136058 0.359468 0.504475  
+Weights for Gamma=3.3: 0.128213 0.359316 0.51247  
+Weights for Gamma=3.4: 0.120967 0.359119 0.519914  
+Weights for Gamma=3.5: 0.114316 0.358876 0.526808  
+Weights for Gamma=3.6: 0.108243 0.358586 0.533171  
+Weights for Gamma=3.7: 0.102724 0.358248 0.539028  
+Weights for Gamma=3.8: 0.0977315 0.357856 0.544413  
+Weights for Gamma=3.9: 0.0932334 0.357403 0.549364  
+Weights for Gamma=4: 0.0891976 0.356882 0.55392  
+ark_SetDisco:
+!! disco set with:
+   Loops: 25
+   Significance: 0.481306   Power: 0.9
+ Mean Number of Source events expected for source model: 0.0408537
+ Detection Significance: 0.481306  Detection Power: 0.9
+ Mean: 2   Power: 59.3994% +/-22.8207%
+ Mean: 7   Power: 92.3657% +/-23.3153%
+ Mean: 9   Power: 90.5427% +/-22.0037%
+ Mean: 10   Power: 89.2159% +/-21.3945%
+ Mean: 10.8   Power: 89.9135% +/-20.2187%
+ Mean: 11   Power: 90.0466% +/-15.9029%
+ Mean: 11   Power: 90.0158% +/-11.3842%
+
+ Mean: 10.632   Power: 89.9928% +/-6.69029%
+ Mean: 10.632   Power: 89.995% +/-4.52601%
+ Mean: 10.5376   Power: 90.0008% +/-3.08476%
+ Mean: 10.7024   Power: 89.9992% +/-2.54075%
+ Mean: 10.7264   Power: 89.9997% +/-1.97862%
+ Mean: 10.6832   Power: 90.0005% +/-1.77235%
+ Mean: 10.6928   Power: 90.0007% +/-1.70145%
+ Mean: 10.8064   Power: 89.9991% +/-1.592%
+ Mean: 10.9088   Power: 89.9995% +/-1.51018%
+ Mean: 10.976   Power: 90.001% +/-1.44516%
+ Mean: 10.9584   Power: 89.9986% +/-1.39442%
+ Mean: 10.968   Power: 89.9997% +/-1.33946%
+ Mean: 10.8832   Power: 90.0006% +/-1.30809%
+ Mean: 10.9152   Power: 90.0005% +/-1.27285%
+ Mean: 10.9664   Power: 89.9992% +/-1.23093%
+ Mean: 10.9568   Power: 90.0014% +/-1.20258%
+ Mean: 10.944   Power: 89.9991% +/-1.17401%
+ Mean: 10.9824   Power: 89.9988% +/-1.14686%
+Poisson Mean nSrcEv for 90+/-1.12037 % detection probability: 10.9632
+Threshold significance for detection: 0.481306
+  Flux scale relative to model is: 268.353
+Info in <TCanvas::Print>: file ModelBsensitcorrectfit.png has been created
+Info in <TCanvas::SaveAs>: ROOT file ModelBsensitcorrectfit.root has been created
+.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C_UpperLimit_newparam2breaks.CUpperLimit_newparam2breaks.CpperLimit_newparam2breaks.CperLimit_newparam2breaks.CerLimit_newparam2breaks.CrLimit_newparam2breaks.CLimit_newparam2breaks.Cimit_newparam2breaks.Cmit_newparam2breaks.Cit_newparam2breaks.Ct_newparam2breaks.C_newparam2breaks.Cnewparam2breaks.Cewparam2breaks.Cwparam2breaks.Cparam2breaks.Caram2breaks.Cram2breaks.Cam2breaks.Cm2breaks.C2breaks.Cbreaks.Creaks.Ceaks.Caks.Cks.Cs.C.CC.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C_UpperLimit_newparam2breaks.CUpperLimit_newparam2breaks.CpperLimit_newparam2breaks.CperLimit_newparam2breaks.CerLimit_newparam2breaks.CrLimit_newparam2breaks.CLimit_newparam2breaks.Cimit_newparam2breaks.Cmit_newparam2breaks.Cit_newparam2breaks.Ct_newparam2breaks.C_newparam2breaks.Cnewparam2breaks.Cewparam2breaks.Cwparam2breaks.Cparam2breaks.Caram2breaks.Cram2breaks.Cam2breaks.Cm2breaks.C2breaks.Cbreaks.Creaks.Ceaks.Caks.Cks.Cs.C.CC.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C_UpperLimit_newparam2breaks.CUpperLimit_newparam2breaks.CpperLimit_newparam2breaks.CperLimit_newparam2breaks.CerLimit_newparam2breaks.CrLimit_newparam2breaks.CLimit_newparam2breaks.Cimit_newparam2breaks.Cmit_newparam2breaks.Cit_newparam2breaks.Ct_newparam2breaks.C_newparam2breaks.Cnewparam2breaks.Cewparam2breaks.Cwparam2breaks.Cparam2breaks.Caram2breaks.Cram2breaks.Cam2breaks.Cm2breaks.C2breaks.Cbreaks.Creaks.Ceaks.Caks.Cks.Cs.C.CC.qqq                                                       .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.Censit_m50_ch11_Winter.Cnsit_m50_ch11_Winter.Csit_m50_ch11_Winter.Cit_m50_ch11_Winter.Ct_m50_ch11_Winter.C_m50_ch11_Winter.Cm50_ch11_Winter.C50_ch11_Winter.C0_ch11_Winter.C_ch11_Winter.Cch11_Winter.Ch11_Winter.C11_Winter.C1_Winter.C_Winter.CWinter.Cinter.Cnter.Cter.Cer.Cr.C.CC.qqq                                          .qqq.qqq.qqqqqq.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.Censit_m50_ch11_Winter.Cnsit_m50_ch11_Winter.Csit_m50_ch11_Winter.Cit_m50_ch11_Winter.Ct_m50_ch11_Winter.C_m50_ch11_Winter.Cm50_ch11_Winter.C50_ch11_Winter.C0_ch11_Winter.C_ch11_Winter.Cch11_Winter.Ch11_Winter.C11_Winter.C1_Winter.C_Winter.CWinter.Cinter.Cnter.Cter.Cer.Cr.C.CC.qqq                                          .qqq.qqq.qqqqqq.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.C.x Track_86_solarwimp_sensit_m50_ch11_Winter.Censit_m50_ch11_Winter.Cnsit_m50_ch11_Winter.Csit_m50_ch11_Winter.Cit_m50_ch11_Winter.Ct_m50_ch11_Winter.C_m50_ch11_Winter.Cm50_ch11_Winter.C50_ch11_Winter.C0_ch11_Winter.C_ch11_Winter.Cch11_Winter.Ch11_Winter.C11_Winter.C1_Winter.C_Winter.CWinter.Cinter.Cnter.Cter.Cer.Cr.C.CC.x FitMuraseSpectra.C                         .x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.C.x FitMuraseSpectra.CeSpectra.CSpectra.Cpectra.Cectra.Cctra.Ctra.Cra.Ca.C.CC.qqq                 .qqq.qqq.qqqqqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C_UpperLimit_newparam2breaks.CUpperLimit_newparam2breaks.CpperLimit_newparam2breaks.CperLimit_newparam2breaks.CerLimit_newparam2breaks.CrLimit_newparam2breaks.CLimit_newparam2breaks.Cimit_newparam2breaks.Cmit_newparam2breaks.Cit_newparam2breaks.Ct_newparam2breaks.C_newparam2breaks.Cnewparam2breaks.Cewparam2breaks.Cwparam2breaks.Cparam2breaks.Caram2breaks.Cram2breaks.Cam2breaks.Cm2breaks.C2breaks.Cbreaks.Creaks.Ceaks.Caks.Cks.Cs.C.CC..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C..x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C._UpperLimit_newparam2breaks.C.UpperLimit_newparam2breaks.C.pperLimit_newparam2breaks.C.perLimit_newparam2breaks.C.erLimit_newparam2breaks.C.rLimit_newparam2breaks.C.Limit_newparam2breaks.C.imit_newparam2breaks.C.mit_newparam2breaks.C.it_newparam2breaks.C.t_newparam2breaks.C._newparam2breaks.C.newparam2breaks.C.ewparam2breaks.C.wparam2breaks.C.param2breaks.C.aram2breaks.C.ram2breaks.C.am2breaks.C.m2breaks.C.2breaks.C.breaks.C.reaks.C.eaks.C.aks.C.ks.C.s.C..C.C..q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.q.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qUpperLimit_newparam2breaks.C.qpperLimit_newparam2breaks.C.qperLimit_newparam2breaks.C.qerLimit_newparam2breaks.C.qrLimit_newparam2breaks.C.qLimit_newparam2breaks.C.qimit_newparam2breaks.C.qmit_newparam2breaks.C.qit_newparam2breaks.C.qt_newparam2breaks.C.q_newparam2breaks.C.qnewparam2breaks.C.qewparam2breaks.C.qwparam2breaks.C.qparam2breaks.C.qaram2breaks.C.qram2breaks.C.qam2breaks.C.qm2breaks.C.q2breaks.C.qbreaks.C.qreaks.C.qeaks.C.qaks.C.qks.C.qs.C.q.C.qC.q.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqUpperLimit_newparam2breaks.C.qqpperLimit_newparam2breaks.C.qqperLimit_newparam2breaks.C.qqerLimit_newparam2breaks.C.qqrLimit_newparam2breaks.C.qqLimit_newparam2breaks.C.qqimit_newparam2breaks.C.qqmit_newparam2breaks.C.qqit_newparam2breaks.C.qqt_newparam2breaks.C.qq_newparam2breaks.C.qqnewparam2breaks.C.qqewparam2breaks.C.qqwparam2breaks.C.qqparam2breaks.C.qqaram2breaks.C.qqram2breaks.C.qqam2breaks.C.qqm2breaks.C.qq2breaks.C.qqbreaks.C.qqreaks.C.qqeaks.C.qqaks.C.qqks.C.qqs.C.qq.C.qqC.qq.qqqqqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq.x Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqqpperLimit_newparam2breaks.C.qqqperLimit_newparam2breaks.C.qqqerLimit_newparam2breaks.C.qqqrLimit_newparam2breaks.C.qqqLimit_newparam2breaks.C.qqqimit_newparam2breaks.C.qqqmit_newparam2breaks.C.qqqit_newparam2breaks.C.qqqt_newparam2breaks.C.qqq_newparam2breaks.C.qqqnewparam2breaks.C.qqqewparam2breaks.C.qqqwparam2breaks.C.qqqparam2breaks.C.qqqaram2breaks.C.qqqram2breaks.C.qqqam2breaks.C.qqqm2breaks.C.qqq2breaks.C.qqqbreaks.C.qqqreaks.C.qqqeaks.C.qqqaks.C.qqqks.C.qqqs.C.qqq.C.qqqC.qqq.qqqqqqqqq
+Error in <TApplication::ExecuteFile>: macro Track_multi_40597986_modelB_UpperLimit_newparam2breaks.C.qqq not found in path .:/data/icetray/i3ports/root-v5.28.00/macros:
+..q.qqq.qq.qqqq.qqq.qqqqqq

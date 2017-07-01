@@ -1,0 +1,77 @@
+{
+   gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+   initialize_ran1();
+   gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic59/Ark.C");
+   bool OPT_USEREALDATA = false;
+
+   I3Ark ark59;
+   gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/ic59/load_ark_ic59_onetenth.C(ark59, OPT_USEREALDATA)");
+   //gROOT->ProcessLine(".L ../../llh/public/I3TH2FGenerator.C+");
+
+   FormulaFlux formflux("1*pow(x,-2)");
+   FluxBase *myFluxPtr = &formflux;
+
+   ark59.evLoader->SetMonitor(0);;
+   I3TH2FGenerator *th2gen = new I3TH2FGenerator(ark59.evLoader, *myFluxPtr, ark59.livetime);
+   th2gen.convRadToDeg_ = 0;
+   th2gen.shiftThetaToDec_ = 0;
+   th2gen.convGalToEq_ = 1;
+   gROOT->ProcessLine(".x /net/user/naoko/psLab/skyplots/fermi_haze_TH2F.C");                                                    
+   th2gen->SetBinning(hKent);                                                                  
+   th2gen->fluxModelWeightsTableIsSet_=0;
+   th2gen->SetFluxModelWeightsTable(hFluxModelWeightsTable);
+   th2gen->CreateSrcWeightsTable(hKent);
+//   th2gen->SaveFluxModelWeightsTable("myBallsWeightsTable_ic59.root");
+
+  // Test I3TH2FGenerator //
+  vector<I3Event> sourceEvents;
+  sourceEvents.clear();
+  const int nSrcEvents = 30;
+  double ras[nSrcEvents];
+  double decs[nSrcEvents];
+  double phis[nSrcEvents];
+  double thetas[nSrcEvents];
+  double gras[nSrcEvents];
+  double gdecs[nSrcEvents];
+
+  // Generate signal events
+  for (int i=0; i<nSrcEvents; i++) {
+    sourceEvents.push_back( th2gen->GenerateEvent() );
+    ras[i] = sourceEvents[i].GetEquatorialDeg().GetRa();
+    decs[i] = sourceEvents[i].GetEquatorialDeg().GetDec();
+    //for GalCoor
+    EqToGalactic(ras[i], decs[i], 1., gras[i], gdecs[i]);
+    // Convert from ra,dec in deg, back to phi, theta in radians
+    phis[i] = sourceEvents[i].GetEquatorialDeg().GetRa() * TMath::DegToRad();
+    thetas[i] = (sourceEvents[i].GetEquatorialDeg().GetDec()+90.) * TMath::DegToRad();
+  }
+
+  // And make plots
+  TGraph *gEventsKent = new TGraph(nSrcEvents, gras, gdecs); // If you want in ra,dec
+  //TGraph *gEventsKent = new TGraph(nSrcEvents, phis, thetas); //Same coord frame as Kent
+
+  //gEvents->Draw("A*");
+
+  gStyle->SetPalette(1);
+
+  TCanvas *can = new TCanvas("can","can",600,650);
+  can->Divide(1,3);
+
+  can->cd(1);
+  gEventsKent->GetHistogram()->Draw(); // just axes
+  gEventsKent->GetXaxis()->SetTitle("RA [rad]");
+  gEventsKent->GetYaxis()->SetTitle("Dec [rad]");
+  gEventsKent->SetTitle("hKent");
+
+  hKent->Draw("colz");
+
+  can->cd(2);
+  gEventsKent->GetHistogram()->Draw(); // just axes
+  th2gen->GetFluxModelWeightsTable()->Draw("colz");
+
+  can->cd(3);
+  gEventsKent->GetHistogram()->Draw(); // just axes
+  th2gen->GetSrcWeightsTable()->Draw("colz");
+  gEventsKent->Draw("*");
+
+}

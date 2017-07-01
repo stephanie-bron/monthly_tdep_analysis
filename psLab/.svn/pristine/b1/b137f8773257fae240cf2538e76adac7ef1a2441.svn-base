@@ -1,0 +1,402 @@
+
+Processing Track_multi_40597986_UNBLINDING_allsky.C...
+Preload: /net/user/mrameez/psLab_Debian_64/labcore/preload.C
+
+LAB_COORDINATE_PROJECT not specified....
+Will use coordinate-service as default.
+(See 'labcore/start_lab.sh' or 'llh/loadlibs.C' for how to change)
+
+Building/Loading:  rootExt/public
+Error in <TGClient::TGClient>: can't open display "localhost:11.0", switching to batch mode...
+ In case you run from a remote ssh session, reconnect with ssh -Y
+Building/Loading:  fluxus/public
+Loading libcoordinate-service
+Building/Loading:  llh/public
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/SNR_MC/./RescaledSigma_IC86_SplineMPE_C.so
+
+Initializing ran1 with random seed = -55
+
+-----  LOADING IC-40  -----
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 375.539
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 36900 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% (36900 entries in tree passed cuts)
+Background set has 36900 events.
+Filling Energy PDFs:
+----- IC-40 Loaded -----
+
+-----  LOADING IC-59 BDT  -----
+Loaded tree
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 348.138
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 107569 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (107569 entries in tree passed cuts)
+Background set has 107569 events.
+Filling Energy PDFs:
+Real time 0:00:43, CP time 43.520
+----- IC-59 BDT Loaded -----
+
+-----  LOADING IC-79 BDT  -----
+Loaded tree
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 316.153
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 109866 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (109866 entries in tree passed cuts)
+Background set has 109866 events.
+Filling Energy PDFs:
+Real time 0:00:44, CP time 44.940
+UNBLINDING: Using real times
+Warning in <TStreamerInfo::Compile>: Counter fNClusterRange should not be skipped from class TTree
+----- IC-79 BDT Loaded -----
+
+-----  LOADING IC-86 BDT -----
+Loaded tree
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 332.61
+Configuring Source Event Sample...
+Rescaling using SplineMPE...
+Loading Background Events: 
+Selecting events from 138323 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (138323 entries in tree passed cuts)
+Background set has 138323 events.
+Filling Energy PDFs:
+0.9 25.8419
+0.85 31.7883
+0.8 36.8699
+0.75 41.4096
+0.7 45.573
+0.65 49.4584
+0.6 53.1301
+0.55 56.633
+0.5 60
+0.45 63.2563
+0.4 66.4218
+0.35 69.5127
+0.3 72.5424
+0.25 75.5225
+0.2 78.463
+0.15 81.3731
+0.1 84.2608
+-2.08167e-16 90
+-0.2 101.537
+-0.4 113.578
+-0.6 126.87
+-0.8 143.13
+backfill
+set table gamma
+Real time 0:01:26, CP time 86.240
+Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+----- IC-86 BDT Loaded -----
+Setting up Stacking Analysis Sources (MC associated SNR)...
+using spectrum E^-2.7
+Selecting events from 621908 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (621908 entries in tree passed cuts)
+Src at Zenith = 104.1 ,  selecting events with MCZenith in range ( 103.6 , 104.6 )
+Selected 64040 events using new ExtLoader with many dec bands.
+Selecting events from 1628617 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (1628617 entries in tree passed cuts)
+Src at Zenith = 104.1 ,  selecting events with MCZenith in range ( 103.6 , 104.6 )
+Selected 170020 events using new ExtLoader with many dec bands.
+Selecting events from 2146482 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (2146482 entries in tree passed cuts)
+Src at Zenith = 104.1 ,  selecting events with MCZenith in range ( 103.6 , 104.6 )
+Selected 216600 events using new ExtLoader with many dec bands.
+Selecting events from 1256458 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (1256458 entries in tree passed cuts)
+Src at Zenith = 104.1 ,  selecting events with MCZenith in range ( 103.6 , 104.6 )
+Selected 113000 events using new ExtLoader with many dec bands.
+Src at Zenith = 91.37 ,  selecting events with MCZenith in range ( 90.87 , 91.87 )
+Selected 251020 events using new ExtLoader with many dec bands.
+Src at Zenith = 91.37 ,  selecting events with MCZenith in range ( 90.87 , 91.87 )
+Selected 345440 events using new ExtLoader with many dec bands.
+Src at Zenith = 91.37 ,  selecting events with MCZenith in range ( 90.87 , 91.87 )
+Selected 388120 events using new ExtLoader with many dec bands.
+Src at Zenith = 91.37 ,  selecting events with MCZenith in range ( 90.87 , 91.87 )
+Selected 209720 events using new ExtLoader with many dec bands.
+Src at Zenith = 112.57 ,  selecting events with MCZenith in range ( 112.07 , 113.07 )
+Selected 44600 events using new ExtLoader with many dec bands.
+Src at Zenith = 112.57 ,  selecting events with MCZenith in range ( 112.07 , 113.07 )
+Selected 130060 events using new ExtLoader with many dec bands.
+Src at Zenith = 112.57 ,  selecting events with MCZenith in range ( 112.07 , 113.07 )
+Selected 173080 events using new ExtLoader with many dec bands.
+Src at Zenith = 112.57 ,  selecting events with MCZenith in range ( 112.07 , 113.07 )
+Selected 94460 events using new ExtLoader with many dec bands.
+Src at Zenith = 99.1 ,  selecting events with MCZenith in range ( 98.6 , 99.6 )
+Selected 86720 events using new ExtLoader with many dec bands.
+Src at Zenith = 99.1 ,  selecting events with MCZenith in range ( 98.6 , 99.6 )
+Selected 207360 events using new ExtLoader with many dec bands.
+Src at Zenith = 99.1 ,  selecting events with MCZenith in range ( 98.6 , 99.6 )
+Selected 244920 events using new ExtLoader with many dec bands.
+Src at Zenith = 99.1 ,  selecting events with MCZenith in range ( 98.6 , 99.6 )
+Selected 131480 events using new ExtLoader with many dec bands.
+Weight source simulation by Integrated Gamma Flux: 1
+Weight search hypothesis by Integrated Gamma Flux: 1
+000  RX1713.7-3946 272.43 -39.75 66.00
+1 001         CTB37A 273.43 -38.53  3.00
+2 002      Something 274.43 -37.43  1.20
+3 003       SgrAEast 266.43 -29.00  5.00
+4 004          Kes75 267.43  -2.98  2.00
+5 005          3C391 268.43  -0.92  0.80
+6 6 total Starburst sources read.
+
+Calculating Stacking Weight vs Gamma Tables...
+ Src at Zenith = 104.1 ,  selecting events with MCZenith in range ( 103.6 , 104.6 )
+Selected 3202 events.
+Src at Zenith = 91.37 ,  selecting events with MCZenith in range ( 90.87 , 91.87 )
+Selected 12551 events.
+Src at Zenith = 112.57 ,  selecting events with MCZenith in range ( 112.07 , 113.07 )
+Selected 2230 events.
+Src at Zenith = 99.1 ,  selecting events with MCZenith in range ( 98.6 , 99.6 )
+Selected 4336 events.
+Src at Zenith = 50.25 ,  selecting events with MCZenith in range ( 49.75 , 50.75 )
+Selected 4438 events.
+Src at Zenith = 51.4667 ,  selecting events with MCZenith in range ( 50.9667 , 51.9667 )
+Selected 4437 events.
+Src at Zenith = 52.5667 ,  selecting events with MCZenith in range ( 52.0667 , 53.0667 )
+Selected 4766 events.
+Src at Zenith = 61 ,  selecting events with MCZenith in range ( 60.5 , 61.5 )
+Selected 6351 events.
+Src at Zenith = 87.0167 ,  selecting events with MCZenith in range ( 86.5167 , 87.5167 )
+Selected 14739 events.
+Src at Zenith = 89.0833 ,  selecting events with MCZenith in range ( 88.5833 , 89.5833 )
+Selected 14750 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.1577 0.0725 0.0963 0.0229 0.0000 0.0000 0.0000 0.0000 0.3977 0.2530 
+01:  0.1594 0.0733 0.0967 0.0231 0.0000 0.0000 0.0000 0.0000 0.3993 0.2481 
+02:  0.1611 0.0741 0.0971 0.0233 0.0001 0.0001 0.0000 0.0000 0.4009 0.2434 
+03:  0.1627 0.0748 0.0974 0.0235 0.0002 0.0001 0.0000 0.0001 0.4023 0.2390 
+04:  0.1644 0.0755 0.0977 0.0237 0.0003 0.0001 0.0000 0.0001 0.4036 0.2348 
+05:  0.1659 0.0760 0.0977 0.0239 0.0005 0.0001 0.0000 0.0001 0.4048 0.2308 
+06:  0.1673 0.0765 0.0976 0.0241 0.0009 0.0002 0.0000 0.0002 0.4060 0.2271 
+07:  0.1685 0.0768 0.0971 0.0243 0.0016 0.0002 0.0000 0.0004 0.4072 0.2237 
+08:  0.1694 0.0770 0.0964 0.0245 0.0028 0.0003 0.0001 0.0006 0.4084 0.2205 
+09:  0.1698 0.0770 0.0952 0.0247 0.0049 0.0004 0.0001 0.0009 0.4095 0.2174 
+10:  0.1695 0.0767 0.0935 0.0248 0.0084 0.0006 0.0002 0.0015 0.4104 0.2143 
+11:  0.1683 0.0762 0.0912 0.0248 0.0142 0.0009 0.0003 0.0023 0.4107 0.2111 
+12:  0.1657 0.0753 0.0882 0.0247 0.0234 0.0014 0.0005 0.0035 0.4099 0.2075 
+13:  0.1614 0.0739 0.0843 0.0244 0.0377 0.0020 0.0008 0.0053 0.4073 0.2029 
+14:  0.1549 0.0719 0.0793 0.0238 0.0590 0.0030 0.0013 0.0079 0.4018 0.1971 
+15:  0.1459 0.0691 0.0732 0.0228 0.0896 0.0044 0.0019 0.0116 0.3923 0.1894 
+16:  0.1340 0.0654 0.0658 0.0214 0.1309 0.0062 0.0027 0.0163 0.3778 0.1796 
+17:  0.1194 0.0608 0.0573 0.0195 0.1830 0.0085 0.0038 0.0221 0.3580 0.1675 
+18:  0.1029 0.0555 0.0482 0.0173 0.2439 0.0112 0.0050 0.0288 0.3336 0.1537 
+19:  0.0855 0.0499 0.0390 0.0149 0.3090 0.0140 0.0062 0.0357 0.3065 0.1392 
+20:  0.0687 0.0444 0.0304 0.0124 0.3723 0.0168 0.0074 0.0425 0.2798 0.1253 
+21:  0.0534 0.0396 0.0229 0.0101 0.4276 0.0193 0.0085 0.0484 0.2568 0.1136 
+22:  0.0404 0.0358 0.0167 0.0080 0.4701 0.0212 0.0093 0.0531 0.2403 0.1051 
+23:  0.0300 0.0332 0.0118 0.0063 0.4971 0.0224 0.0098 0.0563 0.2324 0.1007 
+24:  0.0218 0.0319 0.0082 0.0049 0.5072 0.0229 0.0099 0.0581 0.2343 0.1008 
+25:  0.0156 0.0317 0.0055 0.0037 0.5005 0.0227 0.0098 0.0583 0.2465 0.1055 
+26:  0.0111 0.0327 0.0036 0.0029 0.4783 0.0218 0.0094 0.0571 0.2684 0.1147 
+27:  0.0077 0.0344 0.0024 0.0022 0.4433 0.0204 0.0088 0.0547 0.2986 0.1275 
+28:  0.0053 0.0367 0.0015 0.0016 0.3994 0.0185 0.0079 0.0513 0.3346 0.1431 
+29:  0.0037 0.0392 0.0009 0.0012 0.3512 0.0165 0.0071 0.0473 0.3732 0.1599 
+Src at Zenith = 104.1 ,  selecting events with MCZenith in range ( 103.6 , 104.6 )
+Selected 8501 events.
+Src at Zenith = 91.37 ,  selecting events with MCZenith in range ( 90.87 , 91.87 )
+Selected 17272 events.
+Src at Zenith = 112.57 ,  selecting events with MCZenith in range ( 112.07 , 113.07 )
+Selected 6503 events.
+Src at Zenith = 99.1 ,  selecting events with MCZenith in range ( 98.6 , 99.6 )
+Selected 10368 events.
+Src at Zenith = 50.25 ,  selecting events with MCZenith in range ( 49.75 , 50.75 )
+Selected 14846 events.
+Src at Zenith = 51.4667 ,  selecting events with MCZenith in range ( 50.9667 , 51.9667 )
+Selected 15559 events.
+Src at Zenith = 52.5667 ,  selecting events with MCZenith in range ( 52.0667 , 53.0667 )
+Selected 15649 events.
+Src at Zenith = 61 ,  selecting events with MCZenith in range ( 60.5 , 61.5 )
+Selected 19026 events.
+Src at Zenith = 87.0167 ,  selecting events with MCZenith in range ( 86.5167 , 87.5167 )
+Selected 21519 events.
+Src at Zenith = 89.0833 ,  selecting events with MCZenith in range ( 88.5833 , 89.5833 )
+Selected 16707 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.2203 0.1101 0.1226 0.0375 0.0003 0.0000 0.0000 0.0001 0.3324 0.1768 
+01:  0.2155 0.1095 0.1198 0.0365 0.0004 0.0000 0.0000 0.0002 0.3402 0.1780 
+02:  0.2106 0.1088 0.1169 0.0355 0.0006 0.0000 0.0000 0.0002 0.3481 0.1793 
+03:  0.2058 0.1080 0.1139 0.0345 0.0009 0.0000 0.0000 0.0003 0.3560 0.1806 
+04:  0.2008 0.1071 0.1108 0.0336 0.0014 0.0000 0.0000 0.0004 0.3641 0.1819 
+05:  0.1957 0.1060 0.1076 0.0326 0.0021 0.0001 0.0001 0.0005 0.3721 0.1833 
+06:  0.1905 0.1048 0.1043 0.0317 0.0031 0.0001 0.0001 0.0007 0.3800 0.1847 
+07:  0.1851 0.1034 0.1008 0.0308 0.0048 0.0002 0.0001 0.0010 0.3877 0.1862 
+08:  0.1794 0.1018 0.0971 0.0299 0.0074 0.0003 0.0002 0.0013 0.3950 0.1876 
+09:  0.1734 0.1000 0.0933 0.0290 0.0114 0.0005 0.0003 0.0019 0.4016 0.1888 
+10:  0.1668 0.0979 0.0891 0.0279 0.0175 0.0008 0.0004 0.0027 0.4070 0.1897 
+11:  0.1597 0.0955 0.0846 0.0268 0.0269 0.0012 0.0006 0.0038 0.4108 0.1901 
+12:  0.1516 0.0926 0.0796 0.0256 0.0409 0.0019 0.0009 0.0055 0.4119 0.1894 
+13:  0.1424 0.0891 0.0741 0.0241 0.0615 0.0029 0.0013 0.0079 0.4094 0.1872 
+14:  0.1318 0.0847 0.0678 0.0225 0.0907 0.0043 0.0019 0.0112 0.4021 0.1829 
+15:  0.1197 0.0794 0.0608 0.0206 0.1302 0.0063 0.0027 0.0157 0.3887 0.1760 
+16:  0.1061 0.0729 0.0531 0.0184 0.1810 0.0088 0.0037 0.0212 0.3687 0.1660 
+17:  0.0914 0.0656 0.0450 0.0160 0.2420 0.0117 0.0048 0.0278 0.3424 0.1532 
+18:  0.0763 0.0578 0.0368 0.0135 0.3099 0.0150 0.0061 0.0349 0.3113 0.1382 
+19:  0.0617 0.0500 0.0291 0.0111 0.3797 0.0183 0.0075 0.0420 0.2781 0.1225 
+20:  0.0484 0.0427 0.0221 0.0089 0.4456 0.0215 0.0087 0.0486 0.2461 0.1073 
+21:  0.0370 0.0365 0.0163 0.0070 0.5032 0.0241 0.0098 0.0542 0.2178 0.0941 
+22:  0.0277 0.0314 0.0117 0.0054 0.5497 0.0263 0.0106 0.0586 0.1950 0.0835 
+23:  0.0204 0.0276 0.0082 0.0042 0.5847 0.0279 0.0113 0.0618 0.1782 0.0757 
+24:  0.0149 0.0249 0.0057 0.0032 0.6090 0.0290 0.0117 0.0640 0.1672 0.0706 
+25:  0.0108 0.0230 0.0038 0.0025 0.6244 0.0297 0.0120 0.0654 0.1608 0.0676 
+26:  0.0078 0.0218 0.0026 0.0019 0.6330 0.0301 0.0122 0.0662 0.1581 0.0663 
+27:  0.0056 0.0211 0.0017 0.0015 0.6369 0.0304 0.0123 0.0665 0.1579 0.0661 
+28:  0.0041 0.0206 0.0012 0.0012 0.6378 0.0305 0.0123 0.0666 0.1592 0.0665 
+29:  0.0030 0.0204 0.0008 0.0009 0.6369 0.0305 0.0123 0.0666 0.1612 0.0673 
+Src at Zenith = 104.1 ,  selecting events with MCZenith in range ( 103.6 , 104.6 )
+Selected 10830 events.
+Src at Zenith = 91.37 ,  selecting events with MCZenith in range ( 90.87 , 91.87 )
+Selected 19406 events.
+Src at Zenith = 112.57 ,  selecting events with MCZenith in range ( 112.07 , 113.07 )
+Selected 8654 events.
+Src at Zenith = 99.1 ,  selecting events with MCZenith in range ( 98.6 , 99.6 )
+Selected 12246 events.
+Src at Zenith = 50.25 ,  selecting events with MCZenith in range ( 49.75 , 50.75 )
+Selected 20369 events.
+Src at Zenith = 51.4667 ,  selecting events with MCZenith in range ( 50.9667 , 51.9667 )
+Selected 21329 events.
+Src at Zenith = 52.5667 ,  selecting events with MCZenith in range ( 52.0667 , 53.0667 )
+Selected 21841 events.
+Src at Zenith = 61 ,  selecting events with MCZenith in range ( 60.5 , 61.5 )
+Selected 25831 events.
+Src at Zenith = 87.0167 ,  selecting events with MCZenith in range ( 86.5167 , 87.5167 )
+Selected 28070 events.
+Src at Zenith = 89.0833 ,  selecting events with MCZenith in range ( 88.5833 , 89.5833 )
+Selected 21234 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.2363 0.0761 0.1494 0.0375 0.0001 0.0000 0.0000 0.0000 0.3130 0.1875 
+01:  0.2317 0.0772 0.1451 0.0366 0.0002 0.0000 0.0000 0.0001 0.3201 0.1890 
+02:  0.2270 0.0782 0.1407 0.0358 0.0004 0.0000 0.0000 0.0001 0.3274 0.1905 
+03:  0.2221 0.0790 0.1361 0.0350 0.0006 0.0000 0.0000 0.0001 0.3349 0.1921 
+04:  0.2169 0.0798 0.1315 0.0341 0.0009 0.0000 0.0000 0.0002 0.3427 0.1938 
+05:  0.2115 0.0805 0.1266 0.0332 0.0015 0.0001 0.0000 0.0003 0.3507 0.1956 
+06:  0.2057 0.0810 0.1217 0.0323 0.0023 0.0001 0.0001 0.0004 0.3590 0.1974 
+07:  0.1995 0.0814 0.1165 0.0314 0.0038 0.0002 0.0001 0.0006 0.3675 0.1992 
+08:  0.1928 0.0815 0.1111 0.0304 0.0061 0.0003 0.0001 0.0008 0.3762 0.2007 
+09:  0.1854 0.0814 0.1055 0.0293 0.0097 0.0005 0.0002 0.0013 0.3846 0.2019 
+10:  0.1774 0.0810 0.0996 0.0282 0.0156 0.0008 0.0003 0.0020 0.3925 0.2026 
+11:  0.1685 0.0802 0.0933 0.0269 0.0248 0.0012 0.0005 0.0031 0.3991 0.2023 
+12:  0.1586 0.0788 0.0866 0.0255 0.0390 0.0020 0.0008 0.0048 0.4034 0.2006 
+13:  0.1474 0.0766 0.0794 0.0239 0.0601 0.0030 0.0012 0.0073 0.4041 0.1970 
+14:  0.1347 0.0735 0.0715 0.0220 0.0905 0.0046 0.0018 0.0109 0.3997 0.1908 
+15:  0.1206 0.0692 0.0631 0.0199 0.1322 0.0066 0.0027 0.0157 0.3885 0.1816 
+16:  0.1052 0.0638 0.0542 0.0175 0.1858 0.0093 0.0037 0.0217 0.3696 0.1692 
+17:  0.0891 0.0573 0.0451 0.0150 0.2499 0.0125 0.0050 0.0288 0.3434 0.1539 
+18:  0.0731 0.0503 0.0362 0.0125 0.3208 0.0159 0.0064 0.0365 0.3115 0.1369 
+19:  0.0581 0.0432 0.0281 0.0100 0.3927 0.0193 0.0078 0.0440 0.2772 0.1195 
+20:  0.0448 0.0366 0.0211 0.0079 0.4599 0.0225 0.0091 0.0508 0.2440 0.1033 
+21:  0.0338 0.0310 0.0154 0.0061 0.5178 0.0252 0.0102 0.0563 0.2147 0.0895 
+22:  0.0250 0.0264 0.0110 0.0046 0.5644 0.0272 0.0111 0.0606 0.1911 0.0786 
+23:  0.0182 0.0229 0.0076 0.0035 0.5992 0.0288 0.0118 0.0636 0.1737 0.0707 
+24:  0.0132 0.0204 0.0052 0.0026 0.6235 0.0298 0.0123 0.0655 0.1620 0.0654 
+25:  0.0095 0.0187 0.0035 0.0020 0.6393 0.0305 0.0125 0.0666 0.1551 0.0622 
+26:  0.0068 0.0176 0.0023 0.0015 0.6485 0.0309 0.0127 0.0672 0.1517 0.0607 
+27:  0.0049 0.0168 0.0016 0.0012 0.6533 0.0311 0.0128 0.0675 0.1507 0.0601 
+28:  0.0036 0.0163 0.0010 0.0009 0.6552 0.0312 0.0128 0.0676 0.1511 0.0602 
+29:  0.0026 0.0160 0.0007 0.0008 0.6554 0.0312 0.0128 0.0676 0.1523 0.0606 
+Src at Zenith = 104.1 ,  selecting events with MCZenith in range ( 103.6 , 104.6 )
+Selected 5650 events.
+Src at Zenith = 91.37 ,  selecting events with MCZenith in range ( 90.87 , 91.87 )
+Selected 10486 events.
+Src at Zenith = 112.57 ,  selecting events with MCZenith in range ( 112.07 , 113.07 )
+Selected 4723 events.
+Src at Zenith = 99.1 ,  selecting events with MCZenith in range ( 98.6 , 99.6 )
+Selected 6574 events.
+Src at Zenith = 50.25 ,  selecting events with MCZenith in range ( 49.75 , 50.75 )
+Selected 13134 events.
+Src at Zenith = 51.4667 ,  selecting events with MCZenith in range ( 50.9667 , 51.9667 )
+Selected 13595 events.
+Src at Zenith = 52.5667 ,  selecting events with MCZenith in range ( 52.0667 , 53.0667 )
+Selected 13765 events.
+Src at Zenith = 61 ,  selecting events with MCZenith in range ( 60.5 , 61.5 )
+Selected 15821 events.
+Src at Zenith = 87.0167 ,  selecting events with MCZenith in range ( 86.5167 , 87.5167 )
+Selected 15337 events.
+Src at Zenith = 89.0833 ,  selecting events with MCZenith in range ( 88.5833 , 89.5833 )
+Selected 11780 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.1690 0.0736 0.1187 0.0203 0.0005 0.0000 0.0000 0.0000 0.4374 0.1805 
+01:  0.1672 0.0735 0.1158 0.0206 0.0008 0.0000 0.0000 0.0001 0.4376 0.1846 
+02:  0.1652 0.0732 0.1128 0.0208 0.0012 0.0000 0.0000 0.0001 0.4382 0.1885 
+03:  0.1630 0.0729 0.1098 0.0210 0.0018 0.0001 0.0000 0.0001 0.4392 0.1921 
+04:  0.1606 0.0725 0.1066 0.0212 0.0028 0.0001 0.0000 0.0002 0.4407 0.1953 
+05:  0.1579 0.0720 0.1033 0.0213 0.0043 0.0001 0.0001 0.0003 0.4425 0.1981 
+06:  0.1550 0.0716 0.0999 0.0213 0.0066 0.0002 0.0001 0.0005 0.4445 0.2004 
+07:  0.1516 0.0710 0.0963 0.0213 0.0100 0.0004 0.0001 0.0008 0.4464 0.2020 
+08:  0.1478 0.0704 0.0924 0.0211 0.0153 0.0006 0.0002 0.0013 0.4478 0.2030 
+09:  0.1434 0.0697 0.0883 0.0209 0.0231 0.0009 0.0003 0.0020 0.4483 0.2030 
+10:  0.1383 0.0688 0.0837 0.0205 0.0347 0.0014 0.0005 0.0030 0.4471 0.2019 
+11:  0.1322 0.0676 0.0787 0.0200 0.0517 0.0022 0.0008 0.0046 0.4432 0.1992 
+12:  0.1249 0.0659 0.0730 0.0192 0.0757 0.0033 0.0013 0.0068 0.4354 0.1945 
+13:  0.1162 0.0636 0.0667 0.0182 0.1088 0.0048 0.0019 0.0099 0.4224 0.1875 
+14:  0.1061 0.0604 0.0598 0.0168 0.1522 0.0068 0.0027 0.0141 0.4034 0.1778 
+15:  0.0945 0.0563 0.0522 0.0153 0.2064 0.0093 0.0037 0.0193 0.3778 0.1652 
+16:  0.0820 0.0514 0.0444 0.0135 0.2698 0.0123 0.0049 0.0254 0.3462 0.1502 
+17:  0.0690 0.0459 0.0365 0.0115 0.3389 0.0155 0.0062 0.0321 0.3106 0.1336 
+18:  0.0565 0.0401 0.0292 0.0096 0.4089 0.0188 0.0076 0.0390 0.2736 0.1166 
+19:  0.0449 0.0346 0.0226 0.0078 0.4749 0.0220 0.0089 0.0455 0.2381 0.1006 
+20:  0.0349 0.0295 0.0171 0.0062 0.5329 0.0247 0.0101 0.0513 0.2067 0.0865 
+21:  0.0266 0.0253 0.0126 0.0049 0.5807 0.0271 0.0110 0.0562 0.1807 0.0750 
+22:  0.0200 0.0219 0.0091 0.0038 0.6176 0.0289 0.0118 0.0600 0.1608 0.0662 
+23:  0.0149 0.0193 0.0064 0.0030 0.6443 0.0302 0.0123 0.0628 0.1467 0.0602 
+24:  0.0109 0.0175 0.0044 0.0023 0.6621 0.0311 0.0127 0.0648 0.1378 0.0564 
+25:  0.0080 0.0162 0.0030 0.0018 0.6729 0.0317 0.0129 0.0660 0.1329 0.0545 
+26:  0.0059 0.0155 0.0021 0.0014 0.6783 0.0320 0.0130 0.0668 0.1312 0.0539 
+27:  0.0043 0.0150 0.0014 0.0011 0.6802 0.0322 0.0131 0.0671 0.1315 0.0542 
+28:  0.0031 0.0148 0.0009 0.0009 0.6797 0.0322 0.0131 0.0673 0.1330 0.0551 
+29:  0.0023 0.0146 0.0006 0.0007 0.6779 0.0322 0.0131 0.0673 0.1351 0.0561 
+Weights for Gamma=1: 0.326384 0.223207 0.208306 0.242103  
+Weights for Gamma=1.1: 0.289699 0.234383 0.220219 0.255699  
+Weights for Gamma=1.2: 0.259958 0.242795 0.23023 0.267018  
+Weights for Gamma=1.3: 0.237321 0.248333 0.238308 0.276038  
+Weights for Gamma=1.4: 0.221136 0.251223 0.244639 0.283002  
+Weights for Gamma=1.5: 0.209999 0.252013 0.2496 0.288388  
+Weights for Gamma=1.6: 0.202127 0.251414 0.253675 0.292784  
+Weights for Gamma=1.7: 0.195848 0.250087 0.257329 0.296736  
+Weights for Gamma=1.8: 0.189936 0.248497 0.260924 0.300644  
+Weights for Gamma=1.9: 0.183668 0.246894 0.264685 0.304753  
+Weights for Gamma=2: 0.176722 0.245368 0.268723 0.309187  
+Weights for Gamma=2.1: 0.169031 0.243916 0.273059 0.313994  
+Weights for Gamma=2.2: 0.160665 0.242498 0.277657 0.31918  
+Weights for Gamma=2.3: 0.15177 0.241064 0.282439 0.324728  
+Weights for Gamma=2.4: 0.14252 0.239572 0.287302 0.330605  
+Weights for Gamma=2.5: 0.133104 0.237995 0.29213 0.336772  
+Weights for Gamma=2.6: 0.123704 0.236318 0.296799 0.34318  
+Weights for Gamma=2.7: 0.114487 0.234538 0.301194 0.349781  
+Weights for Gamma=2.8: 0.105596 0.232664 0.305213 0.356527  
+Weights for Gamma=2.9: 0.0971453 0.230707 0.308774 0.363374  
+Weights for Gamma=3: 0.0892163 0.228678 0.311819 0.370287  
+Weights for Gamma=3.1: 0.0818591 0.226589 0.314316 0.377236  
+Weights for Gamma=3.2: 0.0750952 0.224446 0.316257 0.384202  
+Weights for Gamma=3.3: 0.0689222 0.222251 0.317655 0.391172  
+Weights for Gamma=3.4: 0.0633193 0.220003 0.318538 0.39814  
+Weights for Gamma=3.5: 0.058253 0.217696 0.318946 0.405106  
+Weights for Gamma=3.6: 0.0536819 0.215322 0.318925 0.412071  
+Weights for Gamma=3.7: 0.0495606 0.212875 0.318526 0.419038  
+Weights for Gamma=3.8: 0.0458433 0.210346 0.317798 0.426012  
+Weights for Gamma=3.9: 0.0424853 0.207729 0.31679 0.432996  
+Weights for Gamma=4: 0.0394449 0.205019 0.315545 0.439992  
+GetEstProb:  0.5
+GetTestStat: 0
+Get Ns:      9.93594e-11
+Get gamma:   3.9656

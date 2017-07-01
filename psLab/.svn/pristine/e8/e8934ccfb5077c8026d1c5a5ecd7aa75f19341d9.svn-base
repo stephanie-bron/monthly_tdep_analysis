@@ -1,0 +1,162 @@
+{
+  bool RELOAD;
+  
+  if(!RELOAD)
+    {
+      RELOAD = true;
+      
+
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MuEX.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_SplineMPE.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MPE.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79Sirin.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaled2.C+");
+      gROOT->ProcessLine(".L DownFn1.C+");
+      gROOT->ProcessLine(".L DownFn2.C+");
+      gROOT->ProcessLine(".L ScoreCut.C+");
+
+      //it fails if i don't load my sigma first!
+      //gROOT->ProcessLine(".L RescaledSigma_IC86_SplineMPE.C+");
+      gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+      if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+      
+      SetPrettyStyle();
+      SetRootPalette(1);
+      
+      if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+      else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+      int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+      gROOT->ProcessLine(".L Ark.C");
+      
+      bool OPT_USEREALDATA = true;
+
+    
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MuEX.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_SplineMPE.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MPE.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79Sirin.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaled2.C+");
+
+      gROOT->ProcessLine(".L TreeLoader_IC86.C");
+      I3Ark arkIC86;
+      TString RecoName = "SplineMPE";
+      gROOT->ProcessLine(".x load_ark_ic86_BDT.C(arkIC86, OPT_USEREALDATA, RecoName)");
+
+      gROOT->ProcessLine(".L TreeLoader_IC79_Final.C");
+      gROOT->ProcessLine(".L TreeLoader_IC59_Final.C");
+      gROOT->ProcessLine(".L TreeLoader_IC40_CutA6_Fix_final.C");
+
+      I3Ark arkIC40;
+      gROOT->ProcessLine(".x load_ark_ic40.C(arkIC40, OPT_USEREALDATA)");
+      
+      I3Ark arkIC59;
+      gROOT->ProcessLine(".x load_ark_ic59_BDT.C(arkIC59, OPT_USEREALDATA)");
+      
+      I3Ark arkIC79;
+      gROOT->ProcessLine(".x load_ark_ic79_Sirin.C(arkIC79, OPT_USEREALDATA)");
+
+      gROOT->ProcessLine(".x monitor_eProb.C(arkIC40)");
+      gROOT->ProcessLine(".x monitor_eProb.C(arkIC59)");
+
+      gROOT->ProcessLine(".x monitor_eProb.C(arkIC79)");
+      
+
+
+      MultiArk mark;
+      mark.AddArk(arkIC40);
+      mark.AddArk(arkIC59);
+      mark.AddArk(arkIC79);
+      mark.AddArk(arkIC86);
+
+      MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+      
+      // Llh Function
+      NewLlhEnergy newllhIC40;
+      newllhIC40.SetUseEnergy(true);
+      newllhIC40.SetOptimizeAngleDeg(10.);
+      newllhIC40.SetOptimizeTolerance(0.01);
+      //newllhIC40.SetMonitorLevel(2);
+      newllhIC40.SetAnalysisSet(arkIC40.psData);
+      newllhIC40.SetEMaxRatioWarnOnlyOnce(true);
+
+      
+      // Llh Function
+      NewLlhEnergy newllhIC59;
+      newllhIC59.SetUseEnergy(true);
+      newllhIC59.SetOptimizeAngleDeg(10.);
+      newllhIC59.SetOptimizeTolerance(0.01);
+      newllhIC59.SetAnalysisSet(arkIC59.psData);
+      //newllhIC59.SetMonitorLevel(2);
+      newllhIC59.SetEMaxRatioWarnOnlyOnce(true);
+      
+
+      NewLlhEnergy newllhIC79;
+      newllhIC79.SetUseEnergy(true);
+      newllhIC79.SetOptimizeAngleDeg(10.);
+      newllhIC79.SetOptimizeTolerance(0.01);
+      newllhIC79.SetAnalysisSet(arkIC79.psData);
+      //newllhIC59.SetMonitorLevel(2);
+      newllhIC79.SetEMaxRatioWarnOnlyOnce(true);
+
+      NewLlhEnergy newllhIC86;
+      newllhIC86.SetUseEnergy(true);
+      newllhIC86.SetOptimizeAngleDeg(10.);
+      newllhIC86.SetOptimizeTolerance(0.01);
+      newllhIC86.SetAnalysisSet(arkIC86.psData);
+      // newllhIC59.SetMonitorLevel(2);
+      newllhIC86.SetEMaxRatioWarnOnlyOnce(true);
+
+      MultiAnalysisFn maf;
+      maf.AddAnalysisFn(&newllhIC40);
+      maf.AddAnalysisFn(&newllhIC59);
+      maf.AddAnalysisFn(&newllhIC79);
+      maf.AddAnalysisFn(&newllhIC86);
+      
+    }
+  
+  //North hot spot
+  cout << "North hot spot" << endl;
+  // IC86+79+59+40
+  EquatorialDeg testSearch(11.45, 31.35);
+  //IC86-only
+  //EquatorialDeg testSearch(95.05, 13.85);
+
+  //South hot spot
+  cout << "South hot spot" << endl;
+  // IC86+79+59+40
+  EquatorialDeg testSearch(296.95, -75.75);
+  //IC86-only
+  //EquatorialDeg testSearch(195.45, -56.55);
+
+  mark.SetPointSource(testSearch, PowerLawFlux(1,-2));
+  maf.SetSearchCoord(testSearch);
+
+
+  NewLlhEnergy_ParTranslator pt;
+  pt.SetRange(1,4,31); //gamma_min, gamma_max, nBins
+
+
+  pt.SetTranslator(mas);
+
+
+  maf.SetParTranslator(&pt);
+
+  vector<MinuitParDef> pdv;
+  pdv.push_back( MinuitParDef("nSrc",1,0.1, 0,100) );
+  pdv.push_back( MinuitParDef("gamma",2,0.5, 1., 4) );
+  maf.SetParDefs(pdv);
+
+  maf.MaximizeLlh();
+
+  cout << "LogProb: " << log10(maf.GetEstProb()) << endl;
+  cout << "Ns: " << maf.GetPar(0) << endl;
+  cout << "Gamma: " << maf.GetPar(1) << endl;
+
+
+
+  return 1; // signal correct finish of script
+
+  }

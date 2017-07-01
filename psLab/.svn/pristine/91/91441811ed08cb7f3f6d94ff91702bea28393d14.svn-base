@@ -1,0 +1,31 @@
+{
+
+  int nPsList = 0;
+
+  // $LAB_MAIN_DIR is not expanded in this context...
+  //char* filename = "$LAB_MAIN_DIR/macro_llh/ic40_full/IC40_PS_List.txt";
+  char* filename = "./macro_llh/ic40_full/IC40_PS_List.txt";
+
+  FILE *fp = fopen(filename,"r");
+
+  char buffer[200];
+  double raDeg, decDeg;
+
+  TString psNameArray[100];
+  EquatorialDeg psEqCoordArray[100];
+
+  int s1=0;
+  while( fscanf(fp,"%s %lf %lf\n", buffer, &raDeg, &decDeg) == 3) {
+    psNameArray[s1] = buffer;
+    psEqCoordArray[s1] = EquatorialDeg(raDeg, decDeg);
+    //    printf("%20s  %7.3lf  %6.3lf\n",
+    //	dynamic_cast<char*>psNameArray[s], 
+    //	psEqCoordArray[s].GetRa(),
+    //	psEqCoordArray[s].GetDec() );
+    ++s1;
+  }
+  nPsList = s1;
+
+  cout << nPsList << " total sources read.\n";
+  fclose(fp);
+}

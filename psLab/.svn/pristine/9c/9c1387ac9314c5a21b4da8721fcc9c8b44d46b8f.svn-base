@@ -1,0 +1,83 @@
+
+{
+  gROOT->ProcessLine(".L ../fluxes/Fluxes_Distefano_Plus_Bednarek.C");
+  FILE *fp;
+
+  // Common Variables
+
+  EquatorialDeg srcLocation;
+  FormulaFlux formFlux;
+  I3SignalGenerator* mySignalPtr;
+  double eMin;
+  double eMax;
+  char outputFilename[1000];
+  bool DISCO_DISCOVERY;
+  int DISCO_LOOPS = 5;
+
+
+  //
+  // LOOP 
+  //
+
+  int s = 0;
+  while(1) {
+
+    sprintf(outputFilename,"results/temp.txt");
+    if (s==0) {
+      eMin = 1e2;
+      eMax = 1e5;
+      I3PointGenerator i3point(
+	I3PointGenerator_Distefano_PlusBednarek(evLoader, livetime, 1) );
+      DISCO_DISCOVERY = true;
+    }
+    if (s==1) {
+      // change something here 
+      I3PointGenerator i3point(
+	I3PointGenerator_Distefano_PlusBednarek(evLoader, livetime, 2) );
+    }
+    if (s==2) { // always need a last case
+      break;
+    }
+
+    mySignalPtr = &i3point;
+    psData.SetSource(*mySignalPtr);
+
+    gROOT->ProcessLine(".x ../scripts/macro_discovery_potential.C");
+
+
+    // This just checks whether file already exists before anything is written
+
+    if (s==0) {
+      fp = fopen(outputFilename,"r");
+      if (fp) {
+	fclose(fp);
+	cout << "Warning: The file ";
+	cout << outputFilename << " already exists.\nAppend? (yes/no)";
+	char buffer[1000];
+	scanf("%s",buffer);
+	if (TString(buffer) != "yes") { return -1; }  // signal error
+      }
+    }
+
+
+    double fluxScale = 
+      mySignalPtr->GetFluxScaleForNev(disco->MeanSrcEv_ForDetection_);
+    
+    char outputFormula[10000];
+    sprintf(outputFormula,"%lg * (%s)",fluxScale, formFlux.GetFormula() );
+
+    cout << "Opening " << outputFilename << " for appending results:\n";
+    FILE *fp = fopen(outputFilename,"a");
+    char line1[10000], line2[10000];
+    sprintf(line1, "%lg %lg %lg %lg %lg\n",
+	    eMin, eMax, 0, fluxScale, disco->MeanSrcEv_ForDetection_);
+    sprintf(line2, "%s\n", outputFormula );
+    printf("%s%s",line1,line2);
+    fprintf(fp,"%s%s",line1,line2);
+    fclose(fp);
+
+    s++;
+  }
+
+  return 1;  // signal correct finish of script
+}

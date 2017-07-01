@@ -1,0 +1,9 @@
+double RescaledSigma_IC79_86_I_to_IV_SplineMPE(double Sigma, double Energy)
+{
+  double x = log10(Energy);
+
+  //return Sigma * (3.264 - 2.493 * pow(x,1.) + 1.813 * pow(x,2.) - 0.4131 * pow(x,3.) + 0.0315868 * pow(x,4.));//Values from code.icecube.wisc.edu/svn/sandbox/psLab/branches/MESE/macro_llh/ic86_MESE/RescaledSigma_IC86_SplineMPE_HESE  
+return Sigma * (25.996 - 14.282 * pow(x,1.) + 3.123 * pow(x,2.) - 0.26495 * pow(x,3.) + 0.0076778 * pow(x,4.)); // from Jake working file as seen in https://docushare.icecube.wisc.edu/dsweb/Get/Document-67836/MESEUnblindingProposal.pdf
+
+}  
+

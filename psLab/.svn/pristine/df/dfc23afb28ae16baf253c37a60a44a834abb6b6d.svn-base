@@ -1,0 +1,41 @@
+
+{
+  cout << "Assuming you ran Track_upsample.C initially.\n";
+
+  cout << "Original UPSAMPLE_FACTOR at load time: " << UPSAMPLE_FACTOR << endl;
+
+
+  // SET THIS:
+
+  // e.g. if you originally upsampled by a factor of 20, and now you just
+  // want to use N times the true livetime (rather than 20x), set to N.
+  double currentUpsampleFactor = 10.;
+
+
+
+  if (currentUpsampleFactor > UPSAMPLE_FACTOR) {
+    cout << "Error: currentUpsampleFactor " << currentUpsampleFactor;
+    cout << " is greater than original UPSCALE FACTOR " << UPSAMPLE_FACTOR;
+    cout << "\nNo changes made.\n";
+    return 0; // signal that script failed
+  }
+
+  psData.SetBaseThinningProb(currentUpsampleFactor/UPSAMPLE_FACTOR);
+
+  // This has to be done before creating point source!
+  livetime = NON_UPSAMPLED_LIVETIME * currentUpsampleFactor;
+
+  cout << "Current upsample factor: " << currentUpsampleFactor << endl;
+  cout << "Current livetime (days): " << livetime/86400. << endl;
+
+
+
+  // SET YOUR SOURCE HERE:
+
+  TString dir = gSystem->ExpandPathName("$LAB_MAIN_DIR/fluxusDev_PlotFlux/");
+  gROOT->ProcessLine(".x "+dir+"FluxList_Milagro.C");
+
+  //  gROOT->ProcessLine(".x macro_SetPointSource.C(srcMGRO_J1908, fluxMGRO_J1908)");
+  gROOT->ProcessLine(".x macro_SetPointSource.C(srcMGRO_J1852, fluxMGRO_J1852)");
+
+}

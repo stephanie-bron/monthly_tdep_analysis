@@ -1,0 +1,7 @@
+double RescaledSigma_IC86_MuEX(double Sigma, double Energy)
+{
+  double x = log10(Energy);
+  
+  //return Sigma * (1.278339 - 0.525836 * pow(x,1.) + 0.126986 * pow(x,2.));
+  return Sigma * (9.305042755 - 9.129070667 * pow(x,1.) + 3.45101626 * pow(x,2.) - 0.5394645777 * pow(x,3.) + 0.03039417158 * pow(x,4.)); // new
+}

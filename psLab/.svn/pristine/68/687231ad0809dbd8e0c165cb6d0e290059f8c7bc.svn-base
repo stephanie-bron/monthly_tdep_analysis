@@ -1,0 +1,161 @@
+// Variables declared outside the functions will have global scope
+// and can be accessed after function exit.
+//
+// Note that if they are declared again (either by re-running this 
+// script or another one which declares the same variables)
+// their values may be reset, and should not be relied upon.
+
+TH1D *hBkgEvents;
+TH1D *hFixedFluxEvents;
+TH1D *hDetectEvents;
+TH1D *hDetectFlux;
+TCanvas* canDetectionZenith;
+
+
+// Default macro, gives user instructions
+void macro_DetectionZenith() {
+  cout << "Usage:\n";
+  cout << ".x macro_DetectionZenith.C(bool optSinDec, int nBins,\n"; 
+  cout << "                           double xMin, double xMax,\n";
+  cout << "                           FluxBase& flux)\n";
+}
+
+
+void macro_DetectionZenith(bool optSinDec, int nBins, double xMin, double xMax,
+			   FluxBase& flux) 
+{
+  extern EventLoader evLoader;
+  extern double livetime;
+  extern I3Analysis psData;
+  extern AnalysisLlh* llhPtr;
+  extern DiscoveryPotential disco;
+
+  // will skip bins if they involve search outside this range:
+  double searchDecDegMin = -85.;
+  double searchDecDegMax = +85.;
+
+  // Set Up Histograms
+
+  TString xLabel;
+  if (optSinDec) { xLabel = "sin(Dec.)"; }
+  else { xLabel = "Declination [#circ]"; }
+
+  if (gDirectory->Get("hBkgEvents")) { 
+    delete gDirectory->Get("hBkgEvents"); }
+  hBkgEvents = new TH1D("hBkgEvents","Bkg Events per sq. deg.;"+xLabel, 
+			nBins, xMin, xMax);
+
+  if (gDirectory->Get("hFixedFluxEvents")) {
+    delete gDirectory->Get("hFixedFluxEvents"); }
+  hFixedFluxEvents = new TH1D("hFixedFluxEvents","Mean Source Events for "
+			      "Fixed Flux ;"+xLabel, 
+			      nBins, xMin, xMax);
+  
+  if (gDirectory->Get("hDetectEvents")) {
+    delete gDirectory->Get("hDetectEvents"); }
+  hDetectEvents = new TH1D("hDetectEvents","Mean Source Events for "
+			   "Detectable Flux ;"+xLabel, 
+			   nBins, xMin, xMax);
+
+  if (gDirectory->Get("hDetectFlux")) {
+    delete gDirectory->Get("hDetectFlux"); }
+  hDetectFlux = new TH1D("hDetectFlux","Detectable Flux Scale Relative "
+			 "to Model ;"+xLabel,
+			 nBins, xMin, xMax);
+
+
+  // only make new canvas if it didn't already exist:
+  canDetectionZenith = dynamic_cast<TCanvas*> 
+    ( gROOT->GetListOfCanvases()->FindObject("canDetectionZenith") );
+  if ( !canDetectionZenith ) {
+    canDetectionZenith = 
+      new TCanvas("canDetectionZenith","canDetectionZenith",20,20,800,700);
+    canDetectionZenith->Divide(2,2,0.005,0.005);
+  }
+  TCanvas *can = canDetectionZenith;
+
+  //
+  // MAIN LOOP
+  //
+
+  for (int iDec=1; iDec<=nBins; ++iDec) {
+
+    double srcDecDeg;
+    if (optSinDec) {
+      srcDecDeg = asin(hDetectFlux->GetBinCenter(iDec))*TMath::RadToDeg();
+    } else {
+      srcDecDeg = hDetectFlux->GetBinCenter(iDec);
+    }
+
+    if (srcDecDeg < searchDecDegMin) { continue; }
+    if (srcDecDeg > searchDecDegMax) { break; }
+
+
+    // Set up source simulation for this declination
+
+    EquatorialDeg scanSrcLocation(0.,srcDecDeg);
+    cout << "Source Declination: " << scanSrcLocation.GetDec() << " deg\n";
+    vector<I3Event> sourceEvents;
+    evLoader.LoadSourceEvents(sourceEvents, scanSrcLocation);
+    I3PointGenerator scanSignal(sourceEvents, flux, scanSrcLocation, livetime);
+    psData.SetSource(scanSignal);
+
+    double meanSrcEv_ForInitialFlux = scanSignal.GetMeanSrcNev();
+    cout << "  Mean Src Events for Init. Flux: ";
+    cout << meanSrcEv_ForInitialFlux << endl;
+
+
+    // Plot bkg density for this declination
+
+    // Have to make a clean sample first before evaluating bkg density:
+    psData.GenerateDataSet_with_nSrcEvents(0); 
+    // ... since number density includes all events, even if src is added
+    // (hmm, maybe should remove the term 'bkg' from this next fn call).
+    double bkgPerSqDeg = psData.BkgNumberDensity(scanSrcLocation);
+    can->cd(1);
+    hBkgEvents->SetBinContent(iDec, bkgPerSqDeg);
+    hBkgEvents->SetMinimum(0.); // helpful for drawing once all bins nonzero
+    hBkgEvents->Draw();
+
+    // Plot Signal rate for this source
+
+    can->cd(2);
+    hFixedFluxEvents->SetBinContent(iDec, meanSrcEv_ForInitialFlux);
+    // helpful for drawing once all bins nonzero:
+    hFixedFluxEvents->SetMinimum(0.); 
+    hFixedFluxEvents->Draw();
+    can->Update();  // update now, while waiting for disco loops next
+
+
+    disco.SetLogLikelihood(*llhPtr);
+
+    disco.AnalyzeDiscoveryPotential(&psData,scanSrcLocation);
+
+    double meanSrcEv_ForDetection = disco.MeanSrcEv_ForDetection_;
+    double fluxScale = 
+      scanSignal.GetFluxScaleForNev(meanSrcEv_ForDetection);
+
+
+    can->cd(3);
+    hDetectEvents->SetBinContent(iDec, meanSrcEv_ForDetection);
+    hDetectEvents->SetMinimum(0.); // helpful for drawing once all bins nonzero
+    hDetectEvents->Draw();
+
+    can->cd(4);
+    hDetectFlux->SetBinContent(iDec, fluxScale);
+    hDetectFlux->Draw();
+    can->Update();
+
+
+    cout << "Detection Power " << disco.GetDetectionPower()*100 << "%\n"; 
+    cout << "Detection Significance "<<disco.GetDetectionSignificance()<< endl;
+    cout << "Mean signal events detectable: " <<meanSrcEv_ForDetection << endl;
+    cout << "Flux scale relative to model is: " << fluxScale << endl;
+    cout << "Running average fluxScale: "<< hDetectFlux->GetSum()/iDec << endl;
+  }
+
+  can->cd(4);  // hDetectFlux
+  gPad->SetLogy(true);
+  can->Update();
+
+}

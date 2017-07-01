@@ -1,0 +1,216 @@
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+  //  TString macroPath = gROOT->GetMacroPath();
+  //  macroPath += gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh:");
+  //  gROOT->SetMacroPath(macroPath);
+
+
+    int ranSeed = get_ran1_seed(); // Check if a seed is set already
+    if (!ranSeed) {
+      if (0) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+      else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    ranSeed = get_ran1_seed(); // if you want to know what the seed was
+    }
+
+    gROOT->ProcessLine(".L Ark.C");
+
+    bool OPT_USEREALDATA = false;
+
+//    I3Ark ark22;
+//    gROOT->ProcessLine(".x load_ark_ic22.C(ark22, OPT_USEREALDATA)");
+
+    I3Ark ark40;
+    gROOT->ProcessLine(".x load_ark_ic40_Em2.C(ark40, OPT_USEREALDATA)");
+
+    I3Ark ark59;
+    gROOT->ProcessLine(".x load_ark_ic59_Em2.C(ark59, OPT_USEREALDATA)");
+    //gROOT->ProcessLine(".x load_ark_ic59_BDT.C(ark59, OPT_USEREALDATA)");
+
+    // Source 
+    printf("Setting up Fermi Haze/Bubble (FermiBalls Model)...\n");
+
+    //FormulaFlux formflux("pow(10.,-6.5)*pow(x,-2.)");
+    FormulaFlux formflux("1.177e-6*pow(x,-2.)"); // arXiv:1008.2658v4
+    // JD: A few more notes on this flux.  From the paper:
+    // flux = 10^-9 TeV cm-2 s-1 sr-1
+    // convert to GeV -> flux = 10^-6 GeV cm-2 s-1 sr-1
+    // bubbles encompass circle of radius 25deg on sky
+    // solid angle of both bubbles = 2*Pi*(1-cos(25deg)) * 2 bubbles = 1.177 sr 
+    // -> flux = 1.177e-6 (E/GeV)^-2 GeV-1 cm-2 s-1
+
+    FluxBase *myFluxPtr = &formflux;
+
+    ark40.evLoader.SetMonitor(false);
+    ark59.evLoader.SetMonitor(false);
+    EventLoader *evPtr40 = &ark40.evLoader;
+    EventLoader *evPtr59 = &ark59.evLoader;
+
+    I3TH2FGenerator th2gen40(*evPtr40, *myFluxPtr, ark40.livetime);
+    I3TH2FGenerator th2gen59(*evPtr59, *myFluxPtr, ark59.livetime);
+
+    // h0 is in galactic coords, so specify to convert these to Equatorial internally
+    th2gen40.convGalToEq_ = 1;
+    th2gen59.convGalToEq_ = 1;
+    // (Some other conversion factors default to false)
+
+    // Now have option to load a GP emission model as a 2D map
+    gROOT->ProcessLine(".L $LAB_MAIN_DIR/macro_llh/ic59/fermibubble/GetObjectFromFile.C");
+
+
+    // h0 is unconvolved Fermi map
+    char *emissionmodelfile = gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh/ic59/fermibubble/FermiBubble_conv_30sigmabins.root");
+    TH2F* hEmissionModel = (TH2F*)GetObjectFromFile(emissionmodelfile,"h0");
+    double norm = hEmissionModel->Integral();
+    hEmissionModel->Scale();
+
+   th2gen40->SetBinning(hEmissionModel);  
+   th2gen59->SetBinning(hEmissionModel);  
+
+    bool useExistingFluxModel = true;
+    if (useExistingFluxModel) {
+      char *fluxmodelhistfile40 = gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh/ic59/fermibubble/myBallsWeightsTable_ic40.root");
+      char *fluxmodelhistfile59 = gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh/ic59/fermibubble/myBallsWeightsTable_ic59.root");
+
+      TH2F* hFluxModel40 =
+        (TH2F*)GetObjectFromFile(fluxmodelhistfile40,"hFluxModelWeightsTable");
+      th2gen40.SetFluxModelWeightsTable(hFluxModel40);
+
+      TH2F* hFluxModel59 =
+        (TH2F*)GetObjectFromFile(fluxmodelhistfile59,"hFluxModelWeightsTable");
+      th2gen59.SetFluxModelWeightsTable(hFluxModel59);
+    } 
+    // MUST create the src weights table (won't overwrite if FluxModel pre-loaded)
+    th2gen40.CreateSrcWeightsTable(hEmissionModel);
+    th2gen59.CreateSrcWeightsTable(hEmissionModel);
+
+    //th2gen40.CreateFluxModelWeightsTable();
+    //th2gen59.CreateFluxModelWeightsTable();
+
+    I3SignalGenerator *mySignalPtr40 = &th2gen40;
+    SourceModule *srcMod40 = mySignalPtr40;
+    I3SignalGenerator *mySignalPtr59 = &th2gen59;
+    SourceModule *srcMod59 = mySignalPtr59;
+
+    MultiArk mark;
+    //mark.AddArk(ark22);
+    mark.AddArk(ark40);
+    mark.AddArk(ark59);
+    
+    MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+
+    int monLev = 0;
+    
+    NewLlhTH2F newllhth2f40;
+    newllhth2f40.SetUseEnergy(true);
+    newllhth2f40.SetOptimizeAngleDeg(10.);
+    newllhth2f40.SetOptimizeTolerance(0.01);
+    newllhth2f40.SetMonitorLevel(monLev);
+    newllhth2f40.SetAnalysisSet(ark40.psData);
+    newllhth2f40.convEqToGal_ = 1;
+    newllhth2f40.convDegToRad_ = 0;
+    newllhth2f40.shiftDecToTheta_= 0;
+    newllhth2f40.shiftGalLonBinning_= 1; // For Fermi Bubble!
+
+    NewLlhTH2F newllhth2f59;
+    newllhth2f59.SetUseEnergy(true);
+    newllhth2f59.SetOptimizeAngleDeg(10.);
+    newllhth2f59.SetOptimizeTolerance(0.01);
+    newllhth2f59.SetMonitorLevel(monLev);
+    newllhth2f59.SetAnalysisSet(ark59.psData);
+    newllhth2f59.convEqToGal_ = 1;
+    newllhth2f59.convDegToRad_ = 0;
+    newllhth2f59.shiftDecToTheta_= 0;
+    newllhth2f59.shiftGalLonBinning_= 1; // For Fermi Bubble!
+      
+    // Now load 30 convolved source PDFs and tell llh function about det response
+    //th2gen40.LoadTH2Fpdfs("/net/user/jdumm/llh_IC40_v2/llh6_Ext/convolve_tables/FermiGalDiffuse_conv_30sigmabins_m10to10.root","/net/user/jdumm/llh_IC40_v2/llh6_Ext/ic40_fix_llh6_Ext/GP_FermiGalDiffuse/FluxModel_TH2F_IC40_Fix_Em2.7_m10to10.root");
+    //th2gen59.LoadTH2Fpdfs("/net/user/jdumm/llh_IC40_v2/llh6_Ext/convolve_tables/FermiGalDiffuse_conv_30sigmabins_m10to10.root","/net/user/jdumm/llh_IC40_v2/llh6_Ext/ic40_fix_llh6_Ext/GP_FermiGalDiffuse/FluxModel_TH2F_IC40_Fix_Em2.7_m10to10.root");
+
+    char *pdfhistfile = gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh/ic59/fermibubble/FermiBubble_conv_30sigmabins.root");
+
+    newllhth2f40.LoadTH2Fpdfs(pdfhistfile,fluxmodelhistfile40);
+    newllhth2f59.LoadTH2Fpdfs(pdfhistfile,fluxmodelhistfile59);
+
+    MultiAnalysisFn maf;
+    //maf.AddAnalysisFn(&newllh22);
+    maf.AddAnalysisFn(&newllhth2f40);
+    maf.AddAnalysisFn(&newllhth2f59);
+  
+    //gROOT->ProcessLine(".L SimpleMultiAnalysis.C");
+  
+  }
+
+  //mark.SetPointSource(testSearch, PowerLawFlux(1.,-2.));
+  //maf.SetSearchCoord(testSearch);
+
+  ark40.SetSource(srcMod40);
+  ark59.SetSource(srcMod59);
+
+  //MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+  
+  NewLlhTH2F_ParTranslator pt;
+  //pt.SetRange(1,4,31);
+  pt.SetTranslator(mas);
+  
+  maf.SetParTranslator(&pt);
+
+  vector<MinuitParDef> pdv;
+  pdv.push_back( MinuitParDef("nSrc",2,0.1, 0.,500.) );
+  pdv.push_back( MinuitParDef("gamma",2.,0., 2.,2.) );
+  maf.SetParDefs(pdv);
+
+/*
+  //SimpleMultiAnalysis sa;
+  //sa.SetNDoF(2);
+   
+  //cout << "Starting trials" << endl;
+  //sa.Execute(mark,maf,1000,0);
+*/
+
+  /*
+  // Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+   SetDisco(disco, 15, false, 2.87e-7, 0.5);
+
+  gROOT->ProcessLine(".L MultiDetectionStudy.C");
+ 
+  TCanvas *c = MultiDetectionStudy(mark, maf, mas, disco); 
+  */
+
+  /* Disco (Discovery Potential and Sensitivity Estimator)
+  DiscoveryPotential disco;
+  
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  // SetDisco(disco, 20, false, 2.87e-7, 0.5);
+   SetDisco(disco, 30, true, 0.5, 0.9);
+  
+  gROOT->ProcessLine(".L DetectionZenith.C");
+
+  DetectionZenith dz;
+  dz.searchDecDegMin = -85.;   //(skip any bins beyond this range);
+  dz.searchDecDegMax = +85.;   //(skip any bins beyond this range);
+  dz.nBins = 40;
+
+//  dz.Execute(ark59, newllh59, disco, PowerLawFlux(1,-2));
+  dz.Execute(mark, maf, disco, PowerLawFlux(1,-2));
+  
+  
+//  dz.Write("IC59_SC_Zenith.root","recreate");
+  dz.Write("IC59_SC_IT2B_Zenith_sensEm2.root","recreate");
+//  dz.Write("Multi_BDT_Zenith_sensEm2.root","recreate");
+
+  //dz.Write("IC59_discovery.root","recreate"); //*/
+
+ 
+  return 1; // signal correct finish of script
+}

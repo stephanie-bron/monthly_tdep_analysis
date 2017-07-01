@@ -1,0 +1,71 @@
+
+{
+  // gROOT->ProcessLine(".L AllSkyBasic_compile.C");
+  psData->SetBaseEvents(baseEvents);
+
+  //  psData->UseRealData();   cout << "\n\nUSING REAL DATA!!\n\n";
+  psData->GenerateDataSet_with_nSrcEvents(0);
+
+
+  gROOT->SetStyle("Plain");
+  CreatePalette(5);
+  gStyle->SetOptStat(0);
+
+
+
+  LlhEnergy llhEnergyFn;
+  bool zenUseEnergy = true;
+  llhEnergyFn.SetUseEnergy(zenUseEnergy);
+//  llhEnergyFn.SetParDef(1,2.,0.,2.,2.,true);
+  llhEnergyFn.SetOptimizeTolerance(.01);
+  llhEnergyFn.SetOptimizeAngleDeg(10.);
+  llhEnergyFn->SetMonitorLevel(0);
+  
+  AnalysisLlh &llhFn = llhEnergyFn;
+
+  double raLow  = 0.;
+  double raHigh = 360.;
+  double decLow  = -85.;
+  double decHigh = 85.;
+
+
+  double raLow  = 140.;
+  double raHigh = 170.;
+  double decLow  = -30.;
+  double decHigh = -15.;
+
+
+
+  int nBinsRa = (raHigh-raLow)*2;
+  int nBinsDec = (decHigh-decLow)*2;
+
+  cout << "RA Bins: " << nBinsRa << "   Dec Bins: " << nBinsDec << endl;
+
+  TH2D *hAllSkyCoarse = new TH2D("hAllSkyCoarse","hAllSkyCoarse",
+				 nBinsRa,raLow,raHigh,
+				 nBinsDec,decLow,decHigh);
+
+
+
+  int nBinsRa = (raHigh-raLow)*10;
+  int nBinsDec = (decHigh-decLow)*10;
+
+  double resultThreshold = 1.5;
+
+  cout << "RA Bins: " << nBinsRa << "   Dec Bins: " << nBinsDec << endl;
+  cout << "Result Threshold for fine-grid follow-up: " << resultThreshold;
+  cout << "\n\n";
+
+  TH2D *hAllSkyFine = new TH2D("hAllSkyFine","hAllSkyFine",
+			       nBinsRa,raLow,raHigh,
+			       nBinsDec,decLow,decHigh);
+
+  AllSkyBasic_compile as;
+  as.optMonitor_ = false;
+  as.Fill(psData, llhFn, resultThreshold, hAllSkyCoarse, hAllSkyFine);
+
+  TCanvas *canAllSkyFine = 
+    new TCanvas("canAllSkyFine","canAllSkyFine",800,400);
+  hAllSkyFine->Draw("colz");
+  canAllSkyFine->Update();
+}

@@ -1,0 +1,104 @@
+
+{
+  gROOT->ProcessLine(".L GetObjectFromFile.C");
+  gROOT->ProcessLine(".L FluxTools.C");
+
+  // covert E^-2 flux from GeV to TeV
+  double scale = ConvertFluxUnits(1e9, 1e12, 1e9, 1e12, -2);
+
+
+  const int nMax = 10;
+  TH1D *hf;
+  TH1D *h[nMax];
+  int s = 0;
+
+  TString hName = "hDetectFlux";
+
+  TLegend *legend = new TLegend(0.2,0.15,0.85,0.3);
+
+  double yMin, yMax;
+  TString mainTitle;
+
+  if (0) {
+    mainTitle = "IC40 6-months: E^{-2} Sensitivity";
+    yMin = 5e-13;
+    yMax = 5e-10;
+
+    h[s] = GetTH1DFromFile("ic40/ic40_6mon_Zen_numu_v1.root", hName);
+    h[s]->SetName("NuMu only");
+    h[s]->SetLineColor(4);
+    h[s]->SetLineStyle(1);
+    ++s;
+
+    h[s] = GetTH1DFromFile("ic40/ic40_6mon_Zen_numu_v2.root", hName);
+    h[s]->SetName("NuMu only (alternate: test fluctuations)");
+    h[s]->SetLineColor(1);
+    h[s]->SetLineStyle(1);
+    //    ++s;
+
+    h[s] = GetTH1DFromFile("ic40/ic40_6mon_Zen_nutau_v2.root", hName);
+    h[s]->SetName("NuMu including NuTau contribution");
+    h[s]->SetLineColor(2);
+    h[s]->SetLineStyle(1);
+    ++s;
+  }
+
+  if (1) {
+    mainTitle = "IC40 6-months: E^{-1.5} Sensitivity";
+    yMin = 5e-16;
+    yMax = 5e-13;
+
+    h[s] = GetTH1DFromFile("ic40/ic40_6mon_Zen_numu_v1_gam1.5.root", hName);
+    h[s]->SetName("NuMu only");
+    h[s]->SetLineColor(4);
+    h[s]->SetLineStyle(1);
+    ++s;
+
+    h[s] = GetTH1DFromFile("ic40/ic40_6mon_Zen_nutau_v2_gam1.5.root", hName);
+    h[s]->SetName("NuMu including NuTau contribution");
+    h[s]->SetLineColor(2);
+    h[s]->SetLineStyle(1);
+    ++s;
+  }
+
+  gROOT->SetStyle("Plain");
+  gStyle->SetPadBottomMargin(0.10);
+  gStyle->SetPadLeftMargin(0.12);
+  gStyle->SetTitleH(.07);
+  gStyle->SetTitleW(.6);
+  gStyle->SetTitleX(.2);
+  gStyle->SetTitleY(0.98);
+  gStyle->SetTitleBorderSize(0);
+  gStyle->SetTitleOffset(1.02,"Y");
+
+  TCanvas *canZenith = new TCanvas("canZenith","canZenith",40,40,800,500);
+
+  for (int i=0; i<s; ++i) {
+    h[i]->SetLineWidth(2);
+    h[i]->Scale(scale);
+    if (i==0) { 
+      h[0]->Draw("L"); 
+      h[0]->SetTitle(mainTitle);
+      h[0]->GetYaxis()->SetTitle("#Phi^{0} [TeV^{-1} cm^{-2} s^{-1}]");
+    }
+    else { h[i]->Draw("Lsame"); }
+    legend->AddEntry(h[i],h[i].GetName());
+  }
+
+  h[0]->SetMinimum(yMin);
+  h[0]->SetMaximum(yMax);
+
+  gPad->SetLogy();
+  gPad->SetTickx(1);
+  gPad->SetTicky(1);
+  gPad->SetGrid();
+
+  TLine *line = new TLine(-.1,1e-11,1,1e-11);
+  line->Draw();
+  //  TLine *line = new TLine(-.1,1e-10,1,1e-10);
+  //  line->Draw();
+
+  legend->SetFillColor(0);
+  legend->Draw();
+
+}

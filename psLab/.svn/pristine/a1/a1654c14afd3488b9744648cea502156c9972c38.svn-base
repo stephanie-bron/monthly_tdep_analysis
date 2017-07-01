@@ -1,0 +1,34 @@
+// Variables declared outside the functions will have global scope
+// and can be accessed after function exit.
+//
+// Note that if they are declared again (either by re-running this 
+// script or another one which declares the same variables)
+// their values may be reset, and should not be relied upon.
+
+
+
+// Note: how to allow negative signal events
+//  llhPtr->SetParDef(0,0,1,-2,100);
+
+
+void macro_SetLlhEnergy(bool useEnergy = true,
+			double optimizeAngleDeg = 10.,
+			double optimizeTolerance = 0.01)
+{
+  cout << "macro_SetLlhEnergy:\n";
+  
+  // Must have already been defined elsewhere
+  extern LlhEnergy llhEnergyFn;
+  extern AnalysisLlh *llhPtr;
+
+  llhEnergyFn.SetUseEnergy(useEnergy);
+  llhEnergyFn.SetOptimizeAngleDeg(optimizeAngleDeg);
+  llhEnergyFn.SetOptimizeTolerance(optimizeTolerance);
+  llhPtr = &llhEnergyFn;
+
+  cout << "Set llhPtr = &lhEnergyFn with:\n";
+  cout << "  Using energy: ";
+  cout << ((llhEnergyFn.GetUseEnergy()) ? "true" : "false") << endl;
+  cout << "  OptimizeAngleDeg: " << llhEnergyFn.GetOptimizeAngleDeg() << endl;
+  cout << "  OptimizeTolerance: "<< llhEnergyFn.GetOptimizeTolerance() << endl;
+}

@@ -1,0 +1,249 @@
+
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+    if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+    gROOT->ProcessLine(".L Ark.C");
+
+    bool OPT_USEREALDATA = true;
+
+    I3Ark ark40;
+    gROOT->ProcessLine(".x load_ark_ic40.C(ark40, OPT_USEREALDATA)");
+
+    I3Ark ark59;
+    gROOT->ProcessLine(".x load_ark_ic59.C(ark59, OPT_USEREALDATA)");
+
+    MultiArk mark;
+    mark.AddArk(ark40);
+    mark.AddArk(ark59);
+    
+  }
+
+
+  int nTrials = 1000;
+  int nSrcEvents = 0;
+
+  string srcstr[23];
+  EquatorialDeg testSearch[23];
+    
+    srcstr[0] = "3C454.3";        testSearch[0].SetCoords(343.491,  16.148);
+    srcstr[1] = "PKS0805m07";     testSearch[1].SetCoords(122.06,   -7.85 );
+    srcstr[2] = "PKS2023m07";     testSearch[2].SetCoords(306.46,   -7.59 );
+    srcstr[3] = "PKS0244m47";     testSearch[3].SetCoords(  41.5,   -46.84 );
+    srcstr[4] = "BLLac";          testSearch[4].SetCoords(330.68,   42.28 );
+    srcstr[5] = "V407Cyg";        testSearch[5].SetCoords(315.54,   45.77 );
+    srcstr[6] = "PKS1622m253";    testSearch[6].SetCoords(246.44,	-25.44 );
+    srcstr[7] = "PKS1424m418";    testSearch[7].SetCoords(216.98,	-42.09 );
+    srcstr[8] = "J0109p6134";     testSearch[8].SetCoords( 17.25,	61.34 );
+    srcstr[9] ="GB6B1310p4844";   testSearch[9].SetCoords( 198.18,	48.47 );
+    srcstr[10] = "B31343p451";    testSearch[10].SetCoords(206.39,	44.88 );
+    srcstr[11] = "S51803p784";    testSearch[11].SetCoords(270.19,	78.47 );
+    srcstr[12] = "PKS1222p216";   testSearch[12].SetCoords(186.23,	21.38 );
+    srcstr[13] = "3C273";         testSearch[13].SetCoords(187.28,	2.05 );
+    srcstr[14] = "OJ287";         testSearch[14].SetCoords(133.70,	20.11 );
+    srcstr[15] = "4C38.41";       testSearch[15].SetCoords(248.81,	38.13 );
+    srcstr[16] = "PKS1510m089";   testSearch[16].SetCoords(228.211, -9.100);
+    srcstr[17] = "PKS1502+106";   testSearch[17].SetCoords(226.104, 10.494);
+    srcstr[18] = "PKS1454m354";   testSearch[18].SetCoords(224.361, -35.653);
+    srcstr[19] = "3C279";         testSearch[19].SetCoords(194.05,	-5.790);
+    srcstr[20] = "3C66A";         testSearch[20].SetCoords(35.665,	43.036);    
+    srcstr[21] = "PKS0454m234";   testSearch[21].SetCoords(74.2630, -23.414);
+    srcstr[22] = "J1239p044";     testSearch[22].SetCoords(189.90,  4.70);
+
+  string blocksFile[23];
+  for (int i=0;i<23;i++) { 
+    blocksFile[i] = "/net/user/mfbaker/Fermi/data/lcAll/lcAll."+srcstr[i]+"cp.l1.txt";
+  } 
+
+  NewLlhBlockTime newllh40[23];
+  NewLlhBlockTime newllh59[23];
+  MultiBlockAnalysisFn maf[23];
+  NewLlhBlockTime_ParTranslator pt[23];
+
+  //MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+
+  bool useE = true;
+  int monLevel = 0;
+  double laglimit = 0.5;
+  
+  cout << "Starting first loop!" << endl;
+
+  TimePdf * tPdf[23];
+
+  for (int i=0;i<23;i++) {
+  
+    newllh40[i].SetUseEnergy(true);
+    newllh40[i].SetOptimizeTolerance(0.01);
+    newllh40[i].SetMonitorLevel(monLevel);
+    newllh40[i].SetEMaxRatioWarnOnlyOnce(1);
+    newllh40[i].JimsTerm_ = false;
+    newllh40[i].SpectralPenalty_ = false;
+    newllh40[i].ndof_ = 3.;
+    newllh40[i].laglimit_ = laglimit;
+    newllh40[i].SetLivetime(410.);
+    newllh40[i].SetBlocks(blocksFile[i],0.);
+    newllh40[i].SetAnalysisSet(ark40.psData);
+
+    newllh59[i].SetUseEnergy(true);
+    newllh59[i].SetOptimizeTolerance(0.01);
+    newllh59[i].SetMonitorLevel(monLevel);
+    newllh59[i].SetEMaxRatioWarnOnlyOnce(1);
+    newllh59[i].JimsTerm_ = false;
+    newllh59[i].SpectralPenalty_ = false;
+    newllh59[i].ndof_ = 3.;
+    newllh59[i].laglimit_ = laglimit;
+    newllh59[i].SetLivetime(375.);
+    newllh59[i].SetBlocks(blocksFile[i],0.);
+    newllh59[i].SetAnalysisSet(ark59.psData);
+    
+    newllh40[i].SetTimeBounds(ark40.tmin, ark40.tmax);
+    newllh59[i].SetTimeBounds(ark59.tmin, ark59.tmax);
+    
+    maf[i].AddAnalysisFn(&newllh40[i]);
+    maf[i].AddAnalysisFn(&newllh59[i]);
+    maf[i].blocksFile = blocksFile[i];  
+    
+    maf[i].SetSearchCoord( testSearch[i] );
+    
+    tPdf[i] = new BlockTimePdf1();
+    tPdf[i]->SetBlockLevels(blocksFile[i],0.);
+    //tPdf[i]->fillHisto();
+    
+    mark.SetPointSource( testSearch[i], PowerLawFlux(1.,-2.), tPdf[i]); 
+    //mark.SetPointSource( testSearch[i], PowerLawFlux(1.,-2.)); 
+    cout << "a " << flush;
+    pt[i].SetRange(1,4,31);
+    cout << "b " << flush;
+    pt[i].SetUpBlocks(blocksFile[i]);
+    cout << "c " << flush;
+    pt[i].SetTranslator(dynamic_cast<MultiAnalysisSet*>(mark.psData));
+    cout << "d" << endl;
+    maf[i].SetParTranslator(&pt[i]);
+    
+  }
+
+
+  //TStopwatch ts;
+  double pmin=1.;
+  double pvalue[24];
+  int bestSource;
+  
+  double nsrc_best, gamma, eweight;
+  vector<Time> tvect;
+  vector<double> sRatio;
+  vector<I3Event> eventVector;
+
+  TH1D hPmin("hPmin",";log_{10} ProbMin;trials",100,-1.,1.);
+  hPmin.SetBit(TH1::kCanRebin);
+
+  TH1D hSBest("hLogProb",";source;trials",24,0.,24.);
+  TH2D h2d("h2d",";log_{10} Prob;source",24,0.,24.,100,-4.,1.);
+  TH2D h2ds("h2ds",";log_{10} Prob;source",24,0.,24.,100,-4.,1.);
+//  EquatorialDeg searchLocation;
+
+  CountMonitor countMon(1., nTrials);
+  TStopwatch ts;
+
+  for (int j=0;j<nTrials;j++) {
+
+
+    if (OPT_USEREALDATA) { 
+      mark.psData.UseRealData(); 
+      nTrials=1;
+    } else { 
+      mark.psData->GenerateDataSet_with_nSrcEvents(0);
+    }
+
+    //TimePdf * a = new BlockTimePdf1();
+    pmin=1.;
+
+    for (int i=0;i<23;i++) {
+
+      //maf[i].SetAnalysis( dynamic_cast<MultiAnalysisSet*>(mark.psData), testSearch[i] );
+      //maf[i].SetSearchCoord( testSearch[i] );
+      cout << srcstr[i] << endl;
+      maf[i].MaximizeLlh();
+
+      pvalue[i] = maf[i].GetEstProb();
+
+      if (pvalue[i] < pmin) {
+        pmin = pvalue[i]; 
+        bestSource = i;
+      }
+
+      if (OPT_USEREALDATA) {
+        cout.precision(3);
+        cout << srcstr[i] << "| (" << testSearch[i].GetRa() << "," << testSearch[i].GetDec() << ") " << maf[i].GetEstProb() << " | " << maf[i].GetTestStatistic() << " " << maf[i].GetPar(0) << " " << maf[i].GetPar(1) << " " << maf[i].GetPar(2) << " " << maf[i].GetPar(3) << endl;
+      }
+      
+     h2ds->Fill( i+0.5, log10(maf[i].GetEstProb()) );
+
+//*
+//     nsrc_best = llhEnergyFn[i].GetPar(0);
+//     gamma = maf[i].GetPar(1);
+
+     //tvect = maf[i].GetEventTimes();
+     //sRatio = maf[i].GetProbPairRatios();
+     //eventVector = maf[i].GetEventVector();
+
+//     bkgTimes->Fill(tvect[i].GetTime());
+//     eweight = eProb->GetEnergyProbGamma(eventVector[i],gamma)/eProb->GetEnergyProbBkg(eventVector[i]);
+  
+     //if (blockfile[i].length()) { 
+//       TimePdf * a = new BlockTimePdf1();
+//       a->SetBlockLevels(blockfile[i].c_str(),maf[i].GetPar(3)); 
+     //  if (OPT_USEREALDATA) { cout << "TimeAboveThresh: " <<BlockTimeAboveThresh(blockfile[i].c_str(),maf[i].GetPar(3)) << endl; }
+     //}
+  
+//     weightTimes->Fill(tvect[i].GetTime(),sRatio[i]*eweight);
+
+/*       for (int j=0;j<eventVector.size();j++){
+         eweight = 1.;
+         if (gamma>=1.) { eweight = eProb->GetEnergyProbGamma(eventVector[j],gamma)/eProb->GetEnergyProbBkg(eventVector[j]); }
+         if (sRatio[j]*eweight > 10.){
+           cout.precision(4);
+           cout << "    " << sRatio[j] << " " << eventVector[j].GetParams().energyValue << " " << eweight << " " << eweight*sRatio[j] << " " << eventVector[j].GetParams().runID << " " << eventVector[j].GetParams().eventID << " " << eventVector[j].GetParams().parafitSigmaDeg << " " << eventVector[j].GetCoord().GetRa() << " " << eventVector[j].GetCoord().GetDec() << " " <<  eventVector[j].GetCoord().DistanceTo(srcLocation[i]) << " ";
+           
+           cout.precision(12);
+           if(!blockfile[i].Length()) { cout << tPdf[i]->GetPdfValue(eventVector[j].GetTime()) << " "; }
+           else { cout << a->GetPdfValue(eventVector[j].GetTime(),llhEnergyFn[i].GetPar(2)) << " "; }
+           
+//           cout.precision(12);
+           cout << eventVector[j].GetTime().GetTime() << endl;
+         }
+       }//*/
+
+    }
+     
+    hPmin->Fill( log10(pmin) );
+    hSBest->Fill( bestSource+0.5 );
+    h2d->Fill( bestSource+0.5, log10(pmin) );
+    cout << "Minimum P-value: "<< pmin << " Best Source: " << srcstr[bestSource] << endl;
+    cout << endl;
+
+    countMon.UpdateCount();
+
+  }
+  cout << endl;
+  ts.Print();  
+
+  TCanvas *CanDist = new TCanvas("Dist","Dist",200,200,900,750);
+  CanDist->Divide(2,2,0.005,0.005);
+  CanDist->cd(1);
+  hPmin->Draw();
+  CanDist->cd(2);
+  hSBest->Draw();
+  CanDist->cd(3);
+  h2d->Draw("colz");
+  CanDist->cd(4);
+  h2ds->Draw("colz");
+
+}

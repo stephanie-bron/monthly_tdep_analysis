@@ -1,0 +1,114 @@
+{
+
+  bool RELOAD;
+
+  if (!RELOAD) {
+    RELOAD = true;
+    gROOT->Macro("$LAB_MAIN_DIR/llhTimeDep/loadlibs.C");
+    if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+
+    //  TString macroPath = gROOT->GetMacroPath();
+    //  macroPath += gSystem->ExpandPathName("$LAB_MAIN_DIR/macro_llh:");
+    //  gROOT->SetMacroPath(macroPath);
+    
+    initialize_ran1();
+    //if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+    //else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+    //int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+    gROOT->ProcessLine(".L ArkTime.C");
+
+    bool OPT_USEREALDATA = false;
+    gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79V2.C+");                                                                                                                       
+    gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");                                                                                                                         
+    gROOT->ProcessLine(".L TreeLoader_IC79_Final.C");                                                                                                                            
+    I3Ark arkIC79;                                                                                                                                                               
+    gROOT->ProcessLine(".x load_ark_ic79_Final.C(arkIC79, OPT_USEREALDATA)");           
+
+    
+
+    NewLlhGausTime newllh79;
+    newllh79.SetUseEnergy(true);
+    //newllh59.SetOptimizeAngleDeg(10.);
+    newllh79.SetOptimizeTolerance(0.01);
+    newllh79.SetMonitorLevel(0);
+    newllh79.SetEMaxRatioWarnOnlyOnce(1);
+    newllh79.close_ = 10.;
+    newllh79.JimsTerm_ = false;
+    newllh79.SpectralPenalty_ = false;
+    newllh79.ndof_ = 3.;
+    newllh79.SetLivetime(arkIC79.livetime/86400.); //Livetime in days
+    newllh79.SetLocalCoordBkgProb(arkIC79.lcBkgProb);
+    newllh79.seedWtMin = 1000.;
+  
+  }
+
+  
+  double decl = 5.80;
+
+
+  EquatorialDeg testSearch(90.550, decl);
+
+  cout << "Using declination : "<< decl << " (deg) " << endl;
+
+  double spectralIndex = -2.0;
+
+  cout << arkIC79.tmin << " " << arkIC79.tmax << endl;
+  
+  TimePdf * tPdf = new GaussianTimePdf(arkIC79.tmin, arkIC79.tmax, 54977.,0.3,1.);
+  arkIC79.SetPointSource(testSearch, PowerLawFlux(1.,spectralIndex), tPdf); 
+  arkIC79.psData.GetSource().SetTimeAzBins( arkIC79.lcBkgProb.nbAz );
+  newllh79.SetTimeBounds(tPdf);
+  newllh79.SetAnalysis(arkIC79.psData,testSearch);
+  
+  cout<<__LINE__<<endl;
+  
+  
+  gROOT->ProcessLine(".L SimpleFlareAnalysis.C");                                                                                                                                                          
+  
+  cout<<__LINE__<<endl;
+  
+  SimpleFlareAnalysis sa;                                                                                                                                                                                     
+  sa.SetNDoF(3);
+  
+  cout<<__LINE__<<endl;
+  
+  //sa.Execute(arkIC79, newllh79, 1e5, 0);              
+  
+  int nTrials = 10000;
+  
+  ofstream outfile;
+
+  outfile.open("TSHESSJ0632plus057ic79Untriggeredflare_nomarg.txt");
+  
+  for (int i=0; i<nTrials; ++i) {
+ 
+    
+    cout<<"Beginning Loop\n";
+ cout<<__LINE__<<endl;
+    arkIC79.psData->GenerateDataSet_with_nSrcEvents(0);
+  cout<<__LINE__<<endl;  
+    outfile<<i<<"  ";
+     newllh79.MaximizeLlh();
+     hTestStatistic.Fill(newllh79.GetTestStatistic() * 2.);
+     outfile<<(newllh79.GetTestStatistic() * 2.)<<"\n";
+  }
+  
+outfile.close();
+  
+  //maf.SetNullTestStat(&hTestStatistic); 
+  TFile *fout = new TFile("Untriggeredflare_teststat_79_HESSJ0632plus057null_nomarg_alternate.root","RECREATE");    
+  hTestStatistic.Write();    
+  fout->Close();
+  
+  cout<<__LINE__<<endl;
+  
+  char file[100];
+
+
+  //sa.Write("flaretestTS.root,"RECREATE");
+
+
+   
+  return 1; // signal correct finish of script
+}

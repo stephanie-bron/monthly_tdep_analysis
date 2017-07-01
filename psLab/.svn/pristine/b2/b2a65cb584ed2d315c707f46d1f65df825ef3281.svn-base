@@ -1,0 +1,30 @@
+
+{
+  int nTrials = 1;
+
+  bool batchPointSourceBasic = true;
+
+  TH1D *hBestLogPMin = new TH1D("hBestLogPMin","hBestLogPMin",200,0,10);
+  hBestLogPMin->SetBit(TH1::kCanRebin);
+
+  TH1D *hBestSource = new TH1D("hBestSource","hBestSource",100,0,100);
+
+  CountMonitor cm(10., nTrials);
+  for (int i=0; i<nTrials; ++i) {
+    psData.GenerateDataSet_with_nSrcEvents(0);
+    gROOT->ProcessLine(".x $LAB_MAIN_DIR/macro_llh/ic40_full/AllSkyBasic.C");
+    hBestLogPMin->Fill(-log10(bestPMin));
+    hBestSource->Fill(bestSource+0.5);
+    cm.UpdateCount();
+  }
+
+  TCanvas *can = new TCanvas();
+  can->Divide(2,1,0.005,0.005);
+  can->cd(1);
+  hBestLogPMin->Draw();
+  can->cd(2);
+  hBestSource->Draw();
+  if (hBestSource->GetBinContent(hBestSource->GetNbinsX()+1)>0) {
+    cout >> "ERROR: more sources than bins in hBestSource.\n";
+  }
+}

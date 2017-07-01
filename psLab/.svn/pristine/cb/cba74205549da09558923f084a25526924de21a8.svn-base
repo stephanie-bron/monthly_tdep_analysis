@@ -1,0 +1,119 @@
+#!/usr/bin/perl
+use strict;
+
+
+# Run this perl script without parameters for instructions.
+
+
+my $numArgs = $#ARGV + 1;
+
+my $first_ranSeed;
+my $last_ranSeed;
+
+if ($numArgs >= 2  &&  $ARGV[0]<0  &&  $ARGV[1]<$ARGV[0]) { # both negative
+    $first_ranSeed = $ARGV[0];
+    $last_ranSeed  = $ARGV[1];
+}
+elsif ($numArgs >= 2  &&  $ARGV[0]>0  &&  $ARGV[1]>$ARGV[0]) { # both positive
+    $first_ranSeed = -$ARGV[0];
+    $last_ranSeed  = -$ARGV[1];
+} 
+else {
+    print "\nUsage:  perl jobSubmitter.sh  ";
+    print "first_ranSeed  last_ranSeed  [delay_sec]\n\n";
+    print "Note that ranSeeds for ran1 generator must be *negative*.\n";
+    print "Therefore typically you should enter e.g.:  -1  -100\n";
+    print "If both are positive, ok; they will be converted to negative.\n";
+    print "So, 1 100 would produce the same list of seeds from -1 to -100.\n";
+    print "\nDefault delay between job submissions is 0.\n\n";
+    exit 1;
+}
+print "\nGenerating scripts for ranSeeds from ";
+print "$first_ranSeed to $last_ranSeed.\n";
+
+
+my $sleepBetweenSubmit =   0;  # seconds
+
+if ($numArgs > 2) {
+    $sleepBetweenSubmit = $ARGV[2]; 
+    print "Will pause $sleepBetweenSubmit seconds between job submissions.\n";
+}
+    
+
+
+
+# SET THE ENVIRONMENT FOR THE SCRIPTS TO RUN IN
+# This code below assumes that you have already run the environment script
+# prior to executing this perl jobSubmitter.
+# It should be the same environment which you want the scripts to run in.
+if ( ! defined($ENV{'LAB_MAIN_DIR'}) ) {
+    die "Set the \$LAB_MAIN_DIR environment variable first.\n";
+}
+my $envSh     = "$ENV{'LAB_MAIN_DIR'}/setLabEnv64.sh";
+print "\nEnvironment for scripts:\n $envSh\n";
+
+
+# GET THE CURRENT WORKING DIRECTORY
+use Cwd;
+my $mainDir = cwd();  # current working directory
+print "Current working Directory:\n $mainDir\n";
+
+
+# SET THE DIRECTORY CONTAINING THE SCRIPTS TO EXECUTE ON THE CLUSTER
+my $scriptDir = "$mainDir/scripts";
+if (! -e $scriptDir) {
+    print "Making script Directory:\n $scriptDir\n";
+    mkdir $scriptDir, 0775 or die "Cannot make directory: $!";
+}
+
+print "\n";
+
+
+for (my $seed=$first_ranSeed; $seed>=$last_ranSeed; $seed--) # seed is neg!
+{
+    my $number = sprintf("%08d",abs($seed));
+    my $scriptFile = sprintf("%s/script_%s.sh",$scriptDir,$number);
+
+    if (-e $scriptFile) {
+	print "Warning: $number exists:  Overwriting  $scriptFile\n"; 
+    }
+
+    open OUTPUT, ">$scriptFile";
+    
+    my $script = "$envSh  root -b -q '$mainDir/rootSubmitMacro.C($seed)'\n";
+
+    print OUTPUT $script;
+
+    close OUTPUT;
+    system "chmod 744 $scriptFile";
+}
+
+
+print $first_ranSeed-$last_ranSeed+1 . " shell scripts written.\n";
+print "Type 'yes' to submit jobs, or anything else to quit.\n";
+
+my $choice = <STDIN>;
+
+
+if ($choice eq "yes\n") {
+
+    my $count = 0;
+    for (my $seed=$first_ranSeed; $seed>=$last_ranSeed; $seed--) # seed is neg!
+    {
+        ++$count;
+	my $number = sprintf("%08d",abs($seed));
+	my $scriptFile = sprintf("%s/script_%s.sh",$scriptDir,$number);
+
+        print "Job being submitted: $count\n";
+	system "./scriptSubmit_npx2-uwa.sh $number $scriptFile";
+
+        if ($sleepBetweenSubmit>0 && $seed>$last_ranSeed) {
+          print "Pausing $sleepBetweenSubmit second(s) till next submit...\n";
+          sleep $sleepBetweenSubmit;
+        }
+    }
+
+    print $first_ranSeed-$last_ranSeed+1 . " jobs submitted.\n";
+} else {
+    print "No jobs submitted.\n";
+}

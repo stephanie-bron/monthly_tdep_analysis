@@ -1,0 +1,133 @@
+
+Processing Track_multi_40597986_UNBLINDING_allsky.C...
+Preload: /net/user/mrameez/psLab_Debian_64/labcore/preload.C
+
+LAB_COORDINATE_PROJECT not specified....
+Will use coordinate-service as default.
+(See 'labcore/start_lab.sh' or 'llh/loadlibs.C' for how to change)
+
+Building/Loading:  rootExt/public
+Building/Loading:  fluxus/public
+Loading libcoordinate-service
+Building/Loading:  llh/public
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/SNRCat_SNRs/./RescaledSigma_IC86_SplineMPE_C.so
+
+Initializing ran1 with random seed = -55
+
+-----  LOADING IC-40  -----
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 375.539
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 36900 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% (36900 entries in tree passed cuts)
+Background set has 36900 events.
+Filling Energy PDFs:
+----- IC-40 Loaded -----
+
+-----  LOADING IC-59 BDT  -----
+Loaded tree
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 348.138
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 107569 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (107569 entries in tree passed cuts)
+Background set has 107569 events.
+Filling Energy PDFs:
+Real time 0:00:38, CP time 38.120
+----- IC-59 BDT Loaded -----
+
+-----  LOADING IC-79 BDT  -----
+Loaded tree
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 316.153
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 109866 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (109866 entries in tree passed cuts)
+Background set has 109866 events.
+Filling Energy PDFs:
+Real time 0:00:41, CP time 41.780
+UNBLINDING: Using real times
+Warning in <TStreamerInfo::Compile>: Counter fNClusterRange should not be skipped from class TTree
+----- IC-79 BDT Loaded -----
+
+-----  LOADING IC-86 BDT -----
+Loaded tree
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 332.61
+Configuring Source Event Sample...
+Rescaling using SplineMPE...
+Loading Background Events: 
+Selecting events from 138323 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (138323 entries in tree passed cuts)
+Background set has 138323 events.
+Filling Energy PDFs:
+0.9 25.8419
+0.85 31.7883
+0.8 36.8699
+0.75 41.4096
+0.7 45.573
+0.65 49.4584
+0.6 53.1301
+0.55 56.633
+0.5 60
+0.45 63.2563
+0.4 66.4218
+0.35 69.5127
+0.3 72.5424
+0.25 75.5225
+0.2 78.463
+0.15 81.3731
+0.1 84.2608
+-2.08167e-16 90
+-0.2 101.537
+-0.4 113.578
+-0.6 126.87
+-0.8 143.13
+backfill
+set table gamma
+Real time 0:01:15, CP time 75.080
+----- IC-86 BDT Loaded -----
+Setting up Stacking Analysis Sources (Starburst Galaxies)...
+Weight source simulation by Integrated Gamma Flux: 1
+Weight search hypothesis by Integrated Gamma Flux: 1
+000    G001.9+00.3 267.19 -27.17  5.41
+1 001    G015.9+00.2 274.72 -15.03  0.50
+2 002    G027.4+00.0 280.33  -4.93  1.00
+3 003    G033.6+00.1 283.20   0.68  0.11
+4 004    G035.6-00.4 284.43   2.19  0.43
+5 005    G078.2+02.1 305.21  40.43  0.08
+6 006    G107.5-01.5 342.71  57.48  0.22
+7 007    G111.7-02.1 350.86  58.80  2.99
+8 008    G114.3+00.3 354.25  61.92  0.13
+9 009    G116.9+00.2 359.79  62.43  0.09
+10 010    G120.1+01.4   6.33  64.15  2.27
+11 011    G160.9+02.6  75.25  46.67  0.18
+12 012    G206.9+02.3 102.17   6.43  0.26
+13 013    G260.4-03.4 125.54 -43.00  0.22
+14 014    G272.2-03.2 136.71 -52.12  0.16
+15 015    G296.5+10.0 182.42 -52.42  0.09
+16 016    G296.7-00.9 178.89 -63.11  0.15
+17 017    G299.2-02.9 183.80 -65.50  0.18
+18 018    G306.3-00.9 200.46 -63.56  0.34
+19 019    G308.4-01.4 205.35 -63.72  0.16
+20 020    G309.2-00.6 206.63 -62.90  0.43
+21 021    G315.4-02.3 220.75 -62.50  0.17
+22 022    G318.2+00.1 223.71 -59.07  0.12
+23 023    G327.4+00.4 237.08 -53.82  0.09
+24 024    G330.2+01.0 240.28 -51.57  0.50
+25 025    G332.4+00.1 243.83 -50.70  0.61
+26 026    G337.2-00.7 249.87 -47.85  0.47
+27 027    G348.7+00.3 258.48 -38.18  0.57
+28 028    G350.1-00.3 259.42 -37.40  1.11
+29 029    G352.7-00.1 261.92 -35.12  0.28
+30 Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+30 total Starburst sources read.
+Loading Source Events... (This may take a while)
+Selecting events from 621908 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% 

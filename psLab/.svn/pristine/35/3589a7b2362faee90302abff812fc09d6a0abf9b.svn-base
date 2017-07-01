@@ -1,0 +1,75 @@
+
+{
+  TCanvas *can1 = new TCanvas("can1","can1",20,20,1000,800);
+  can1->Divide(2,2,0.005,0.005);
+  can1->cd(1);
+
+  TCut zenRange = "(mZd>50 && mZd<70)";
+
+  int nBins = 50;
+  TH1D h1("h1","",nBins,0,360);
+  TH1D h2("h2","",nBins,0,360);
+  TH1D h3("h3","",nBins,0,360);
+  TH1D h4("h4","",nBins,0,360);
+
+  baseTree->Draw("mAd>>h1",zenRange);
+  h1.SetMinimum(0.);
+
+  srcTree->Draw("mAd>>h2",zenRange*TCut("OW*pow(mcEn,-2)"));
+  h2->SetLineColor(kRed);
+  h2->Scale( h1.GetSum() / h2.GetSum() );
+
+  srcTree->Draw("mAd>>h3",zenRange*TCut("OW*pow(mcEn,-3)"));
+  h3->SetLineColor(kViolet);
+  h3->Scale( h1.GetSum() / h3.GetSum() );
+
+  TTree* atmTree = LoadTree_IC40_CutA5_nugen_numu_2326_small();
+  atmTree->Draw("mAd>>h4",zenRange*TCut("OW*pow(mcEn,-3)"));
+  h4->SetLineColor(kBlue);
+  h4->Scale( h1.GetSum() / h4.GetSum() );
+
+  can1->cd(1);
+  h1->Draw();
+  h2->Draw("same");
+
+  can1->cd(2);
+  h1->Draw();
+  h3->Draw("same");
+  
+  can1->cd(3);
+  h1->Draw();
+  h4->Draw("same");
+
+  can1->cd(4);
+  h3->SetMinimum(0.);
+  h3->SetMaximum( h1.GetMaximum() );
+  h3->Draw();
+  h4->Draw("same");
+
+
+
+
+  TCanvas *can2 = new TCanvas("can2","can2");
+
+  TH1D he1("he1","",40,4,8);
+  TH1D he2("he2","",40,4,8);
+  TH1D he3("he3","",40,4,8);
+  TH1D he4("he4","",40,4,8);
+
+  baseTree->Draw("log10(mmueEn)>>he1",zenRange);
+  he1.SetMinimum(0.);
+
+  srcTree->Draw("log10(mmueEn)>>he2",zenRange*TCut("OW*pow(mcEn,-2)"),"same");
+  he2->SetLineColor(kRed);
+  he2->Scale( he1.GetSum() / he2.GetSum() );
+
+  srcTree->Draw("log10(mmueEn)>>he3",zenRange*TCut("OW*pow(mcEn,-3)"),"same");
+  he3->SetLineColor(kViolet);
+  he3->Scale( he1.GetSum() / he3.GetSum() );
+
+  atmTree->Draw("log10(mmueEn)>>he4",zenRange*TCut("OW*pow(mcEn,-3)"),"same");
+  he4->SetLineColor(kBlue);
+  he4->Scale( he1.GetSum() / he4.GetSum() );
+
+
+}

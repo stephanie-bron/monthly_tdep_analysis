@@ -1,0 +1,5 @@
+#!/bin/sh
+
+for decl in `seq -85 5 85`; do
+  ./submit_npx3.sh /net/user/jfeintzeig/2013/psLab/start.sh '"root -l -b -q root_stress_test.C('$decl')"'
+done

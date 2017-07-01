@@ -1,0 +1,188 @@
+{
+
+  double dec_arr[4] = {-2.5,10,30,70};
+
+  bool RELOAD;
+  
+  if(!RELOAD)
+    {
+      RELOAD = true;
+      
+      gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+      if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+      
+      SetPrettyStyle();
+      SetRootPalette(1);
+      
+      if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+      else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+      int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+      gROOT->ProcessLine(".L Ark.C");
+      
+      bool OPT_USEREALDATA = false;
+  
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MuEX.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_SplineMPE.C+");
+      gROOT->ProcessLine(".L RescaledSigma_IC86_MPE.C+");
+      gROOT->ProcessLine(".L TreeLoader_IC86.C");
+
+    }
+
+  gROOT->ProcessLine(".L SetDisco.C");
+  
+
+  //TCut All = "CRSigmaDeg==CRSigmaDeg";
+  TCut Hori = "((SplineMPEZr.value > 1.48352986)&&(SplineMPEZr.value < 2.26892803))";
+  TCut Vert = "(SplineMPEZr.value > 2.26892803)";
+  TCut HoriHard = "(BDT_85.0_130.0_2.0.value > 0.12)";
+  TCut VertHard = "(BDT_130.0_180.0_2.0.value > 0.12)";
+  
+  TCut Hard1 = (Hori&&(HoriHard||"(BDT_85.0_130.0_2.7.value > 0.00)"))||(Vert&&(VertHard||"(BDT_130.0_180.0_2.7.value > 0.00)"));
+  TCut Hard2 = (Hori&&(HoriHard||"(BDT_85.0_130.0_2.7.value > 0.02)"))||(Vert&&(VertHard||"(BDT_130.0_180.0_2.7.value > 0.02)"));
+  TCut Hard3 = (Hori&&(HoriHard||"(BDT_85.0_130.0_2.7.value > 0.04)"))||(Vert&&(VertHard||"(BDT_130.0_180.0_2.7.value > 0.04)"));
+  TCut Hard4 = (Hori&&(HoriHard||"(BDT_85.0_130.0_2.7.value > 0.06)"))||(Vert&&(VertHard||"(BDT_130.0_180.0_2.7.value > 0.06)"));
+  TCut Hard5 = (Hori&&(HoriHard||"(BDT_85.0_130.0_2.7.value > 0.08)"))||(Vert&&(VertHard||"(BDT_130.0_180.0_2.7.value > 0.08)"));
+  TCut Hard6 = (Hori&&(HoriHard||"(BDT_85.0_130.0_2.7.value > 0.10)"))||(Vert&&(VertHard||"(BDT_130.0_180.0_2.7.value > 0.10)"));
+  TCut Hard7 = (Hori&&(HoriHard||"(BDT_85.0_130.0_2.7.value > 0.12)"))||(Vert&&(VertHard||"(BDT_130.0_180.0_2.7.value > 0.12)"));
+  TCut Hard8 = (Hori&&(HoriHard||"(BDT_85.0_130.0_2.7.value > 0.14)"))||(Vert&&(VertHard||"(BDT_130.0_180.0_2.7.value > 0.14)"));
+  TCut Hard9 = (Hori&&(HoriHard||"(BDT_85.0_130.0_2.7.value > 0.16)"))||(Vert&&(VertHard||"(BDT_130.0_180.0_2.7.value > 0.16)"));
+  TCut Hard10 = (Hori&&(HoriHard||"(BDT_85.0_130.0_2.7.value > 0.18)"))||(Vert&&(VertHard||"(BDT_130.0_180.0_2.7.value > 0.18)"));
+
+  /*
+  TCut Hard1 = (Hori&&"(BDT_85.0_130.0_2.0.value > 0.00)")||(Vert&&"(BDT_130.0_180.0_2.0.value > 0.00)");
+  TCut Hard2 = (Hori&&"(BDT_85.0_130.0_2.0.value > 0.02)")||(Vert&&"(BDT_130.0_180.0_2.0.value > 0.02)");
+  TCut Hard3 = (Hori&&"(BDT_85.0_130.0_2.0.value > 0.04)")||(Vert&&"(BDT_130.0_180.0_2.0.value > 0.04)");
+  TCut Hard4 = (Hori&&"(BDT_85.0_130.0_2.0.value > 0.06)")||(Vert&&"(BDT_130.0_180.0_2.0.value > 0.06)");
+  TCut Hard5 = (Hori&&"(BDT_85.0_130.0_2.0.value > 0.08)")||(Vert&&"(BDT_130.0_180.0_2.0.value > 0.08)");
+  TCut Hard6 = (Hori&&"(BDT_85.0_130.0_2.0.value > 0.10)")||(Vert&&"(BDT_130.0_180.0_2.0.value > 0.10)");
+  TCut Hard7 = (Hori&&"(BDT_85.0_130.0_2.0.value > 0.12)")||(Vert&&"(BDT_130.0_180.0_2.0.value > 0.12)");
+  TCut Hard8 = (Hori&&"(BDT_85.0_130.0_2.0.value > 0.14)")||(Vert&&"(BDT_130.0_180.0_2.0.value > 0.14)");
+  TCut Hard9 = (Hori&&"(BDT_85.0_130.0_2.0.value > 0.16)")||(Vert&&"(BDT_130.0_180.0_2.0.value > 0.16)");
+  TCut Hard10 = (Hori&&"(BDT_85.0_130.0_2.0.value > 0.18)")||(Vert&&"(BDT_130.0_180.0_2.0.value > 0.18)");
+  */
+
+  vector<TString> Cuts;
+  vector<TString> CutTitles;
+  vector<double> CutBDT;
+
+
+  Cuts.push_back(Hard1.GetTitle());   CutBDT.push_back(0.00);
+  Cuts.push_back(Hard2.GetTitle());   CutBDT.push_back(0.02);
+  Cuts.push_back(Hard3.GetTitle());   CutBDT.push_back(0.04);
+  Cuts.push_back(Hard4.GetTitle());   CutBDT.push_back(0.06);
+  Cuts.push_back(Hard5.GetTitle());   CutBDT.push_back(0.08);
+  Cuts.push_back(Hard6.GetTitle());   CutBDT.push_back(0.10);
+  Cuts.push_back(Hard7.GetTitle());   CutBDT.push_back(0.12);
+  Cuts.push_back(Hard8.GetTitle());   CutBDT.push_back(0.14);
+  Cuts.push_back(Hard9.GetTitle());   CutBDT.push_back(0.16);
+  Cuts.push_back(Hard10.GetTitle());   CutBDT.push_back(0.18);
+  
+  TGraph gflux(Cuts.size());
+  TGraph gmean(Cuts.size());
+  
+  //LOOP of Cuts
+  
+  I3Ark *arkIC86 = NULL;
+  for(int iDec=3; iDec<4; iDec++)
+  {
+  cout << "Working on dec: " << dec_arr[iDec] << "\n";
+
+  for(int iCut = 0; iCut < Cuts.size(); iCut++)
+    {
+      
+     arkIC86 = new I3Ark;
+
+     //char processline[300];
+     
+     TString processline = ".x load_ark_ic86_BDT_wCut.C(*arkIC86, OPT_USEREALDATA,\""+ Cuts[iCut]+"\")";
+     cout << processline << endl;
+
+     gROOT->ProcessLine(processline.Data());
+     
+      MultiArk mark;
+      mark.AddArk(*arkIC86);
+  
+      MultiAnalysisSet* mas = dynamic_cast<MultiAnalysisSet*>(mark.psData);
+      
+      
+      
+      // Llh Function
+      NewLlhEnergy newllhIC86;
+      newllhIC86.SetUseEnergy(true);
+      newllhIC86.SetOptimizeAngleDeg(10.);
+      newllhIC86.SetOptimizeTolerance(0.01);
+      newllhIC86.SetAnalysisSet(arkIC86->psData);
+      // newllhIC86.SetMonitorLevel(2);
+      newllhIC86.SetEMaxRatioWarnOnlyOnce(true);
+
+      MultiAnalysisFn maf;
+      maf.AddAnalysisFn(&newllhIC86);
+     
+      double srcDecDeg = dec_arr[iDec];      
+      
+      
+      
+      // Set up source simulation for this declination (use r.a. = 0)
+      mark.SetPointSource(EquatorialDeg(0., srcDecDeg),  PowerLawFlux(1,-2.7));
+      maf.SetSearchCoord(EquatorialDeg(0., srcDecDeg));
+      
+      cout << "Source Set" << endl;
+      
+      
+      vector<MinuitParDef> pdv;
+      pdv.push_back( MinuitParDef("nSrc",1,0.1, 0,100) );
+      pdv.push_back( MinuitParDef("gamma",2,0.5, 1., 4) );
+      maf.SetParDefs(pdv);
+      
+      
+      DiscoveryPotential disco;
+      
+      maf.SetAnalysisSet(mark.psData);
+      
+      NewLlhEnergy_ParTranslator *pt = new NewLlhEnergy_ParTranslator;
+      pt->SetRange(1,4,31); //gamma_min, gamma_max, nBins
+      pt->SetTranslator(dynamic_cast<MultiAnalysisSet*>(mark.psData));
+      maf.SetParTranslator(pt);
+      
+      cout << "Starting Disco" << endl;
+      
+      SetDisco(disco, 15, false, 2.87e-7, 0.5);
+      
+      disco.SetAnalysisSet(arkIC86->psData);
+      disco.SetAnalysisFn(&maf);
+      disco.AnalyzeDiscoveryPotential();
+      
+      double meanSrcEv_ForDetection = disco.MeanSrcEv_ForDetection_;
+      double fluxScale = mark.psData->GetFluxScaleForNev(meanSrcEv_ForDetection);
+      //cout << "FluxScale "<< fluxScale << endl;
+      
+      cout << " Mean Src Events for Discovery: ";
+      cout << meanSrcEv_ForDetection << endl;
+      
+      cout << " Flux for Discovery: ";
+      cout << fluxScale << endl;
+
+      gflux.SetPoint(iCut, CutBDT[iCut], fluxScale);
+      gmean.SetPoint(iCut, CutBDT[iCut], meanSrcEv_ForDetection);
+      
+      
+      delete arkIC86;
+      
+
+   }
+  
+  TString filename = Form("IC86_DiscoOptimization_SoftE2.7_%f.root",srcDecDeg);
+  TFile fout(filename,"RECREATE");
+  gflux.Write("gFlux");
+  gmean.Write("gMean");
+  
+  fout.Close();
+}
+  
+  return 1;
+  
+
+}
+
+

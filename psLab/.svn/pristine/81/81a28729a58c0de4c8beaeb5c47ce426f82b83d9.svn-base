@@ -1,0 +1,303 @@
+{
+
+
+  bool RELOAD;
+  
+  if(!RELOAD)
+    {
+      RELOAD = true;
+      
+      gROOT->Macro("$LAB_MAIN_DIR/llh/loadlibs.C");
+      if (!LOADSUCCESS) { return 0.; } // stop, and signal that script failed.
+      
+      SetPrettyStyle();
+      SetRootPalette(1);
+      
+      if (1) { initialize_ran1(-55); } // seed has to be a *NEGATIVE* integer
+      else   { initialize_ran1(); }  // or, no seed = initialize to ran clock time
+      int ranSeed = get_ran1_seed(); // if you want to know what the seed was
+
+      gROOT->ProcessLine(".L Ark.C");
+      
+      bool OPT_USEREALDATA = false;
+  
+      
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC79.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaledIC59.C+");
+      gROOT->ProcessLine(".L mpfSigmaDegRescaled2.C+");
+      
+      gROOT->ProcessLine(".L TreeLoader_IC79_BDT.C");
+      gROOT->ProcessLine(".L TreeLoader_IC59_Final.C");
+      gROOT->ProcessLine(".L TreeLoader_IC40_CutA6_Fix_final.C");
+    }
+
+
+
+  TCut TrainUp = "(L3CutBool == 1 && MPE_FINAL_MUON_Zd >= 125 &&  MPE_FINAL_MUON_rlogl < 12 && MPE_Pb_FINAL_MUON_SigmaDeg < 10 && MPE_FINAL_MUON_LDirC > 100)";
+  TCut TrainHo = "(L3CutBool == 1 && MPE_FINAL_MUON_Zd >= 90 && MPE_FINAL_MUON_Zd < 125 &&  MPE_FINAL_MUON_rlogl < 12 && MPE_Pb_FINAL_MUON_SigmaDeg < 10 && MPE_FINAL_MUON_LDirC > 100)";
+  TCut Split = "!(SplitDecision==1 && L3CutBool_TT0==0 && L3CutBool_TT1==0 && L3CutBool_TT2==0)";
+
+
+  TCut BDTPS1 = (TrainUp&&"(BDT1.bdt_1 > 0.12)")||(TrainHo&&"(BDT2.bdt_2 > 0.12)");
+  TCut BDTPS2 = (TrainUp&&"(BDT3.bdt_1 > 0.115)")||(TrainHo&&"(BDT4.bdt_2 > 0.115)");
+  TCut BDTPS3 = (TrainUp&&"(BDT1.bdt_1 > 0.125)")||(TrainHo&&"(BDT2.bdt_2 > 0.125)");
+  TCut BDTPS4 = (TrainUp&&"(BDT3.bdt_1 > 0.12)")||(TrainHo&&"(BDT4.bdt_2 > 0.12)");
+  TCut BDTPS6 = "1";
+  TCut BDTPS5 = (TrainUp&&"(BDT3.bdt_1 > 0.115 && BDT1.bdt_1 > 0.115)")||(TrainHo&&"(BDT4.bdt_2 > 0.115 && BDT2.bdt_2 > 0.115)");
+  TCut BDTPS7 = (TrainUp&&"(BDT3.bdt_1 > 0.12 && BDT1.bdt_1 > 0.12)")||(TrainHo&&"(BDT4.bdt_2 > 0.12 && BDT2.bdt_2 > 0.12)");
+  TCut BDTPS8 = (TrainUp&&"(BDT3.bdt_1 > 0.125 && BDT1.bdt_1 > 0.125)")||(TrainHo&&"(BDT4.bdt_2 > 0.125 && BDT2.bdt_2 > 0.125)");
+  TCut BDTPS9 = (TrainUp&&"(BDT3.bdt_1 > 0.13 && BDT1.bdt_1 > 0.13)")||(TrainHo&&"(BDT4.bdt_2 > 0.13 && BDT2.bdt_2 > 0.13)");
+ 
+
+
+  TCut BDTPS = BDTPS1||BDTPS2;
+  
+  vector<TString> Cuts;
+  vector<TString> CutTitles;
+  vector<TH1D> hDetectFlux;
+
+
+  Cuts.push_back(BDTPS1.GetTitle());   CutTitles.push_back("Hard-0.12");
+  Cuts.push_back(BDTPS2.GetTitle());   CutTitles.push_back("Soft-0.115");
+  Cuts.push_back(BDTPS3.GetTitle());   CutTitles.push_back("Hard-0.125");
+  Cuts.push_back(BDTPS4.GetTitle());   CutTitles.push_back("Soft-0.12");
+  Cuts.push_back(BDTPS6.GetTitle());   CutTitles.push_back("None");
+  Cuts.push_back(BDTPS5.GetTitle());   CutTitles.push_back("All-0.115");
+  Cuts.push_back(BDTPS7.GetTitle());   CutTitles.push_back("All-0.12");  
+  Cuts.push_back(BDTPS8.GetTitle());   CutTitles.push_back("All-0.125");
+  Cuts.push_back(BDTPS9.GetTitle());   CutTitles.push_back("All-0.13");
+  
+
+
+  I3Ark arkIC79;
+  gROOT->ProcessLine(".x load_ark_ic79_BDT.C(arkIC79, OPT_USEREALDATA)");
+  
+  
+  NewLlhEnergy newllhIC79;
+  newllhIC79.SetUseEnergy(true);
+  newllhIC79.SetOptimizeAngleDeg(10.);
+  newllhIC79.SetOptimizeTolerance(0.01);
+  //newllhIC79.SetMonitorLevel(0);
+  newllhIC79.SetAnalysisSet(arkIC79.psData);
+  
+  
+  DiscoveryPotential disco;
+  
+  gROOT->ProcessLine(".L SetDisco.C");
+  // parameters:  loops, optMedianUpperLimit,  significance,  power);
+  SetDisco(disco, 20, false, 2.87e-7, 0.5);
+  // SetDisco(disco, 30, true, 0.5, 0.9);
+  
+  cout<< "Loading... " << endl;
+  
+  /*gROOT->ProcessLine(".L DetectionOptimization.C");
+  
+  DetectionOptimization dz;
+  dz.searchDecDegMin = -85.;   //(skip any bins beyond this range);
+  dz.searchDecDegMax = +85.;   //(skip any bins beyond this range);
+  dz.nBins = 40;
+
+  dz.Execute(arkIC79, newllhIC79, disco, PowerLawFlux(1,-2), Cuts, CutTitles);
+  
+  // dz.Write("TEST.root");
+  */
+
+  cout << " Number of Cuts: " << Cuts.size() << endl;
+  
+  
+  
+  //LOOP of Cuts
+  
+  for(int iCut = 0; iCut < Cuts.size(); iCut++)
+    {
+      cout << "** CUT " << iCut << ": " << Cuts[iCut] << " with title " <<  CutTitles[iCut] << " **" << endl;
+      
+      arkIC79.evLoader.ResetCuts();
+      
+      arkIC79.evLoader.AddCut(Split);
+
+      arkIC79.evLoader.AddCut(Cuts[iCut]);
+     
+      //
+      // LOAD EVENTS, SET UP ENERGY PDFs
+      // 
+      
+      // Variable names needed for eProb below
+      TString recoZenRadName = "mZr"; 
+      TString energyVar = "log10(mueEn)";
+
+      
+      cout << "Loading Background Events: " 
+	   << arkIC79.evLoader.GetBkgTree()->GetTitle() << endl;
+      cout << "Using cut: " << arkIC79.evLoader.GetCuts().GetTitle() << endl;
+      arkIC79.evLoader.SetMonitor(true);
+      arkIC79.evLoader.LoadBkgEvents(arkIC79.baseEvents);
+      
+
+      ZenithEnergyProb* zen_eProb = new ZenithEnergyProb();
+      
+      cout << "Filling Energy PDFs:\n";
+      zen_eProb->SetSourceZenWidthDeg( arkIC79.sourceZenWidthDeg);
+      zen_eProb->SetName_recoZenith_rad(recoZenRadName);
+      
+      vector<double> zenMinDegVect;
+      
+      // Fill vector with bin edges that match "CutDMS" bin edges
+      // 0 - 90  zen added
+      double tempBot=1;
+      for(int i = 0; i < 21; i++){
+	//  for(int i=0; i<19;i++){
+	//cout << tempBot << " " << acos(tempBot)*TMath::RadToDeg() << endl;
+	zenMinDegVect.push_back(acos(tempBot)*TMath::RadToDeg());
+	tempBot-=0.05;
+      }
+      
+
+      //zenMinDegVect.push_back(105.00); //? Follow Chad's example
+      zenMinDegVect.push_back(110.00); // ~acos(-0.33)
+      zenMinDegVect.push_back(132.00); // ~acos(-0.67)
+      zenMinDegVect.push_back(180.);
+      
+      zen_eProb->SetZenithBandsDeg(zenMinDegVect);
+      
+      zen_eProb->SetLoadModeNew(true); // true is now faster
+      
+      if (energyVar == "log10(mueEn)") {
+	int nBackFill = 35; // don't backfill previous bins
+	zen_eProb->SetEnergyGammaRangeAndBackFill(40,2.,9., 30,1.,4., nBackFill);
+      }
+
+      zen_eProb->SetTableBkg(arkIC79.baseEvents);
+
+
+      TStopwatch ts;
+      zen_eProb->SetTableGamma(arkIC79.evLoader.GetSourceTree(), arkIC79.evLoader.GetCuts(), energyVar);
+      ts.Print();
+      
+      
+      arkIC79.eProb = zen_eProb;
+      
+      // This seems to be okay for ~ 5000 events or more:
+      // 1. deg smoothing and 180 declination maps (e.g. 1 deg binning)
+      
+      //arkIC79.decBkgProb.Initialize(180, 1);
+      arkIC79.decBkgProb.SetBaseDecMap(arkIC79.baseEvents);
+      
+      psData = new I3Analysis();
+      
+      psData->SetBkgSpaceProb(arkIC79.decBkgProb);
+      psData->SetBaseEvents(arkIC79.baseEvents);
+      psData->SetEnergyProb(*(arkIC79.eProb));
+      
+      psData->GenerateDataSet_with_nSrcEvents(0);
+	
+      arkIC79.psData = psData;
+      
+        // Set Up Histograms
+  
+      TString xLabel;
+      xLabel = "sin(Dec.)";
+      
+      int nBins = 20;
+      double xMin = -1.;
+      double xMax = +1.;
+      double searchDecDegMin = 0.;
+      double searchDecDegMax = 90.;
+            
+
+      TH1D *hDet = new TH1D("hDet", CutTitles[iCut]+" ; "+xLabel, nBins, xMin, xMax);
+      
+      //
+      // MAIN LOOP
+      //
+      
+      for (int iDec=1; iDec<=nBins; ++iDec) {
+	
+	// determine what the next source declination is, depending on how
+	// we constructed our histogram
+	double srcDecDeg;
+	srcDecDeg = asin(hDet->GetBinCenter(iDec))*TMath::RadToDeg();
+	
+	if (srcDecDeg < searchDecDegMin) { 
+	  cout << "Skipping srcDec=" << srcDecDeg;
+	  cout << " < searchDecDegMin=" << searchDecDegMin << endl;
+	  continue;
+	}
+	if (srcDecDeg > searchDecDegMax) { 
+	  cout << "Skipping srcDec=" << srcDecDeg;
+	  cout << " > searchDecDegMax=" << searchDecDegMax << endl;
+	  continue; 
+	}
+	
+	
+	// Set up source simulation for this declination (use r.a. = 0)
+	arkIC79.SetPointSource(EquatorialDeg(0., srcDecDeg),  PowerLawFlux(1,-2));
+	
+	cout << "Source Declination: " << arkIC79.mySrcLocation.GetDec() << " deg\n";
+	double meanSrcEv_ForInitialFlux = arkIC79.psData->GetMeanSrcNev();
+	cout << "  Mean Src Events for Init. Flux: ";
+	cout << meanSrcEv_ForInitialFlux << endl;
+	
+	arkIC79.psData->GenerateDataSet_with_nSrcEvents(0); 
+	
+	
+	newllhIC79.SetAnalysisSet(arkIC79.psData);
+	newllhIC79.SetSearchCoord(arkIC79.mySrcLocation);
+	
+	disco.SetAnalysisSet(arkIC79.psData);
+	disco.SetAnalysisFn(&newllhIC79);
+	
+	disco.AnalyzeDiscoveryPotential();
+	
+	double meanSrcEv_ForDetection = disco.MeanSrcEv_ForDetection_;
+	double fluxScale = 
+	  arkIC79.psData->GetFluxScaleForNev(meanSrcEv_ForDetection);
+	
+	
+	hDet->SetBinContent(iDec, fluxScale);
+
+	cout << "Detection Power " << disco.GetDetectionPower()*100 << "%\n"; 
+	cout << "Detection Significance "<<disco.GetDetectionSignificance()<< endl;
+	cout << "Mean signal events detectable: " <<meanSrcEv_ForDetection << endl;
+	cout << "Flux scale relative to model is: " << fluxScale << endl;
+	cout << "Running average fluxScale: "<< hDet->GetSum()/iDec << endl;
+      }
+
+      
+      hDetectFlux.push_back(*hDet);
+      
+      delete hDet;
+      
+    }
+  
+  
+  TFile *fileOutput = new TFile("IC79_DiscoOpt.root", "RECREATE");
+  if (fileOutput->IsZombie()) {
+    cout << "Try using 'recreate' option?\n";
+    return false; // no file saved
+  }
+  
+  cout << "Writing file" << endl;
+  cout << "  hDetectFlux for different cuts\n";
+  TString name;
+  
+  for (int iH = 0; iH < hDetectFlux.size(); iH++)
+    {
+
+      int id = iH;
+      name = "hDetectFlux_";
+      name += TStringify(id);
+      
+      hDetectFlux[iH].Write(name);
+    }
+  
+  fileOutput->Close();
+  
+  
+  
+  return 1;
+  
+
+}
+
+

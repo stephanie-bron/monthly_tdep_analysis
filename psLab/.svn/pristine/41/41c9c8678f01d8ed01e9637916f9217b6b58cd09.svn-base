@@ -1,0 +1,116 @@
+/*
+#include "TH1D.h"
+#include "TStopwatch.h"
+#include "classes_EquatorialDeg.h"
+#include "classes_I3.h"
+#include "LlhFunctions.h"
+*/
+
+class AllSkyBasic_compile {
+ public:
+  bool optMonitor_;
+  
+  double decDegMax_;
+  double raDegMax_;
+  double resultMax_;
+  double nsBest_;
+  double gammaBest_;
+  double llhBest_;
+
+  AllSkyBasic_compile() { }
+  virtual ~AllSkyBasic_compile() { }
+
+  void Fill(I3Analysis& psData, AnalysisLlh& llhFn, double resultThreshold,
+	    TH2D* hAllSkyCoarse, TH2D* hAllSkyFine)  {
+
+    resultMax_ = 0.;
+
+    TStopwatch ts1;
+    for (int iDec=1; iDec<= hAllSkyCoarse->GetNbinsY(); ++iDec) {
+      double decDeg = hAllSkyCoarse->GetYaxis()->GetBinCenter(iDec);
+      if (optMonitor_) { cout << decDeg << "  " << flush; }
+
+      for (int iRa=1; iRa<= hAllSkyCoarse->GetNbinsX(); ++iRa) {
+	double raDeg = hAllSkyCoarse->GetXaxis()->GetBinCenter(iRa);
+      
+	EquatorialDeg searchLocation(raDeg,decDeg);
+	llhFn.SetAnalysis(psData,searchLocation);
+	llhFn.MaximizeLlh();
+
+	double result = -log10(llhFn.GetEstProb());
+	hAllSkyCoarse->SetBinContent(iRa,iDec, result);
+
+	if (result>resultMax_) { 
+	  resultMax_ = result;
+	  decDegMax_ = decDeg;
+	  raDegMax_ = raDeg;
+	  nsBest_ = llhFn.GetPar(0);
+	  gammaBest_ = llhFn.GetPar(1);
+	  llhFn.Get_logLambdaBest();
+	  llhBest_ = llhFn.Get_logLambdaBest();
+	}
+      }
+    }
+    if (optMonitor_) { cout << endl; }
+    ts1.Print();
+
+    cout << "Ra: " << raDegMax_ << " , Dec: " << decDegMax_;
+    cout << "   Result Max:  " << resultMax_ << endl;
+    cout << "   llhBest =  " << llhBest_ << endl;
+    cout << "   ns = " << nsBest_ << "   gamma = " << gammaBest_ << endl;
+
+
+
+    // keep same resultMax from above:
+    // in case no coarse bin is over threshold, the max results from above
+    // still apply
+
+    TStopwatch ts2;
+
+    for (int iDec=1; iDec<= hAllSkyFine->GetNbinsY(); ++iDec) {
+      double decDeg = hAllSkyFine->GetYaxis()->GetBinCenter(iDec);
+      if (optMonitor_) { cout << decDeg << "  " << flush; }
+
+      for (int iRa=1; iRa<= hAllSkyFine->GetNbinsX(); ++iRa) {
+	double raDeg = hAllSkyFine->GetXaxis()->GetBinCenter(iRa);
+
+	double result;
+
+	// Check if follow-up required
+	double coarseResult = 
+	  hAllSkyCoarse->GetBinContent( hAllSkyCoarse->FindBin(raDeg,decDeg) );
+
+	if (coarseResult > resultThreshold) {
+	  EquatorialDeg searchLocation(raDeg,decDeg);
+	  llhFn.SetAnalysis(psData,searchLocation);
+	  llhFn.MaximizeLlh();
+	  result = -log10(llhFn.GetEstProb());
+
+	  if (result>resultMax_) { 
+	    /*
+	    resultMax_ = result;
+	    decDegMax_ = decDeg;
+	    raDegMax_ = raDeg;
+	    nsBest_ = llhFn.GetPar(0);
+	    gammaBest_ = llhFn.GetPar(1);
+	    llhBest_ = llhFn.Get_logLambdaBest();
+	    */
+	  }
+	} else {
+	  result = coarseResult;
+	}
+
+	hAllSkyFine->SetBinContent(iRa, iDec, result);
+      }
+    }
+
+    if (optMonitor_) { cout << endl; }
+    ts2.Print();
+
+    cout << "Ra: " << raDegMax_ << " , Dec: " << decDegMax_;
+    cout << "   Result Max:  " << resultMax_ << endl;
+    cout << "   llhBest =  " << llhBest_ << endl;
+    cout << "   ns = " << nsBest_ << "   gamma = " << gammaBest_ << endl;
+  }
+
+};

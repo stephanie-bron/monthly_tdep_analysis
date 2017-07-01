@@ -1,0 +1,24 @@
+{
+  
+  TFile *teststatfile = TFile::Open("teststat_finebin.root");
+  
+  TH1D *hTestStatistic = (TH1D*)teststatfile.Get("hTestStatistic");
+  
+  ofstream outfile;
+  outfile.open("Teststatvalues.txt");
+ 
+for(int i=0;i<1000;i++)
+  
+{
+  
+  outfile<<"\n"<<hTestStatistic->GetBinContent(i);
+  
+  
+   
+}
+
+outfile.close();
+
+
+
+}

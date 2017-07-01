@@ -1,0 +1,77 @@
+from ROOTtoPython import GraphToLine
+import ROOT
+from pylab import *
+
+fig = plt.figure()
+fig.subplots_adjust(bottom=0.13)
+ax = fig.add_subplot(111)
+
+#ax = subplot(111)
+
+rootfilesens = sys.argv[1]
+rootfiledisc = sys.argv[2]
+
+rootfilesenswm = sys.argv[3]
+rootfilediscwm = sys.argv[4]
+
+
+
+
+
+fMUL = ROOT.TFile(rootfilesens)
+gmul= fMUL.Get("Sensitivity")
+
+fdisco = ROOT.TFile(rootfiledisc)
+gdisco= fdisco.Get("discpot")
+
+wmMUL = ROOT.TFile(rootfilesenswm)
+wmmulv = wmMUL.Get("sensit")
+
+wmDISCO = ROOT.TFile(rootfilediscwm)
+wmdisco = wmDISCO.Get("discpot")
+
+declination = float(sys.argv[5])
+
+fMULInt = ROOT.TFile("../ic79/IC79_mulE2_allsky_v19.root")
+fDiscoInt = ROOT.TFile("../ic79/IC79_discoE2_allsky_v19.root")
+
+hMUL = fMULInt.Get("hDetectEvents")
+hDisco = fDiscoInt.Get("hDetectEvents")
+
+nbin = hMUL.GetXaxis().FindBin(sin(declination*np.pi/180.))
+
+mulInt = hMUL.GetBinContent(nbin)
+
+nbin = hDisco.GetXaxis().FindBin(sin(declination*np.pi/180.))
+discoInt = hDisco.GetBinContent(nbin)
+
+
+
+#GraphToLine(gmulsS, ax, lw=2, ls="--", color="blue", label="Munich $\delta = -16^{\circ}$")
+
+
+#ax.axhline(y=mulInt, lw=2, ls="--", color ="black", label="IC79+IC59+IC40 Time-integrated MUL (90% C.L.)")
+ax.axhline(y=discoInt, lw=3, ls=":", color ="black", label="IC79+IC59+IC40 Time-integrated Disco (5$\sigma$)")
+
+#GraphToLine(gmul, ax, lw=2, color="red", label="IC79+IC59+IC40 Periodic MUL (90%C.L.)")
+GraphToLine(gdisco, ax, lw=2, color="blue", label="IC79+IC59+IC40 Disco (5$\sigma$) Injection 36.8 day period, llh 36.8 day period")
+#GraphToLine(wmmulv, ax, lw=2, color="green", label = "IC79+IC59+IC40 Periodic MUL (90%C.L.), without marginalization")
+GraphToLine(wmdisco, ax, lw=2, color = "brown", label = "IC79+IC59+IC40 Disco (5$\sigma$), Injection 36.6 day period, llh 36.8 day period")
+
+
+ax.set_ylabel("Number of events", fontsize=25)
+#ax.set_ylabel("Fluence (GeV/cm) for sensitivity", fontsize=20)
+#ax.set_xlabel("log$_{10}$ [$\sigma_{w}$ (days)] ", fontsize=20)
+ax.set_xlabel("$\sigma_{w}$ (As a fraction of period)", fontsize=25)
+ax.set_xscale("log")
+ax.set_ylim(0, 25)
+ax.set_xlim(1e-2, 1)
+grid()
+legend(loc="upper left")
+
+outfile=rootfiledisc.replace(".root", ",png")
+
+savefig(outfile)
+
+show()
+

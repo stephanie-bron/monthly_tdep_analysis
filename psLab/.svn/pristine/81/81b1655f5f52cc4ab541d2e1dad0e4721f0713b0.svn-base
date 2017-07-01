@@ -1,0 +1,322 @@
+Thu Apr 21 20:58:08 CDT 2011
+node025
+
+Welcome to the lab.
+   LAB_MAIN_DIR = /net/user/naoko/psLab
+   LAB_LIB_DIR  = /net/user/naoko/psLab/lib/RHEL_5.0_amd64
+   LAB_CORE_DIR = /net/user/naoko/psLab/labcore
+   LAB_PRELOAD  = /net/user/naoko/psLab/labcore/preload.C
+   LAB_DATA_DIR = /net/user/jdumm/std-processing/releases/V03-02-00/release64/CutA5_v3
+   ICETRAY_ENV  = /net/user/naoko/meta-projects/std-processing/candidates/10-12-00-RC4/build/env-shell.sh
+
+
+Processing stacking/Clusters/Track_multi_4059_modelA.C...
+Preload: /net/user/naoko/psLab/labcore/preload.C
+Building/Loading:  rootExt/public
+Building/Loading:  fluxus/public
+Loading libcoordinate-service
+
+LAB_COORDINATE_PROJECT not specified....
+Will use coordinate-service as default.
+(See 'labcore/start_lab.sh' or 'llh/loadlibs.C' for how to change)
+
+Building/Loading:  llh/public
+Building/Loading:  llhTimeDep/public
+
+Initializing ran1 with random seed = -55
+
+-----  LOADING IC-40  -----
+Will load scrambled times for Base Data.
+Livetime (Days): 375.539
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 36900 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% (36900 entries in tree passed cuts)
+Background set has 36900 events.
+Filling Energy PDFs:
+Reading times from file '/net/user/mfbaker/lab/IC40/HugeListOfIC40TimesNewMethod1.txt' ... 450000 times read.
+Earliest MJD: 54562.4   Latest MJD: 54971
+----- IC-40 Loaded -----
+
+-----  LOADING IC-59 BDT  -----
+Will load scrambled times for Base Data.
+Livetime (Days): 348.138
+Configuring Source Event Sample...
+
+ Only using 1/10th the full simulation statistics! 
+
+Loading Background Events: 
+Using cut: 1
+Selecting events from 107569 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (107569 entries in tree passed cuts)
+Background set has 107569 events.
+Filling Energy PDFs:
+Real time 0:00:32, CP time 8.580
+NBins: 90 12 0
+Reading times from file '/net/user/mfbaker/proto_multi/macro_llh/ic59/HugeListOfIC59TimesNewMethod.txt' ... 1000000 times read.
+Earliest MJD: 54971.2   Latest MJD: 55347.3
+----- IC-59 BDT Loaded -----
+Setting up Stacking Analysis Sources (Galaxy Clusters)...
+Using CG Spatial Model: A
+Loading Broken Power Laws for each source, fit directly from simulated spectra sent by Murase
+Fitting: stacking/Clusters/DataforIceCube/Virgo/NeuFluxA
+log10(Enu)=-0.001561, log10(NuMuFlux)=-1.162152e+01
+log10(Enu)=0.048438, log10(NuMuFlux)=-1.170003e+01
+log10(Enu)=0.098440, log10(NuMuFlux)=-1.177805e+01
+log10(Enu)=0.148439, log10(NuMuFlux)=-1.185570e+01
+log10(Enu)=0.198440, log10(NuMuFlux)=-1.193309e+01
+ FCN=12.5667 FROM MIGRAD    STATUS=CONVERGED     183 CALLS         184 TOTAL
+                     EDM=3.43311e-09    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  p0          -1.12270e+01   1.50504e-01   1.19633e-04  -5.20350e-04
+   2  p1          -1.95487e+00   2.99290e-02   1.97385e-05  -4.57617e-03
+   3  p2          -3.63437e+00   1.90135e-01   1.70559e-04   1.15088e-04
+   4  p3           8.71865e+00   1.89781e-01   1.49983e-04   5.47353e-06
+Fitting: stacking/Clusters/DataforIceCube/Coma/NeuFluxA
+log10(Enu)=-0.009918, log10(NuMuFlux)=-1.342640e+01
+log10(Enu)=0.040084, log10(NuMuFlux)=-1.350491e+01
+log10(Enu)=0.090082, log10(NuMuFlux)=-1.358294e+01
+log10(Enu)=0.140080, log10(NuMuFlux)=-1.366059e+01
+log10(Enu)=0.190082, log10(NuMuFlux)=-1.373797e+01
+ FCN=12.5704 FROM MIGRAD    STATUS=CONVERGED     208 CALLS         209 TOTAL
+                     EDM=3.00621e-12    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  p0          -1.30551e+01   1.50714e-01   1.19650e-04  -3.42952e-05
+   2  p1          -1.95249e+00   3.01875e-02   1.98039e-05  -1.72425e-04
+   3  p2          -3.60693e+00   1.84678e-01   1.67014e-04  -1.78044e-06
+   4  p3           8.67377e+00   1.90292e-01   1.50770e-04  -6.23512e-06
+Fitting: stacking/Clusters/DataforIceCube/Ophiuchus/NeuFluxA
+log10(Enu)=-0.011993, log10(NuMuFlux)=-1.308019e+01
+log10(Enu)=0.038008, log10(NuMuFlux)=-1.315870e+01
+log10(Enu)=0.088008, log10(NuMuFlux)=-1.323673e+01
+log10(Enu)=0.138006, log10(NuMuFlux)=-1.331438e+01
+log10(Enu)=0.188006, log10(NuMuFlux)=-1.339176e+01
+ FCN=12.5704 FROM MIGRAD    STATUS=CONVERGED     175 CALLS         176 TOTAL
+                     EDM=2.80423e-09    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  p0          -1.27129e+01   1.50659e-01   1.19650e-04   1.61126e-04
+   2  p1          -1.95249e+00   3.01875e-02   1.98100e-05  -1.84166e-03
+   3  p2          -3.60693e+00   1.84679e-01   1.67010e-04   4.96620e-05
+   4  p3           8.67169e+00   1.90293e-01   1.50770e-04  -1.17242e-04
+Fitting: stacking/Clusters/DataforIceCube/Perseus/NeuFluxA
+log10(Enu)=-0.007705, log10(NuMuFlux)=-1.300900e+01
+log10(Enu)=0.042296, log10(NuMuFlux)=-1.308751e+01
+log10(Enu)=0.092296, log10(NuMuFlux)=-1.316554e+01
+log10(Enu)=0.142296, log10(NuMuFlux)=-1.324319e+01
+log10(Enu)=0.192294, log10(NuMuFlux)=-1.332058e+01
+ FCN=12.5667 FROM MIGRAD    STATUS=CONVERGED     178 CALLS         179 TOTAL
+                     EDM=1.34522e-10    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  p0          -1.26265e+01   1.50345e-01   1.19633e-04  -2.62508e-05
+   2  p1          -1.95487e+00   2.99290e-02   1.97558e-05   4.20463e-04
+   3  p2          -3.63437e+00   1.90135e-01   1.70583e-04  -5.69846e-06
+   4  p3           8.71250e+00   1.89781e-01   1.49947e-04   5.92546e-05
+Fitting: stacking/Clusters/DataforIceCube/Centaurus/NeuFluxA
+log10(Enu)=-0.004923, log10(NuMuFlux)=-1.232417e+01
+log10(Enu)=0.045076, log10(NuMuFlux)=-1.240267e+01
+log10(Enu)=0.095079, log10(NuMuFlux)=-1.248070e+01
+log10(Enu)=0.145078, log10(NuMuFlux)=-1.255835e+01
+log10(Enu)=0.195077, log10(NuMuFlux)=-1.263574e+01
+ FCN=12.5667 FROM MIGRAD    STATUS=CONVERGED     162 CALLS         163 TOTAL
+                     EDM=8.69841e-12    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  p0          -1.19362e+01   1.50417e-01   1.19633e-04   4.67764e-05
+   2  p1          -1.95487e+00   2.99290e-02   1.97478e-05   2.08298e-04
+   3  p2          -3.63437e+00   1.90135e-01   1.70584e-04   2.77203e-05
+   4  p3           8.71528e+00   1.89781e-01   1.49949e-04   3.20061e-05
+<TCanvas::MakeDefCanvas>: created default TCanvas with name c1
+Src at Zenith = 102.72 ,  selecting events in range ( 100.72 , 104.72 )
+Selecting events from 77722 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Selected 33880 events.
+Src at Zenith = 102.72 ,  selecting events in range ( 102.22 , 103.22 )
+Selecting events from 257836 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Selected 30680 events.
+Src at Zenith = 117.939 ,  selecting events in range ( 115.939 , 119.939 )
+Selecting events from 77722 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Selected 17240 events.
+Src at Zenith = 117.939 ,  selecting events in range ( 117.439 , 118.439 )
+Selecting events from 257836 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Selected 16300 events.
+Src at Zenith = 66.6366 ,  selecting events in range ( 64.6366 , 68.6366 )
+Selecting events from 77722 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Selected 77680 events.
+Src at Zenith = 117.939 ,  selecting events in range ( 117.439 , 118.439 )
+Selecting events from 257836 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Selected 16300 events.
+Src at Zenith = 131.515 ,  selecting events in range ( 129.515 , 133.515 )
+Selecting events from 77722 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Selected 10960 events.
+Src at Zenith = 131.515 ,  selecting events in range ( 131.015 , 132.015 )
+Selecting events from 257836 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Selected 10420 events.
+Src at Zenith = 48.6913 ,  selecting events in range ( 46.6913 , 50.6913 )
+Selecting events from 77722 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Selected 41780 events.
+Src at Zenith = 48.6913 ,  selecting events in range ( 48.1913 , 49.1913 )
+Selecting events from 257836 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% Selected 43640 events.
+
+Calculating Stacking Weight vs Gamma Tables...
+ Selecting events from 77722 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (77722 entries in tree passed cuts)
+Src at Zenith = 102.72 ,  selecting events with MCZenith in range ( 100.72 , 104.72 )
+Selected 1694 events.
+Src at Zenith = 117.939 ,  selecting events with MCZenith in range ( 115.939 , 119.939 )
+Selected 862 events.
+Src at Zenith = 66.6366 ,  selecting events with MCZenith in range ( 64.6366 , 68.6366 )
+Selected 3884 events.
+Src at Zenith = 131.515 ,  selecting events with MCZenith in range ( 129.515 , 133.515 )
+Selected 548 events.
+Src at Zenith = 48.6913 ,  selecting events with MCZenith in range ( 46.6913 , 50.6913 )
+Selected 2089 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.9080 0.0174 0.0000 0.0746 0.0000 
+01:  0.9117 0.0177 0.0000 0.0706 0.0000 
+02:  0.9151 0.0180 0.0000 0.0669 0.0000 
+03:  0.9183 0.0182 0.0000 0.0635 0.0000 
+04:  0.9213 0.0183 0.0000 0.0604 0.0000 
+05:  0.9241 0.0184 0.0000 0.0575 0.0000 
+06:  0.9268 0.0184 0.0000 0.0548 0.0000 
+07:  0.9296 0.0183 0.0000 0.0521 0.0000 
+08:  0.9323 0.0181 0.0000 0.0496 0.0000 
+09:  0.9351 0.0178 0.0000 0.0471 0.0000 
+10:  0.9379 0.0173 0.0000 0.0447 0.0001 
+11:  0.9408 0.0168 0.0001 0.0423 0.0001 
+12:  0.9437 0.0162 0.0001 0.0399 0.0002 
+13:  0.9466 0.0155 0.0001 0.0375 0.0003 
+14:  0.9495 0.0148 0.0002 0.0351 0.0005 
+15:  0.9522 0.0140 0.0003 0.0327 0.0007 
+16:  0.9548 0.0132 0.0005 0.0304 0.0012 
+17:  0.9570 0.0124 0.0007 0.0281 0.0018 
+18:  0.9588 0.0116 0.0011 0.0258 0.0028 
+19:  0.9600 0.0108 0.0016 0.0235 0.0041 
+20:  0.9603 0.0100 0.0023 0.0212 0.0061 
+21:  0.9596 0.0092 0.0033 0.0189 0.0089 
+22:  0.9575 0.0085 0.0046 0.0166 0.0127 
+23:  0.9537 0.0077 0.0065 0.0144 0.0178 
+24:  0.9477 0.0069 0.0089 0.0121 0.0243 
+25:  0.9393 0.0061 0.0121 0.0100 0.0324 
+26:  0.9280 0.0054 0.0163 0.0081 0.0423 
+27:  0.9134 0.0046 0.0217 0.0063 0.0540 
+28:  0.8952 0.0039 0.0287 0.0049 0.0674 
+29:  0.8728 0.0032 0.0377 0.0036 0.0827 
+Selecting events from 257836 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (257836 entries in tree passed cuts)
+Src at Zenith = 102.72 ,  selecting events with MCZenith in range ( 102.22 , 103.22 )
+Selected 1534 events.
+Src at Zenith = 117.939 ,  selecting events with MCZenith in range ( 117.439 , 118.439 )
+Selected 815 events.
+Src at Zenith = 66.6366 ,  selecting events with MCZenith in range ( 66.1366 , 67.1366 )
+Selected 3187 events.
+Src at Zenith = 131.515 ,  selecting events with MCZenith in range ( 131.015 , 132.015 )
+Selected 521 events.
+Src at Zenith = 48.6913 ,  selecting events with MCZenith in range ( 48.1913 , 49.1913 )
+Selected 2182 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.9457 0.0128 0.0000 0.0415 0.0000 
+01:  0.9451 0.0131 0.0000 0.0418 0.0000 
+02:  0.9446 0.0133 0.0000 0.0420 0.0000 
+03:  0.9442 0.0136 0.0000 0.0422 0.0000 
+04:  0.9439 0.0138 0.0000 0.0423 0.0000 
+05:  0.9438 0.0140 0.0000 0.0422 0.0000 
+06:  0.9437 0.0142 0.0000 0.0421 0.0000 
+07:  0.9439 0.0143 0.0000 0.0418 0.0000 
+08:  0.9442 0.0145 0.0000 0.0413 0.0000 
+09:  0.9447 0.0145 0.0000 0.0407 0.0000 
+10:  0.9455 0.0145 0.0000 0.0398 0.0001 
+11:  0.9465 0.0145 0.0001 0.0388 0.0001 
+12:  0.9478 0.0143 0.0001 0.0375 0.0002 
+13:  0.9493 0.0141 0.0001 0.0361 0.0004 
+14:  0.9510 0.0138 0.0002 0.0344 0.0006 
+15:  0.9527 0.0134 0.0003 0.0326 0.0009 
+16:  0.9545 0.0130 0.0005 0.0306 0.0015 
+17:  0.9562 0.0124 0.0007 0.0284 0.0022 
+18:  0.9575 0.0118 0.0011 0.0261 0.0034 
+19:  0.9583 0.0112 0.0016 0.0238 0.0051 
+20:  0.9582 0.0105 0.0024 0.0214 0.0075 
+21:  0.9570 0.0097 0.0034 0.0190 0.0110 
+22:  0.9540 0.0088 0.0048 0.0166 0.0157 
+23:  0.9488 0.0079 0.0068 0.0143 0.0222 
+24:  0.9407 0.0070 0.0093 0.0120 0.0309 
+25:  0.9288 0.0061 0.0127 0.0099 0.0425 
+26:  0.9123 0.0052 0.0171 0.0080 0.0574 
+27:  0.8906 0.0043 0.0226 0.0063 0.0762 
+28:  0.8632 0.0035 0.0293 0.0049 0.0991 
+29:  0.8301 0.0028 0.0373 0.0038 0.1261 
+Weights for Gamma=1: 0.357695 0.642305 
+Weights for Gamma=1.1: 0.335747 0.664253 
+Weights for Gamma=1.2: 0.315269 0.684731 
+Weights for Gamma=1.3: 0.296308 0.703692 
+Weights for Gamma=1.4: 0.279061 0.720939 
+Weights for Gamma=1.5: 0.263701 0.736299 
+Weights for Gamma=1.6: 0.250241 0.749759 
+Weights for Gamma=1.7: 0.238511 0.761489 
+Weights for Gamma=1.8: 0.22821 0.77179 
+Weights for Gamma=1.9: 0.218986 0.781014 
+Weights for Gamma=2: 0.210504 0.789496 
+Weights for Gamma=2.1: 0.202485 0.797515 
+Weights for Gamma=2.2: 0.194724 0.805276 
+Weights for Gamma=2.3: 0.187089 0.812911 
+Weights for Gamma=2.4: 0.179515 0.820485 
+Weights for Gamma=2.5: 0.171991 0.828009 
+Weights for Gamma=2.6: 0.164549 0.835451 
+Weights for Gamma=2.7: 0.157246 0.842754 
+Weights for Gamma=2.8: 0.150156 0.849844 
+Weights for Gamma=2.9: 0.143357 0.856643 
+Weights for Gamma=3: 0.13692 0.86308 
+Weights for Gamma=3.1: 0.130906 0.869094 
+Weights for Gamma=3.2: 0.125359 0.874641 
+Weights for Gamma=3.3: 0.120309 0.879691 
+Weights for Gamma=3.4: 0.115772 0.884228 
+Weights for Gamma=3.5: 0.111749 0.888251 
+Weights for Gamma=3.6: 0.108233 0.891767 
+Weights for Gamma=3.7: 0.105208 0.894792 
+Weights for Gamma=3.8: 0.102652 0.897348 
+Weights for Gamma=3.9: 0.100539 0.899461 
+Weights for Gamma=4: 0.0988436 0.901156 
+ark_SetDisco:
+!! disco set with:
+   Loops: 20
+   Significance: 0.48196   Power: 0.9
+ Mean Number of Source events expected for source model: 0.0439356
+ Detection Significance: 0.48196  Detection Power: 0.9
+ Mean: 1   Power: 75.4747% +/-27.777%
+ Mean: 5   Power: 87.6229% +/-24.3365%
+ Mean: 6   Power: 89.5833% +/-20.3437%
+ Mean: 6.4   Power: 90.1589% +/-16.2299%
+ Mean: 7.2   Power: 89.9643% +/-15.3002%
+ Mean: 7.4   Power: 90.1211% +/-11.0907%
+ Mean: 7.36   Power: 89.9835% +/-6.97589%
+ Mean: 7.184   Power: 89.9955% +/-4.12572%
+ Mean: 7.776   Power: 90.0067% +/-3.55469%
+ Mean: 7.696   Power: 89.9983% +/-2.20819%
+ Mean: 7.624   Power: 89.9989% +/-1.9964%
+ Mean: 7.928   Power: 89.9942% +/-1.81552%
+ Mean: 7.952   Power: 90.0086% +/-1.71194%
+ Mean: 7.968   Power: 90.0018% +/-1.64587%
+ Mean: 7.896   Power: 89.9977% +/-1.57721%
+ Mean: 7.752   Power: 90.0034% +/-1.51256%
+ Mean: 7.832   Power: 90.0024% +/-1.45602%
+ Mean: 7.784   Power: 89.9931% +/-1.39617%
+ Mean: 7.776   Power: 90.0082% +/-1.34137%
+ Mean: 7.7424   Power: 89.9992% +/-1.30615%
+Poisson Mean nSrcEv for 90+/-1.27556 % detection probability: 7.8096
+Threshold significance for detection: 0.48196
+  Flux scale relative to model is: 177.751
+You are exiting the lab.
+Fri Apr 22 02:24:41 CDT 2011
+
+**************** Scaling *************
+127.71

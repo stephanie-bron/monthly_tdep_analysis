@@ -1,0 +1,885 @@
+
+Processing Track_multi_40597986_discpot_80percent_UNBLINDING.C...
+Preload: /net/user/mrameez/psLab_Debian_64/labcore/preload.C
+
+LAB_COORDINATE_PROJECT not specified....
+Will use coordinate-service as default.
+(See 'labcore/start_lab.sh' or 'llh/loadlibs.C' for how to change)
+
+Building/Loading:  rootExt/public
+Building/Loading:  fluxus/public
+Loading libcoordinate-service
+Building/Loading:  llh/public
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/Starburst/./mpfSigmaDegRescaledIC79Sirin_C.so
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/Starburst/./mpfSigmaDegRescaledIC59_C.so
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/Starburst/./mpfSigmaDegRescaled2_C.so
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/Starburst/./RescaledSigma_IC86_MuEX_C.so
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/Starburst/./RescaledSigma_IC86_SplineMPE_C.so
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/psLab_Debian_64/lib64/llh/public//home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/Starburst/./RescaledSigma_IC86_MPE_C.so
+
+Initializing ran1 with random seed = -55
+
+-----  LOADING IC-40  -----
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 375.539
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 36900 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% (36900 entries in tree passed cuts)
+Background set has 36900 events.
+Filling Energy PDFs:
+----- IC-40 Loaded -----
+
+-----  LOADING IC-59 BDT  -----
+Loaded tree
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 348.138
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 107569 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (107569 entries in tree passed cuts)
+Background set has 107569 events.
+Filling Energy PDFs:
+Real time 0:00:38, CP time 38.210
+----- IC-59 BDT Loaded -----
+
+-----  LOADING IC-79 BDT  -----
+Loaded tree
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 316.153
+Configuring Source Event Sample...
+Loading Background Events: 
+Using cut: 1
+Selecting events from 109866 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (109866 entries in tree passed cuts)
+Background set has 109866 events.
+Filling Energy PDFs:
+Real time 0:00:42, CP time 42.070
+UNBLINDING: Using real times
+Warning in <TStreamerInfo::Compile>: Counter fNClusterRange should not be skipped from class TTree
+----- IC-79 BDT Loaded -----
+
+-----  LOADING IC-86 BDT -----
+Loaded tree
+Will load  * * * * U N B L I N D E D * * * *  Base Data!
+Livetime (Days): 332.61
+Configuring Source Event Sample...
+Rescaling using SplineMPE...
+Loading Background Events: 
+Selecting events from 138323 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (138323 entries in tree passed cuts)
+Background set has 138323 events.
+Filling Energy PDFs:
+0.9 25.8419
+0.85 31.7883
+0.8 36.8699
+0.75 41.4096
+0.7 45.573
+0.65 49.4584
+0.6 53.1301
+0.55 56.633
+0.5 60
+0.45 63.2563
+0.4 66.4218
+0.35 69.5127
+0.3 72.5424
+0.25 75.5225
+0.2 78.463
+0.15 81.3731
+0.1 84.2608
+-2.08167e-16 90
+-0.2 101.537
+-0.4 113.578
+-0.6 126.87
+-0.8 143.13
+backfill
+set table gamma
+Real time 0:01:17, CP time 77.150
+----- IC-86 BDT Loaded -----
+Setting up Stacking Analysis Sources (Starburst Galaxies)...
+Weight source simulation by 60um Flux: 1
+Weight search hypothesis by 60um Flux: 1
+000   NGC3034(M82) 148.97  69.68 1480.42
+1 001         NGC253  11.89 -25.29 967.81
+2 002        NGC4945 196.36 -49.47 625.46
+3 003   NGC5236(M83) 204.25 -29.87 265.84
+4 004   NGC1068(M77)  40.67  -0.01 196.37
+5 005          IC342  56.70  68.10 180.80
+6 006        NGC2146  94.66  78.36 146.69
+7 007        Maffei2  40.48  59.60 135.00
+8 008        NGC6946 308.72  60.15 129.78
+9 009        NGC3690 172.13  58.56 113.05
+10 010        NGC1808  76.93 -37.51 105.55
+11 011         ARP220 233.74  23.50 104.09
+12 012        NGC3256 156.96 -43.90 102.63
+13 013   NGC5194(M51) 202.47  47.20 97.42
+14 014        NGC4631 190.53  32.54 85.40
+15 015        NGC7552 349.05 -42.58 77.37
+16 016         NGC891  35.64  42.35 66.46
+17 017   NGC3627(M66) 170.06  12.99 66.31
+18 018         NGC660  25.76  13.65 65.52
+19 019        NGC1365  53.40 -36.14 64.31
+20 020        NGC2903 143.04  21.50 60.54
+21 021        NGC3628 170.07  13.59 54.80
+22 022        NGC1569  67.70  64.85 54.36
+23 023        NGC1097  41.58 -30.27 53.35
+24 024        NGC3079 150.49  55.68 50.67
+25 025        NGC4102 181.60  52.71 46.85
+26 026        NGC7331 339.27  34.42 45.00
+27 027        NGC4418 186.73  -0.88 43.89
+28 028        NGC2403 114.21  65.60 41.47
+29 029        NGC1672  71.43 -59.25 41.21
+30 030   NGC5055(M63) 198.96  42.03 40.00
+31 031   NGC4303(M62) 185.48   4.47 37.27
+32 032        NGC4666 191.29  -0.46 37.11
+33 033   NGC4826(M64) 194.18  21.68 36.70
+34 034 IRAS18293-3413 278.17 -34.19 35.71
+35 Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+35 total Starburst sources read.
+Loading Source Events... (This may take a while)
+Selecting events from 621908 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (621908 entries in tree passed cuts)
+Src at Zenith = 159.68 ,  selecting events with MCZenith in range ( 159.18 , 160.18 )
+Selected 6320 events using new ExtLoader with many dec bands.
+Selecting events from 1628617 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (1628617 entries in tree passed cuts)
+Src at Zenith = 159.68 ,  selecting events with MCZenith in range ( 159.18 , 160.18 )
+Selected 24920 events using new ExtLoader with many dec bands.
+Selecting events from 2146482 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (2146482 entries in tree passed cuts)
+Src at Zenith = 159.68 ,  selecting events with MCZenith in range ( 159.18 , 160.18 )
+Selected 30920 events using new ExtLoader with many dec bands.
+Selecting events from 1256458 entries
+0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% (1256458 entries in tree passed cuts)
+Src at Zenith = 159.68 ,  selecting events with MCZenith in range ( 159.18 , 160.18 )
+Selected 16880 events using new ExtLoader with many dec bands.
+.Src at Zenith = 64.7118 ,  selecting events with MCZenith in range ( 64.2118 , 65.2118 )
+Selected 143940 events using new ExtLoader with many dec bands.
+Src at Zenith = 64.7118 ,  selecting events with MCZenith in range ( 64.2118 , 65.2118 )
+Selected 411040 events using new ExtLoader with many dec bands.
+Src at Zenith = 64.7118 ,  selecting events with MCZenith in range ( 64.2118 , 65.2118 )
+Selected 552840 events using new ExtLoader with many dec bands.
+Src at Zenith = 64.7118 ,  selecting events with MCZenith in range ( 64.2118 , 65.2118 )
+Selected 324140 events using new ExtLoader with many dec bands.
+.Src at Zenith = 40.5318 ,  selecting events with MCZenith in range ( 40.0318 , 41.0318 )
+Selected 60620 events using new ExtLoader with many dec bands.
+Src at Zenith = 40.5318 ,  selecting events with MCZenith in range ( 40.0318 , 41.0318 )
+Selected 234440 events using new ExtLoader with many dec bands.
+Src at Zenith = 40.5318 ,  selecting events with MCZenith in range ( 40.0318 , 41.0318 )
+Selected 318800 events using new ExtLoader with many dec bands.
+Src at Zenith = 40.5318 ,  selecting events with MCZenith in range ( 40.0318 , 41.0318 )
+Selected 215780 events using new ExtLoader with many dec bands.
+.Src at Zenith = 60.1343 ,  selecting events with MCZenith in range ( 59.6343 , 60.6343 )
+Selected 121320 events using new ExtLoader with many dec bands.
+Src at Zenith = 60.1343 ,  selecting events with MCZenith in range ( 59.6343 , 60.6343 )
+Selected 377960 events using new ExtLoader with many dec bands.
+Src at Zenith = 60.1343 ,  selecting events with MCZenith in range ( 59.6343 , 60.6343 )
+Selected 508220 events using new ExtLoader with many dec bands.
+Src at Zenith = 60.1343 ,  selecting events with MCZenith in range ( 59.6343 , 60.6343 )
+Selected 310160 events using new ExtLoader with many dec bands.
+.Src at Zenith = 89.9867 ,  selecting events with MCZenith in range ( 89.4867 , 90.4867 )
+Selected 288160 events using new ExtLoader with many dec bands.
+Src at Zenith = 89.9867 ,  selecting events with MCZenith in range ( 89.4867 , 90.4867 )
+Selected 339640 events using new ExtLoader with many dec bands.
+Src at Zenith = 89.9867 ,  selecting events with MCZenith in range ( 89.4867 , 90.4867 )
+Selected 424940 events using new ExtLoader with many dec bands.
+Src at Zenith = 89.9867 ,  selecting events with MCZenith in range ( 89.4867 , 90.4867 )
+Selected 229060 events using new ExtLoader with many dec bands.
+.Src at Zenith = 158.096 ,  selecting events with MCZenith in range ( 157.596 , 158.596 )
+Selected 7960 events using new ExtLoader with many dec bands.
+Src at Zenith = 158.096 ,  selecting events with MCZenith in range ( 157.596 , 158.596 )
+Selected 26840 events using new ExtLoader with many dec bands.
+Src at Zenith = 158.096 ,  selecting events with MCZenith in range ( 157.596 , 158.596 )
+Selected 34060 events using new ExtLoader with many dec bands.
+Src at Zenith = 158.096 ,  selecting events with MCZenith in range ( 157.596 , 158.596 )
+Selected 18520 events using new ExtLoader with many dec bands.
+.Src at Zenith = 168.357 ,  selecting events with MCZenith in range ( 167.857 , 168.857 )
+Selected 3040 events using new ExtLoader with many dec bands.
+Src at Zenith = 168.357 ,  selecting events with MCZenith in range ( 167.857 , 168.857 )
+Selected 12080 events using new ExtLoader with many dec bands.
+Src at Zenith = 168.357 ,  selecting events with MCZenith in range ( 167.857 , 168.857 )
+Selected 16080 events using new ExtLoader with many dec bands.
+Src at Zenith = 168.357 ,  selecting events with MCZenith in range ( 167.857 , 168.857 )
+Selected 9500 events using new ExtLoader with many dec bands.
+.Src at Zenith = 149.604 ,  selecting events with MCZenith in range ( 149.104 , 150.104 )
+Selected 11800 events using new ExtLoader with many dec bands.
+Src at Zenith = 149.604 ,  selecting events with MCZenith in range ( 149.104 , 150.104 )
+Selected 41960 events using new ExtLoader with many dec bands.
+Src at Zenith = 149.604 ,  selecting events with MCZenith in range ( 149.104 , 150.104 )
+Selected 52900 events using new ExtLoader with many dec bands.
+Src at Zenith = 149.604 ,  selecting events with MCZenith in range ( 149.104 , 150.104 )
+Selected 30320 events using new ExtLoader with many dec bands.
+.Src at Zenith = 150.154 ,  selecting events with MCZenith in range ( 149.654 , 150.654 )
+Selected 12140 events using new ExtLoader with many dec bands.
+Src at Zenith = 150.154 ,  selecting events with MCZenith in range ( 149.654 , 150.654 )
+Selected 42460 events using new ExtLoader with many dec bands.
+Src at Zenith = 150.154 ,  selecting events with MCZenith in range ( 149.654 , 150.654 )
+Selected 51760 events using new ExtLoader with many dec bands.
+Src at Zenith = 150.154 ,  selecting events with MCZenith in range ( 149.654 , 150.654 )
+Selected 30140 events using new ExtLoader with many dec bands.
+.Src at Zenith = 148.562 ,  selecting events with MCZenith in range ( 148.062 , 149.062 )
+Selected 12320 events using new ExtLoader with many dec bands.
+Src at Zenith = 148.562 ,  selecting events with MCZenith in range ( 148.062 , 149.062 )
+Selected 45820 events using new ExtLoader with many dec bands.
+Src at Zenith = 148.562 ,  selecting events with MCZenith in range ( 148.062 , 149.062 )
+Selected 59660 events using new ExtLoader with many dec bands.
+Src at Zenith = 148.562 ,  selecting events with MCZenith in range ( 148.062 , 149.062 )
+Selected 30980 events using new ExtLoader with many dec bands.
+.Src at Zenith = 52.4869 ,  selecting events with MCZenith in range ( 51.9869 , 52.9869 )
+Selected 95160 events using new ExtLoader with many dec bands.
+Src at Zenith = 52.4869 ,  selecting events with MCZenith in range ( 51.9869 , 52.9869 )
+Selected 312800 events using new ExtLoader with many dec bands.
+Src at Zenith = 52.4869 ,  selecting events with MCZenith in range ( 51.9869 , 52.9869 )
+Selected 435560 events using new ExtLoader with many dec bands.
+Src at Zenith = 52.4869 ,  selecting events with MCZenith in range ( 51.9869 , 52.9869 )
+Selected 273420 events using new ExtLoader with many dec bands.
+.Src at Zenith = 113.503 ,  selecting events with MCZenith in range ( 113.003 , 114.003 )
+Selected 40820 events using new ExtLoader with many dec bands.
+Src at Zenith = 113.503 ,  selecting events with MCZenith in range ( 113.003 , 114.003 )
+Selected 130400 events using new ExtLoader with many dec bands.
+Src at Zenith = 113.503 ,  selecting events with MCZenith in range ( 113.003 , 114.003 )
+Selected 173040 events using new ExtLoader with many dec bands.
+Src at Zenith = 113.503 ,  selecting events with MCZenith in range ( 113.003 , 114.003 )
+Selected 91780 events using new ExtLoader with many dec bands.
+.Src at Zenith = 46.0962 ,  selecting events with MCZenith in range ( 45.5962 , 46.5962 )
+Selected 77120 events using new ExtLoader with many dec bands.
+Src at Zenith = 46.0962 ,  selecting events with MCZenith in range ( 45.5962 , 46.5962 )
+Selected 269380 events using new ExtLoader with many dec bands.
+Src at Zenith = 46.0962 ,  selecting events with MCZenith in range ( 45.5962 , 46.5962 )
+Selected 368980 events using new ExtLoader with many dec bands.
+Src at Zenith = 46.0962 ,  selecting events with MCZenith in range ( 45.5962 , 46.5962 )
+Selected 246300 events using new ExtLoader with many dec bands.
+.Src at Zenith = 137.195 ,  selecting events with MCZenith in range ( 136.695 , 137.695 )
+Selected 18100 events using new ExtLoader with many dec bands.
+Src at Zenith = 137.195 ,  selecting events with MCZenith in range ( 136.695 , 137.695 )
+Selected 69360 events using new ExtLoader with many dec bands.
+Src at Zenith = 137.195 ,  selecting events with MCZenith in range ( 136.695 , 137.695 )
+Selected 87640 events using new ExtLoader with many dec bands.
+Src at Zenith = 137.195 ,  selecting events with MCZenith in range ( 136.695 , 137.695 )
+Selected 51920 events using new ExtLoader with many dec bands.
+.Src at Zenith = 122.541 ,  selecting events with MCZenith in range ( 122.041 , 123.041 )
+Selected 30160 events using new ExtLoader with many dec bands.
+Src at Zenith = 122.541 ,  selecting events with MCZenith in range ( 122.041 , 123.041 )
+Selected 101700 events using new ExtLoader with many dec bands.
+Src at Zenith = 122.541 ,  selecting events with MCZenith in range ( 122.041 , 123.041 )
+Selected 134400 events using new ExtLoader with many dec bands.
+Src at Zenith = 122.541 ,  selecting events with MCZenith in range ( 122.041 , 123.041 )
+Selected 73900 events using new ExtLoader with many dec bands.
+.Src at Zenith = 47.4152 ,  selecting events with MCZenith in range ( 46.9152 , 47.9152 )
+Selected 79240 events using new ExtLoader with many dec bands.
+Src at Zenith = 47.4152 ,  selecting events with MCZenith in range ( 46.9152 , 47.9152 )
+Selected 276080 events using new ExtLoader with many dec bands.
+Src at Zenith = 47.4152 ,  selecting events with MCZenith in range ( 46.9152 , 47.9152 )
+Selected 385500 events using new ExtLoader with many dec bands.
+Src at Zenith = 47.4152 ,  selecting events with MCZenith in range ( 46.9152 , 47.9152 )
+Selected 249520 events using new ExtLoader with many dec bands.
+.Src at Zenith = 132.349 ,  selecting events with MCZenith in range ( 131.849 , 132.849 )
+Selected 22220 events using new ExtLoader with many dec bands.
+Src at Zenith = 132.349 ,  selecting events with MCZenith in range ( 131.849 , 132.849 )
+Selected 80140 events using new ExtLoader with many dec bands.
+Src at Zenith = 132.349 ,  selecting events with MCZenith in range ( 131.849 , 132.849 )
+Selected 98880 events using new ExtLoader with many dec bands.
+Src at Zenith = 132.349 ,  selecting events with MCZenith in range ( 131.849 , 132.849 )
+Selected 57420 events using new ExtLoader with many dec bands.
+.Src at Zenith = 102.992 ,  selecting events with MCZenith in range ( 102.492 , 103.492 )
+Selected 67720 events using new ExtLoader with many dec bands.
+Src at Zenith = 102.992 ,  selecting events with MCZenith in range ( 102.492 , 103.492 )
+Selected 176900 events using new ExtLoader with many dec bands.
+Src at Zenith = 102.992 ,  selecting events with MCZenith in range ( 102.492 , 103.492 )
+Selected 222960 events using new ExtLoader with many dec bands.
+Src at Zenith = 102.992 ,  selecting events with MCZenith in range ( 102.492 , 103.492 )
+Selected 117740 events using new ExtLoader with many dec bands.
+.Src at Zenith = 103.646 ,  selecting events with MCZenith in range ( 103.146 , 104.146 )
+Selected 66480 events using new ExtLoader with many dec bands.
+Src at Zenith = 103.646 ,  selecting events with MCZenith in range ( 103.146 , 104.146 )
+Selected 173300 events using new ExtLoader with many dec bands.
+Src at Zenith = 103.646 ,  selecting events with MCZenith in range ( 103.146 , 104.146 )
+Selected 219440 events using new ExtLoader with many dec bands.
+Src at Zenith = 103.646 ,  selecting events with MCZenith in range ( 103.146 , 104.146 )
+Selected 113760 events using new ExtLoader with many dec bands.
+.Src at Zenith = 53.8596 ,  selecting events with MCZenith in range ( 53.3596 , 54.3596 )
+Selected 99340 events using new ExtLoader with many dec bands.
+Src at Zenith = 53.8596 ,  selecting events with MCZenith in range ( 53.3596 , 54.3596 )
+Selected 324720 events using new ExtLoader with many dec bands.
+Src at Zenith = 53.8596 ,  selecting events with MCZenith in range ( 53.3596 , 54.3596 )
+Selected 444080 events using new ExtLoader with many dec bands.
+Src at Zenith = 53.8596 ,  selecting events with MCZenith in range ( 53.3596 , 54.3596 )
+Selected 282600 events using new ExtLoader with many dec bands.
+.Src at Zenith = 111.501 ,  selecting events with MCZenith in range ( 111.001 , 112.001 )
+Selected 44280 events using new ExtLoader with many dec bands.
+Src at Zenith = 111.501 ,  selecting events with MCZenith in range ( 111.001 , 112.001 )
+Selected 141100 events using new ExtLoader with many dec bands.
+Src at Zenith = 111.501 ,  selecting events with MCZenith in range ( 111.001 , 112.001 )
+Selected 179640 events using new ExtLoader with many dec bands.
+Src at Zenith = 111.501 ,  selecting events with MCZenith in range ( 111.001 , 112.001 )
+
+Selected 98100 events using new ExtLoader with many dec bands.
+.Src at Zenith = 103.59 ,  selecting events with MCZenith in range ( 103.09 , 104.09 )
+Selected 67120 events using new ExtLoader with many dec bands.
+Src at Zenith = 103.59 ,  selecting events with MCZenith in range ( 103.09 , 104.09 )
+Selected 173460 events using new ExtLoader with many dec bands.
+Src at Zenith = 103.59 ,  selecting events with MCZenith in range ( 103.09 , 104.09 )
+Selected 219380 events using new ExtLoader with many dec bands.
+Src at Zenith = 103.59 ,  selecting events with MCZenith in range ( 103.09 , 104.09 )
+Selected 114860 events using new ExtLoader with many dec bands.
+.Src at Zenith = 154.848 ,  selecting events with MCZenith in range ( 154.348 , 155.348 )
+Selected 9200 events using new ExtLoader with many dec bands.
+Src at Zenith = 154.848 ,  selecting events with MCZenith in range ( 154.348 , 155.348 )
+Selected 32220 events using new ExtLoader with many dec bands.
+Src at Zenith = 154.848 ,  selecting events with MCZenith in range ( 154.348 , 155.348 )
+Selected 41080 events using new ExtLoader with many dec bands.
+Src at Zenith = 154.848 ,  selecting events with MCZenith in range ( 154.348 , 155.348 )
+Selected 24900 events using new ExtLoader with many dec bands.
+.Src at Zenith = 59.7251 ,  selecting events with MCZenith in range ( 59.2251 , 60.2251 )
+Selected 120600 events using new ExtLoader with many dec bands.
+Src at Zenith = 59.7251 ,  selecting events with MCZenith in range ( 59.2251 , 60.2251 )
+Selected 370840 events using new ExtLoader with many dec bands.
+Src at Zenith = 59.7251 ,  selecting events with MCZenith in range ( 59.2251 , 60.2251 )
+Selected 505340 events using new ExtLoader with many dec bands.
+Src at Zenith = 59.7251 ,  selecting events with MCZenith in range ( 59.2251 , 60.2251 )
+Selected 307720 events using new ExtLoader with many dec bands.
+.Src at Zenith = 145.68 ,  selecting events with MCZenith in range ( 145.18 , 146.18 )
+Selected 13980 events using new ExtLoader with many dec bands.
+Src at Zenith = 145.68 ,  selecting events with MCZenith in range ( 145.18 , 146.18 )
+Selected 51140 events using new ExtLoader with many dec bands.
+Src at Zenith = 145.68 ,  selecting events with MCZenith in range ( 145.18 , 146.18 )
+Selected 68160 events using new ExtLoader with many dec bands.
+Src at Zenith = 145.68 ,  selecting events with MCZenith in range ( 145.18 , 146.18 )
+Selected 39440 events using new ExtLoader with many dec bands.
+.Src at Zenith = 142.711 ,  selecting events with MCZenith in range ( 142.211 , 143.211 )
+Selected 15400 events using new ExtLoader with many dec bands.
+Src at Zenith = 142.711 ,  selecting events with MCZenith in range ( 142.211 , 143.211 )
+Selected 57700 events using new ExtLoader with many dec bands.
+Src at Zenith = 142.711 ,  selecting events with MCZenith in range ( 142.211 , 143.211 )
+Selected 73900 events using new ExtLoader with many dec bands.
+Src at Zenith = 142.711 ,  selecting events with MCZenith in range ( 142.211 , 143.211 )
+Selected 43100 events using new ExtLoader with many dec bands.
+.Src at Zenith = 124.416 ,  selecting events with MCZenith in range ( 123.916 , 124.916 )
+Selected 26940 events using new ExtLoader with many dec bands.
+Src at Zenith = 124.416 ,  selecting events with MCZenith in range ( 123.916 , 124.916 )
+Selected 96120 events using new ExtLoader with many dec bands.
+Src at Zenith = 124.416 ,  selecting events with MCZenith in range ( 123.916 , 124.916 )
+Selected 127960 events using new ExtLoader with many dec bands.
+Src at Zenith = 124.416 ,  selecting events with MCZenith in range ( 123.916 , 124.916 )
+Selected 68840 events using new ExtLoader with many dec bands.
+.Src at Zenith = 89.1224 ,  selecting events with MCZenith in range ( 88.6224 , 89.6224 )
+Selected 294980 events using new ExtLoader with many dec bands.
+Src at Zenith = 89.1224 ,  selecting events with MCZenith in range ( 88.6224 , 89.6224 )
+Selected 333980 events using new ExtLoader with many dec bands.
+Src at Zenith = 89.1224 ,  selecting events with MCZenith in range ( 88.6224 , 89.6224 )
+Selected 423240 events using new ExtLoader with many dec bands.
+Src at Zenith = 89.1224 ,  selecting events with MCZenith in range ( 88.6224 , 89.6224 )
+Selected 234880 events using new ExtLoader with many dec bands.
+.Src at Zenith = 155.603 ,  selecting events with MCZenith in range ( 155.103 , 156.103 )
+Selected 8420 events using new ExtLoader with many dec bands.
+Src at Zenith = 155.603 ,  selecting events with MCZenith in range ( 155.103 , 156.103 )
+Selected 31880 events using new ExtLoader with many dec bands.
+Src at Zenith = 155.603 ,  selecting events with MCZenith in range ( 155.103 , 156.103 )
+Selected 41620 events using new ExtLoader with many dec bands.
+Src at Zenith = 155.603 ,  selecting events with MCZenith in range ( 155.103 , 156.103 )
+Selected 23180 events using new ExtLoader with many dec bands.
+.Src at Zenith = 30.7527 ,  selecting events with MCZenith in range ( 30.2527 , 31.2527 )
+Selected 41620 events using new ExtLoader with many dec bands.
+Src at Zenith = 30.7527 ,  selecting events with MCZenith in range ( 30.2527 , 31.2527 )
+Selected 172340 events using new ExtLoader with many dec bands.
+Src at Zenith = 30.7527 ,  selecting events with MCZenith in range ( 30.2527 , 31.2527 )
+Selected 235000 events using new ExtLoader with many dec bands.
+Src at Zenith = 30.7527 ,  selecting events with MCZenith in range ( 30.2527 , 31.2527 )
+Selected 166740 events using new ExtLoader with many dec bands.
+.Src at Zenith = 132.029 ,  selecting events with MCZenith in range ( 131.529 , 132.529 )
+Selected 22260 events using new ExtLoader with many dec bands.
+Src at Zenith = 132.029 ,  selecting events with MCZenith in range ( 131.529 , 132.529 )
+Selected 81100 events using new ExtLoader with many dec bands.
+Src at Zenith = 132.029 ,  selecting events with MCZenith in range ( 131.529 , 132.529 )
+Selected 100100 events using new ExtLoader with many dec bands.
+Src at Zenith = 132.029 ,  selecting events with MCZenith in range ( 131.529 , 132.529 )
+Selected 57840 events using new ExtLoader with many dec bands.
+.Src at Zenith = 94.4737 ,  selecting events with MCZenith in range ( 93.9737 , 94.9737 )
+Selected 149960 events using new ExtLoader with many dec bands.
+Src at Zenith = 94.4737 ,  selecting events with MCZenith in range ( 93.9737 , 94.9737 )
+Selected 274080 events using new ExtLoader with many dec bands.
+Src at Zenith = 94.4737 ,  selecting events with MCZenith in range ( 93.9737 , 94.9737 )
+Selected 308380 events using new ExtLoader with many dec bands.
+Src at Zenith = 94.4737 ,  selecting events with MCZenith in range ( 93.9737 , 94.9737 )
+Selected 168340 events using new ExtLoader with many dec bands.
+.Src at Zenith = 89.5381 ,  selecting events with MCZenith in range ( 89.0381 , 90.0381 )
+Selected 291180 events using new ExtLoader with many dec bands.
+Src at Zenith = 89.5381 ,  selecting events with MCZenith in range ( 89.0381 , 90.0381 )
+Selected 331800 events using new ExtLoader with many dec bands.
+Src at Zenith = 89.5381 ,  selecting events with MCZenith in range ( 89.0381 , 90.0381 )
+Selected 428140 events using new ExtLoader with many dec bands.
+Src at Zenith = 89.5381 ,  selecting events with MCZenith in range ( 89.0381 , 90.0381 )
+Selected 231400 events using new ExtLoader with many dec bands.
+.Src at Zenith = 111.681 ,  selecting events with MCZenith in range ( 111.181 , 112.181 )
+Selected 44480 events using new ExtLoader with many dec bands.
+Src at Zenith = 111.681 ,  selecting events with MCZenith in range ( 111.181 , 112.181 )
+Selected 138900 events using new ExtLoader with many dec bands.
+Src at Zenith = 111.681 ,  selecting events with MCZenith in range ( 111.181 , 112.181 )
+Selected 178500 events using new ExtLoader with many dec bands.
+Src at Zenith = 111.681 ,  selecting events with MCZenith in range ( 111.181 , 112.181 )
+Selected 95820 events using new ExtLoader with many dec bands.
+.Src at Zenith = 55.809 ,  selecting events with MCZenith in range ( 55.309 , 56.309 )
+Selected 109220 events using new ExtLoader with many dec bands.
+Src at Zenith = 55.809 ,  selecting events with MCZenith in range ( 55.309 , 56.309 )
+Selected 349520 events using new ExtLoader with many dec bands.
+Src at Zenith = 55.809 ,  selecting events with MCZenith in range ( 55.309 , 56.309 )
+Selected 459620 events using new ExtLoader with many dec bands.
+Src at Zenith = 55.809 ,  selecting events with MCZenith in range ( 55.309 , 56.309 )
+Selected 292140 events using new ExtLoader with many dec bands.
+.
+
+Calculating Stacking Weight vs Gamma Tables...
+ Src at Zenith = 159.68 ,  selecting events with MCZenith in range ( 159.18 , 160.18 )
+Selected 316 events.
+Src at Zenith = 64.7118 ,  selecting events with MCZenith in range ( 64.2118 , 65.2118 )
+Selected 7197 events.
+Src at Zenith = 40.5318 ,  selecting events with MCZenith in range ( 40.0318 , 41.0318 )
+Selected 3031 events.
+Src at Zenith = 60.1343 ,  selecting events with MCZenith in range ( 59.6343 , 60.6343 )
+Selected 6066 events.
+Src at Zenith = 89.9867 ,  selecting events with MCZenith in range ( 89.4867 , 90.4867 )
+Selected 14408 events.
+Src at Zenith = 158.096 ,  selecting events with MCZenith in range ( 157.596 , 158.596 )
+Selected 398 events.
+Src at Zenith = 168.357 ,  selecting events with MCZenith in range ( 167.857 , 168.857 )
+Selected 152 events.
+Src at Zenith = 149.604 ,  selecting events with MCZenith in range ( 149.104 , 150.104 )
+Selected 590 events.
+Src at Zenith = 150.154 ,  selecting events with MCZenith in range ( 149.654 , 150.654 )
+Selected 607 events.
+Src at Zenith = 148.562 ,  selecting events with MCZenith in range ( 148.062 , 149.062 )
+Selected 616 events.
+Src at Zenith = 52.4869 ,  selecting events with MCZenith in range ( 51.9869 , 52.9869 )
+Selected 4758 events.
+Src at Zenith = 113.503 ,  selecting events with MCZenith in range ( 113.003 , 114.003 )
+Selected 2041 events.
+Src at Zenith = 46.0962 ,  selecting events with MCZenith in range ( 45.5962 , 46.5962 )
+Selected 3856 events.
+Src at Zenith = 137.195 ,  selecting events with MCZenith in range ( 136.695 , 137.695 )
+Selected 905 events.
+Src at Zenith = 122.541 ,  selecting events with MCZenith in range ( 122.041 , 123.041 )
+Selected 1508 events.
+Src at Zenith = 47.4152 ,  selecting events with MCZenith in range ( 46.9152 , 47.9152 )
+Selected 3962 events.
+Src at Zenith = 132.349 ,  selecting events with MCZenith in range ( 131.849 , 132.849 )
+Selected 1111 events.
+Src at Zenith = 102.992 ,  selecting events with MCZenith in range ( 102.492 , 103.492 )
+Selected 3386 events.
+Src at Zenith = 103.646 ,  selecting events with MCZenith in range ( 103.146 , 104.146 )
+Selected 3324 events.
+Src at Zenith = 53.8596 ,  selecting events with MCZenith in range ( 53.3596 , 54.3596 )
+Selected 4967 events.
+Src at Zenith = 111.501 ,  selecting events with MCZenith in range ( 111.001 , 112.001 )
+Selected 2214 events.
+Src at Zenith = 103.59 ,  selecting events with MCZenith in range ( 103.09 , 104.09 )
+Selected 3356 events.
+Src at Zenith = 154.848 ,  selecting events with MCZenith in range ( 154.348 , 155.348 )
+Selected 460 events.
+Src at Zenith = 59.7251 ,  selecting events with MCZenith in range ( 59.2251 , 60.2251 )
+Selected 6030 events.
+Src at Zenith = 145.68 ,  selecting events with MCZenith in range ( 145.18 , 146.18 )
+Selected 699 events.
+Src at Zenith = 142.711 ,  selecting events with MCZenith in range ( 142.211 , 143.211 )
+Selected 770 events.
+Src at Zenith = 124.416 ,  selecting events with MCZenith in range ( 123.916 , 124.916 )
+Selected 1347 events.
+Src at Zenith = 89.1224 ,  selecting events with MCZenith in range ( 88.6224 , 89.6224 )
+Selected 14749 events.
+Src at Zenith = 155.603 ,  selecting events with MCZenith in range ( 155.103 , 156.103 )
+Selected 421 events.
+Src at Zenith = 30.7527 ,  selecting events with MCZenith in range ( 30.2527 , 31.2527 )
+Selected 2081 events.
+Src at Zenith = 132.029 ,  selecting events with MCZenith in range ( 131.529 , 132.529 )
+Selected 1113 events.
+Src at Zenith = 94.4737 ,  selecting events with MCZenith in range ( 93.9737 , 94.9737 )
+Selected 7498 events.
+Src at Zenith = 89.5381 ,  selecting events with MCZenith in range ( 89.0381 , 90.0381 )
+Selected 14559 events.
+Src at Zenith = 111.681 ,  selecting events with MCZenith in range ( 111.181 , 112.181 )
+Selected 2224 events.
+Src at Zenith = 55.809 ,  selecting events with MCZenith in range ( 55.309 , 56.309 )
+Selected 5461 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.5297 0.0000 0.0000 0.0000 0.0201 0.0690 0.0365 0.0512 0.0528 0.0373 0.0000 0.0156 0.0000 0.0247 0.0163 0.0000 0.0129 0.0098 0.0078 0.0000 0.0095 0.0070 0.0208 0.0000 0.0154 0.0128 0.0078 0.0051 0.0145 0.0000 0.0088 0.0053 0.0038 0.0057 0.0000 
+01:  0.5274 0.0000 0.0000 0.0000 0.0206 0.0674 0.0370 0.0510 0.0519 0.0375 0.0000 0.0165 0.0000 0.0248 0.0168 0.0000 0.0133 0.0101 0.0082 0.0000 0.0099 0.0073 0.0202 0.0000 0.0155 0.0130 0.0081 0.0052 0.0144 0.0000 0.0089 0.0054 0.0039 0.0059 0.0000 
+02:  0.5244 0.0000 0.0000 0.0000 0.0213 0.0660 0.0374 0.0506 0.0512 0.0376 0.0000 0.0174 0.0000 0.0250 0.0174 0.0000 0.0138 0.0104 0.0087 0.0000 0.0102 0.0076 0.0197 0.0000 0.0155 0.0132 0.0083 0.0053 0.0142 0.0000 0.0090 0.0055 0.0041 0.0062 0.0000 
+03:  0.5205 0.0000 0.0000 0.0000 0.0220 0.0649 0.0377 0.0502 0.0504 0.0377 0.0000 0.0184 0.0000 0.0252 0.0180 0.0000 0.0142 0.0108 0.0093 0.0000 0.0107 0.0080 0.0193 0.0000 0.0156 0.0135 0.0086 0.0054 0.0141 0.0000 0.0092 0.0056 0.0042 0.0064 0.0000 
+04:  0.5159 0.0000 0.0000 0.0000 0.0229 0.0638 0.0379 0.0497 0.0498 0.0377 0.0000 0.0194 0.0000 0.0255 0.0187 0.0000 0.0148 0.0113 0.0099 0.0000 0.0112 0.0085 0.0189 0.0000 0.0157 0.0137 0.0089 0.0055 0.0139 0.0000 0.0094 0.0057 0.0044 0.0067 0.0000 
+05:  0.5103 0.0000 0.0000 0.0000 0.0239 0.0630 0.0380 0.0492 0.0491 0.0378 0.0000 0.0206 0.0000 0.0258 0.0194 0.0000 0.0153 0.0118 0.0107 0.0000 0.0118 0.0090 0.0186 0.0000 0.0158 0.0139 0.0093 0.0057 0.0138 0.0000 0.0097 0.0059 0.0046 0.0071 0.0000 
+06:  0.5037 0.0000 0.0000 0.0000 0.0252 0.0622 0.0380 0.0486 0.0486 0.0378 0.0000 0.0218 0.0000 0.0262 0.0201 0.0000 0.0160 0.0125 0.0115 0.0000 0.0125 0.0097 0.0183 0.0000 0.0159 0.0141 0.0097 0.0059 0.0136 0.0000 0.0099 0.0061 0.0048 0.0075 0.0000 
+07:  0.4961 0.0000 0.0000 0.0000 0.0266 0.0616 0.0378 0.0480 0.0480 0.0378 0.0000 0.0231 0.0000 0.0267 0.0209 0.0000 0.0166 0.0132 0.0124 0.0000 0.0132 0.0104 0.0180 0.0000 0.0160 0.0143 0.0102 0.0062 0.0134 0.0000 0.0103 0.0064 0.0050 0.0079 0.0000 
+08:  0.4875 0.0001 0.0000 0.0000 0.0282 0.0610 0.0376 0.0474 0.0475 0.0378 0.0000 0.0245 0.0000 0.0271 0.0217 0.0000 0.0173 0.0141 0.0135 0.0000 0.0140 0.0113 0.0177 0.0000 0.0160 0.0145 0.0106 0.0065 0.0131 0.0000 0.0106 0.0067 0.0053 0.0084 0.0000 
+09:  0.4777 0.0001 0.0000 0.0000 0.0302 0.0604 0.0373 0.0467 0.0470 0.0377 0.0000 0.0260 0.0000 0.0277 0.0226 0.0000 0.0180 0.0151 0.0147 0.0000 0.0149 0.0123 0.0175 0.0000 0.0161 0.0146 0.0112 0.0069 0.0129 0.0000 0.0109 0.0071 0.0057 0.0090 0.0000 
+10:  0.4667 0.0002 0.0000 0.0000 0.0324 0.0598 0.0368 0.0459 0.0464 0.0375 0.0000 0.0276 0.0000 0.0282 0.0236 0.0000 0.0187 0.0163 0.0160 0.0000 0.0159 0.0134 0.0172 0.0000 0.0161 0.0148 0.0117 0.0073 0.0127 0.0000 0.0113 0.0075 0.0061 0.0096 0.0000 
+11:  0.4544 0.0004 0.0001 0.0001 0.0351 0.0591 0.0363 0.0452 0.0459 0.0373 0.0000 0.0293 0.0000 0.0288 0.0246 0.0000 0.0194 0.0176 0.0176 0.0000 0.0169 0.0147 0.0170 0.0000 0.0162 0.0149 0.0123 0.0079 0.0124 0.0000 0.0117 0.0081 0.0065 0.0103 0.0000 
+12:  0.4409 0.0007 0.0001 0.0001 0.0383 0.0582 0.0356 0.0444 0.0452 0.0370 0.0000 0.0310 0.0000 0.0294 0.0256 0.0000 0.0201 0.0191 0.0193 0.0000 0.0181 0.0162 0.0167 0.0000 0.0162 0.0150 0.0128 0.0086 0.0121 0.0000 0.0121 0.0087 0.0071 0.0110 0.0000 
+13:  0.4260 0.0011 0.0002 0.0002 0.0420 0.0572 0.0348 0.0435 0.0445 0.0366 0.0001 0.0329 0.0000 0.0299 0.0267 0.0000 0.0208 0.0209 0.0212 0.0000 0.0193 0.0178 0.0165 0.0000 0.0161 0.0151 0.0134 0.0094 0.0119 0.0000 0.0124 0.0096 0.0078 0.0118 0.0000 
+14:  0.4096 0.0019 0.0004 0.0004 0.0465 0.0559 0.0339 0.0426 0.0437 0.0361 0.0001 0.0348 0.0001 0.0304 0.0278 0.0001 0.0215 0.0228 0.0233 0.0001 0.0206 0.0196 0.0162 0.0001 0.0160 0.0151 0.0140 0.0104 0.0116 0.0000 0.0128 0.0106 0.0086 0.0126 0.0000 
+15:  0.3916 0.0031 0.0007 0.0006 0.0519 0.0543 0.0328 0.0416 0.0427 0.0354 0.0002 0.0368 0.0001 0.0307 0.0289 0.0001 0.0221 0.0249 0.0256 0.0001 0.0220 0.0216 0.0158 0.0001 0.0159 0.0150 0.0146 0.0116 0.0112 0.0000 0.0131 0.0118 0.0096 0.0135 0.0001 
+16:  0.3715 0.0052 0.0012 0.0011 0.0584 0.0523 0.0314 0.0403 0.0415 0.0345 0.0003 0.0388 0.0002 0.0309 0.0299 0.0002 0.0225 0.0272 0.0281 0.0002 0.0234 0.0237 0.0154 0.0002 0.0157 0.0149 0.0151 0.0131 0.0109 0.0001 0.0133 0.0133 0.0109 0.0143 0.0001 
+17:  0.3490 0.0086 0.0020 0.0018 0.0665 0.0498 0.0298 0.0389 0.0399 0.0333 0.0005 0.0407 0.0004 0.0308 0.0308 0.0003 0.0228 0.0297 0.0307 0.0003 0.0247 0.0259 0.0148 0.0004 0.0154 0.0146 0.0155 0.0149 0.0104 0.0001 0.0135 0.0152 0.0124 0.0152 0.0002 
+18:  0.3235 0.0139 0.0034 0.0030 0.0765 0.0467 0.0278 0.0371 0.0380 0.0318 0.0009 0.0425 0.0007 0.0304 0.0315 0.0005 0.0229 0.0324 0.0333 0.0005 0.0260 0.0281 0.0141 0.0006 0.0149 0.0142 0.0158 0.0172 0.0099 0.0002 0.0135 0.0175 0.0143 0.0160 0.0004 
+19:  0.2944 0.0222 0.0056 0.0048 0.0893 0.0429 0.0254 0.0348 0.0355 0.0299 0.0014 0.0439 0.0011 0.0295 0.0318 0.0008 0.0226 0.0350 0.0358 0.0009 0.0271 0.0302 0.0132 0.0010 0.0142 0.0135 0.0158 0.0201 0.0092 0.0003 0.0134 0.0202 0.0168 0.0166 0.0006 
+20:  0.2611 0.0346 0.0090 0.0075 0.1056 0.0384 0.0226 0.0319 0.0323 0.0275 0.0023 0.0446 0.0018 0.0280 0.0314 0.0013 0.0219 0.0373 0.0380 0.0014 0.0277 0.0321 0.0121 0.0015 0.0132 0.0126 0.0155 0.0238 0.0084 0.0005 0.0129 0.0235 0.0199 0.0170 0.0009 
+21:  0.2232 0.0521 0.0136 0.0113 0.1267 0.0331 0.0193 0.0283 0.0285 0.0244 0.0034 0.0442 0.0027 0.0257 0.0302 0.0020 0.0204 0.0391 0.0393 0.0021 0.0277 0.0332 0.0106 0.0023 0.0119 0.0114 0.0148 0.0287 0.0074 0.0007 0.0121 0.0272 0.0240 0.0169 0.0013 
+22:  0.1815 0.0753 0.0197 0.0164 0.1539 0.0271 0.0156 0.0240 0.0239 0.0207 0.0049 0.0421 0.0039 0.0225 0.0278 0.0030 0.0183 0.0396 0.0394 0.0031 0.0266 0.0333 0.0089 0.0033 0.0103 0.0098 0.0135 0.0350 0.0062 0.0010 0.0109 0.0311 0.0293 0.0162 0.0019 
+23:  0.1382 0.1026 0.0267 0.0223 0.1887 0.0208 0.0118 0.0190 0.0188 0.0165 0.0067 0.0381 0.0053 0.0186 0.0241 0.0040 0.0154 0.0383 0.0376 0.0042 0.0243 0.0318 0.0070 0.0045 0.0083 0.0080 0.0116 0.0430 0.0049 0.0014 0.0091 0.0348 0.0360 0.0148 0.0026 
+24:  0.0969 0.1303 0.0333 0.0281 0.2315 0.0147 0.0083 0.0140 0.0136 0.0122 0.0084 0.0323 0.0067 0.0142 0.0195 0.0051 0.0120 0.0350 0.0338 0.0053 0.0208 0.0286 0.0050 0.0056 0.0062 0.0060 0.0092 0.0531 0.0035 0.0018 0.0071 0.0374 0.0443 0.0126 0.0033 
+25:  0.0619 0.1529 0.0380 0.0328 0.2814 0.0095 0.0053 0.0094 0.0090 0.0083 0.0096 0.0253 0.0076 0.0100 0.0145 0.0059 0.0085 0.0298 0.0284 0.0062 0.0164 0.0240 0.0033 0.0065 0.0043 0.0041 0.0068 0.0648 0.0023 0.0020 0.0051 0.0385 0.0540 0.0100 0.0038 
+26:  0.0358 0.1654 0.0396 0.0352 0.3354 0.0056 0.0030 0.0058 0.0055 0.0051 0.0102 0.0182 0.0080 0.0064 0.0098 0.0062 0.0056 0.0236 0.0221 0.0065 0.0119 0.0188 0.0020 0.0069 0.0027 0.0026 0.0045 0.0775 0.0014 0.0021 0.0033 0.0377 0.0645 0.0073 0.0040 
+27:  0.0189 0.1664 0.0378 0.0350 0.3893 0.0030 0.0016 0.0032 0.0030 0.0029 0.0099 0.0122 0.0077 0.0037 0.0062 0.0060 0.0033 0.0175 0.0162 0.0064 0.0081 0.0138 0.0011 0.0069 0.0015 0.0015 0.0028 0.0902 0.0008 0.0020 0.0020 0.0353 0.0749 0.0049 0.0040 
+28:  0.0092 0.1580 0.0338 0.0328 0.4392 0.0015 0.0008 0.0017 0.0015 0.0015 0.0090 0.0077 0.0069 0.0021 0.0036 0.0055 0.0019 0.0124 0.0113 0.0059 0.0051 0.0097 0.0005 0.0064 0.0008 0.0008 0.0016 0.1021 0.0004 0.0018 0.0011 0.0319 0.0846 0.0031 0.0036 
+29:  0.0042 0.1443 0.0288 0.0296 0.4826 0.0007 0.0004 0.0008 0.0007 0.0008 0.0079 0.0046 0.0059 0.0011 0.0020 0.0047 0.0010 0.0085 0.0077 0.0052 0.0031 0.0066 0.0003 0.0057 0.0004 0.0004 0.0009 0.1125 0.0002 0.0015 0.0006 0.0283 0.0931 0.0019 0.0032 
+Src at Zenith = 159.68 ,  selecting events with MCZenith in range ( 159.18 , 160.18 )
+Selected 1246 events.
+Src at Zenith = 64.7118 ,  selecting events with MCZenith in range ( 64.2118 , 65.2118 )
+Selected 20552 events.
+Src at Zenith = 40.5318 ,  selecting events with MCZenith in range ( 40.0318 , 41.0318 )
+Selected 11722 events.
+Src at Zenith = 60.1343 ,  selecting events with MCZenith in range ( 59.6343 , 60.6343 )
+Selected 18898 events.
+Src at Zenith = 89.9867 ,  selecting events with MCZenith in range ( 89.4867 , 90.4867 )
+Selected 16982 events.
+Src at Zenith = 158.096 ,  selecting events with MCZenith in range ( 157.596 , 158.596 )
+Selected 1342 events.
+Src at Zenith = 168.357 ,  selecting events with MCZenith in range ( 167.857 , 168.857 )
+Selected 604 events.
+Src at Zenith = 149.604 ,  selecting events with MCZenith in range ( 149.104 , 150.104 )
+Selected 2098 events.
+Src at Zenith = 150.154 ,  selecting events with MCZenith in range ( 149.654 , 150.654 )
+Selected 2123 events.
+Src at Zenith = 148.562 ,  selecting events with MCZenith in range ( 148.062 , 149.062 )
+Selected 2291 events.
+Src at Zenith = 52.4869 ,  selecting events with MCZenith in range ( 51.9869 , 52.9869 )
+Selected 15640 events.
+Src at Zenith = 113.503 ,  selecting events with MCZenith in range ( 113.003 , 114.003 )
+Selected 6520 events.
+Src at Zenith = 46.0962 ,  selecting events with MCZenith in range ( 45.5962 , 46.5962 )
+Selected 13469 events.
+Src at Zenith = 137.195 ,  selecting events with MCZenith in range ( 136.695 , 137.695 )
+Selected 3468 events.
+Src at Zenith = 122.541 ,  selecting events with MCZenith in range ( 122.041 , 123.041 )
+Selected 5085 events.
+Src at Zenith = 47.4152 ,  selecting events with MCZenith in range ( 46.9152 , 47.9152 )
+Selected 13804 events.
+Src at Zenith = 132.349 ,  selecting events with MCZenith in range ( 131.849 , 132.849 )
+Selected 4007 events.
+Src at Zenith = 102.992 ,  selecting events with MCZenith in range ( 102.492 , 103.492 )
+Selected 8845 events.
+Src at Zenith = 103.646 ,  selecting events with MCZenith in range ( 103.146 , 104.146 )
+Selected 8665 events.
+Src at Zenith = 53.8596 ,  selecting events with MCZenith in range ( 53.3596 , 54.3596 )
+Selected 16236 events.
+Src at Zenith = 111.501 ,  selecting events with MCZenith in range ( 111.001 , 112.001 )
+Selected 7055 events.
+Src at Zenith = 103.59 ,  selecting events with MCZenith in range ( 103.09 , 104.09 )
+Selected 8673 events.
+Src at Zenith = 154.848 ,  selecting events with MCZenith in range ( 154.348 , 155.348 )
+Selected 1611 events.
+Src at Zenith = 59.7251 ,  selecting events with MCZenith in range ( 59.2251 , 60.2251 )
+Selected 18542 events.
+Src at Zenith = 145.68 ,  selecting events with MCZenith in range ( 145.18 , 146.18 )
+Selected 2557 events.
+Src at Zenith = 142.711 ,  selecting events with MCZenith in range ( 142.211 , 143.211 )
+Selected 2885 events.
+Src at Zenith = 124.416 ,  selecting events with MCZenith in range ( 123.916 , 124.916 )
+Selected 4806 events.
+Src at Zenith = 89.1224 ,  selecting events with MCZenith in range ( 88.6224 , 89.6224 )
+Selected 16699 events.
+Src at Zenith = 155.603 ,  selecting events with MCZenith in range ( 155.103 , 156.103 )
+Selected 1594 events.
+Src at Zenith = 30.7527 ,  selecting events with MCZenith in range ( 30.2527 , 31.2527 )
+Selected 8617 events.
+Src at Zenith = 132.029 ,  selecting events with MCZenith in range ( 131.529 , 132.529 )
+Selected 4055 events.
+Src at Zenith = 94.4737 ,  selecting events with MCZenith in range ( 93.9737 , 94.9737 )
+Selected 13704 events.
+Src at Zenith = 89.5381 ,  selecting events with MCZenith in range ( 89.0381 , 90.0381 )
+Selected 16590 events.
+Src at Zenith = 111.681 ,  selecting events with MCZenith in range ( 111.181 , 112.181 )
+Selected 6945 events.
+Src at Zenith = 55.809 ,  selecting events with MCZenith in range ( 55.309 , 56.309 )
+Selected 17476 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.4477 0.0000 0.0000 0.0000 0.0249 0.0597 0.0439 0.0495 0.0494 0.0422 0.0000 0.0278 0.0000 0.0321 0.0221 0.0000 0.0216 0.0158 0.0147 0.0000 0.0191 0.0126 0.0181 0.0000 0.0150 0.0156 0.0139 0.0047 0.0160 0.0000 0.0122 0.0082 0.0041 0.0093 0.0000 
+01:  0.4478 0.0000 0.0000 0.0000 0.0259 0.0596 0.0438 0.0487 0.0490 0.0417 0.0000 0.0282 0.0000 0.0319 0.0224 0.0000 0.0212 0.0160 0.0150 0.0000 0.0187 0.0128 0.0181 0.0000 0.0151 0.0155 0.0139 0.0048 0.0157 0.0000 0.0121 0.0084 0.0042 0.0094 0.0000 
+02:  0.4477 0.0000 0.0000 0.0000 0.0270 0.0595 0.0435 0.0480 0.0486 0.0412 0.0000 0.0286 0.0000 0.0317 0.0227 0.0000 0.0210 0.0163 0.0154 0.0000 0.0184 0.0131 0.0180 0.0000 0.0151 0.0155 0.0139 0.0050 0.0154 0.0000 0.0120 0.0085 0.0044 0.0095 0.0000 
+03:  0.4473 0.0000 0.0000 0.0000 0.0281 0.0593 0.0432 0.0473 0.0482 0.0407 0.0000 0.0290 0.0000 0.0315 0.0231 0.0000 0.0208 0.0166 0.0157 0.0000 0.0182 0.0134 0.0179 0.0000 0.0151 0.0154 0.0139 0.0052 0.0151 0.0000 0.0119 0.0087 0.0046 0.0096 0.0000 
+04:  0.4468 0.0000 0.0000 0.0000 0.0294 0.0590 0.0429 0.0466 0.0477 0.0403 0.0000 0.0293 0.0000 0.0314 0.0234 0.0000 0.0206 0.0169 0.0161 0.0000 0.0181 0.0137 0.0178 0.0000 0.0151 0.0154 0.0139 0.0055 0.0148 0.0000 0.0119 0.0088 0.0048 0.0097 0.0000 
+05:  0.4459 0.0000 0.0000 0.0000 0.0308 0.0586 0.0424 0.0460 0.0472 0.0398 0.0000 0.0297 0.0000 0.0313 0.0238 0.0000 0.0205 0.0172 0.0165 0.0000 0.0180 0.0140 0.0176 0.0000 0.0151 0.0154 0.0139 0.0057 0.0146 0.0000 0.0119 0.0090 0.0051 0.0099 0.0000 
+06:  0.4446 0.0000 0.0000 0.0000 0.0323 0.0582 0.0419 0.0454 0.0467 0.0393 0.0000 0.0301 0.0000 0.0312 0.0241 0.0000 0.0204 0.0176 0.0170 0.0000 0.0180 0.0144 0.0175 0.0000 0.0151 0.0154 0.0139 0.0060 0.0143 0.0000 0.0119 0.0092 0.0053 0.0100 0.0000 
+07:  0.4428 0.0001 0.0000 0.0000 0.0339 0.0577 0.0413 0.0448 0.0461 0.0389 0.0000 0.0305 0.0000 0.0311 0.0245 0.0000 0.0204 0.0180 0.0174 0.0000 0.0181 0.0147 0.0173 0.0000 0.0152 0.0154 0.0138 0.0064 0.0141 0.0000 0.0120 0.0094 0.0056 0.0102 0.0000 
+08:  0.4406 0.0001 0.0000 0.0000 0.0357 0.0571 0.0407 0.0443 0.0455 0.0384 0.0000 0.0309 0.0000 0.0311 0.0249 0.0000 0.0204 0.0185 0.0179 0.0000 0.0183 0.0151 0.0171 0.0000 0.0152 0.0153 0.0138 0.0067 0.0138 0.0000 0.0121 0.0097 0.0059 0.0104 0.0000 
+09:  0.4377 0.0002 0.0001 0.0001 0.0378 0.0564 0.0399 0.0439 0.0449 0.0380 0.0000 0.0313 0.0000 0.0311 0.0253 0.0000 0.0205 0.0190 0.0185 0.0000 0.0185 0.0156 0.0168 0.0000 0.0152 0.0153 0.0138 0.0072 0.0136 0.0000 0.0122 0.0100 0.0063 0.0107 0.0000 
+10:  0.4341 0.0004 0.0001 0.0001 0.0401 0.0556 0.0391 0.0434 0.0443 0.0375 0.0000 0.0318 0.0000 0.0311 0.0258 0.0000 0.0206 0.0196 0.0191 0.0000 0.0188 0.0161 0.0166 0.0000 0.0152 0.0152 0.0139 0.0077 0.0133 0.0000 0.0123 0.0104 0.0067 0.0109 0.0000 
+11:  0.4297 0.0006 0.0002 0.0002 0.0427 0.0547 0.0382 0.0429 0.0436 0.0371 0.0000 0.0324 0.0000 0.0311 0.0262 0.0000 0.0207 0.0202 0.0198 0.0000 0.0191 0.0166 0.0163 0.0000 0.0153 0.0152 0.0139 0.0083 0.0131 0.0000 0.0124 0.0108 0.0072 0.0112 0.0000 
+12:  0.4242 0.0010 0.0003 0.0003 0.0458 0.0537 0.0373 0.0424 0.0429 0.0366 0.0001 0.0330 0.0001 0.0311 0.0267 0.0000 0.0209 0.0210 0.0205 0.0000 0.0196 0.0172 0.0160 0.0001 0.0153 0.0151 0.0140 0.0089 0.0129 0.0000 0.0126 0.0113 0.0078 0.0115 0.0000 
+13:  0.4174 0.0016 0.0004 0.0004 0.0493 0.0524 0.0362 0.0418 0.0421 0.0361 0.0001 0.0338 0.0001 0.0311 0.0272 0.0001 0.0211 0.0218 0.0213 0.0001 0.0201 0.0179 0.0157 0.0001 0.0153 0.0150 0.0142 0.0097 0.0126 0.0000 0.0128 0.0119 0.0084 0.0119 0.0000 
+14:  0.4090 0.0026 0.0007 0.0006 0.0534 0.0510 0.0351 0.0411 0.0413 0.0355 0.0002 0.0346 0.0001 0.0311 0.0277 0.0001 0.0213 0.0227 0.0222 0.0001 0.0207 0.0186 0.0154 0.0001 0.0153 0.0149 0.0143 0.0107 0.0124 0.0000 0.0129 0.0126 0.0092 0.0123 0.0001 
+15:  0.3986 0.0043 0.0012 0.0010 0.0583 0.0493 0.0339 0.0403 0.0403 0.0348 0.0003 0.0356 0.0002 0.0310 0.0282 0.0002 0.0215 0.0237 0.0233 0.0002 0.0213 0.0195 0.0150 0.0002 0.0152 0.0147 0.0145 0.0118 0.0120 0.0001 0.0131 0.0134 0.0102 0.0127 0.0001 
+16:  0.3857 0.0069 0.0021 0.0016 0.0641 0.0474 0.0324 0.0393 0.0391 0.0340 0.0005 0.0366 0.0004 0.0309 0.0287 0.0003 0.0216 0.0248 0.0244 0.0003 0.0220 0.0204 0.0146 0.0003 0.0151 0.0145 0.0147 0.0132 0.0117 0.0001 0.0132 0.0145 0.0113 0.0131 0.0002 
+17:  0.3695 0.0111 0.0034 0.0026 0.0713 0.0451 0.0308 0.0380 0.0377 0.0330 0.0008 0.0377 0.0006 0.0306 0.0291 0.0005 0.0217 0.0260 0.0256 0.0005 0.0227 0.0214 0.0140 0.0005 0.0149 0.0142 0.0149 0.0149 0.0112 0.0002 0.0132 0.0157 0.0127 0.0136 0.0003 
+18:  0.3491 0.0176 0.0055 0.0041 0.0802 0.0423 0.0289 0.0364 0.0359 0.0317 0.0012 0.0387 0.0010 0.0301 0.0293 0.0008 0.0216 0.0273 0.0269 0.0008 0.0234 0.0225 0.0134 0.0008 0.0145 0.0138 0.0150 0.0170 0.0106 0.0003 0.0132 0.0171 0.0144 0.0141 0.0005 
+19:  0.3235 0.0274 0.0088 0.0064 0.0914 0.0391 0.0267 0.0342 0.0336 0.0299 0.0019 0.0395 0.0016 0.0293 0.0293 0.0012 0.0212 0.0287 0.0282 0.0012 0.0240 0.0236 0.0125 0.0013 0.0139 0.0133 0.0149 0.0195 0.0099 0.0005 0.0130 0.0188 0.0165 0.0144 0.0007 
+20:  0.2917 0.0420 0.0137 0.0098 0.1054 0.0352 0.0240 0.0314 0.0308 0.0277 0.0030 0.0398 0.0024 0.0279 0.0287 0.0019 0.0204 0.0299 0.0294 0.0019 0.0243 0.0246 0.0114 0.0019 0.0131 0.0125 0.0146 0.0227 0.0090 0.0008 0.0125 0.0207 0.0192 0.0146 0.0011 
+21:  0.2533 0.0627 0.0207 0.0147 0.1230 0.0305 0.0208 0.0279 0.0272 0.0247 0.0044 0.0392 0.0037 0.0258 0.0274 0.0028 0.0191 0.0307 0.0301 0.0028 0.0242 0.0252 0.0101 0.0029 0.0119 0.0114 0.0139 0.0267 0.0079 0.0012 0.0117 0.0228 0.0226 0.0145 0.0017 
+22:  0.2090 0.0901 0.0301 0.0211 0.1444 0.0253 0.0171 0.0236 0.0228 0.0211 0.0064 0.0373 0.0054 0.0228 0.0251 0.0041 0.0171 0.0307 0.0300 0.0041 0.0232 0.0251 0.0085 0.0042 0.0103 0.0100 0.0127 0.0316 0.0065 0.0017 0.0104 0.0248 0.0267 0.0140 0.0025 
+23:  0.1615 0.1235 0.0415 0.0289 0.1692 0.0197 0.0132 0.0187 0.0181 0.0170 0.0089 0.0339 0.0074 0.0191 0.0219 0.0057 0.0144 0.0297 0.0288 0.0056 0.0214 0.0241 0.0067 0.0057 0.0084 0.0083 0.0111 0.0373 0.0051 0.0024 0.0088 0.0266 0.0314 0.0128 0.0034 
+24:  0.1155 0.1599 0.0538 0.0374 0.1960 0.0142 0.0094 0.0138 0.0133 0.0127 0.0115 0.0289 0.0097 0.0149 0.0178 0.0075 0.0114 0.0273 0.0263 0.0073 0.0186 0.0220 0.0049 0.0073 0.0064 0.0064 0.0090 0.0434 0.0037 0.0031 0.0069 0.0277 0.0365 0.0111 0.0044 
+25:  0.0761 0.1946 0.0654 0.0455 0.2224 0.0095 0.0062 0.0094 0.0090 0.0087 0.0141 0.0232 0.0118 0.0107 0.0136 0.0091 0.0083 0.0239 0.0227 0.0089 0.0152 0.0190 0.0033 0.0089 0.0045 0.0046 0.0068 0.0495 0.0025 0.0037 0.0050 0.0280 0.0415 0.0091 0.0054 
+26:  0.0463 0.2236 0.0749 0.0521 0.2459 0.0059 0.0037 0.0059 0.0057 0.0056 0.0162 0.0175 0.0136 0.0072 0.0097 0.0105 0.0056 0.0199 0.0187 0.0103 0.0117 0.0157 0.0021 0.0102 0.0029 0.0030 0.0048 0.0549 0.0015 0.0043 0.0034 0.0275 0.0460 0.0070 0.0062 
+27:  0.0264 0.2450 0.0816 0.0569 0.2654 0.0034 0.0021 0.0035 0.0034 0.0034 0.0177 0.0125 0.0149 0.0046 0.0065 0.0114 0.0036 0.0160 0.0148 0.0113 0.0087 0.0124 0.0012 0.0111 0.0018 0.0019 0.0032 0.0595 0.0009 0.0047 0.0022 0.0264 0.0497 0.0051 0.0068 
+28:  0.0143 0.2593 0.0858 0.0601 0.2806 0.0019 0.0011 0.0020 0.0019 0.0019 0.0187 0.0087 0.0156 0.0028 0.0043 0.0120 0.0022 0.0126 0.0114 0.0119 0.0062 0.0096 0.0007 0.0118 0.0011 0.0011 0.0021 0.0630 0.0005 0.0049 0.0014 0.0251 0.0526 0.0037 0.0072 
+29:  0.0075 0.2681 0.0882 0.0619 0.2923 0.0010 0.0006 0.0011 0.0010 0.0011 0.0193 0.0059 0.0161 0.0016 0.0027 0.0124 0.0013 0.0098 0.0087 0.0123 0.0044 0.0073 0.0004 0.0121 0.0006 0.0007 0.0013 0.0657 0.0003 0.0051 0.0008 0.0237 0.0548 0.0026 0.0074 
+Src at Zenith = 159.68 ,  selecting events with MCZenith in range ( 159.18 , 160.18 )
+Selected 1546 events.
+Src at Zenith = 64.7118 ,  selecting events with MCZenith in range ( 64.2118 , 65.2118 )
+Selected 27642 events.
+Src at Zenith = 40.5318 ,  selecting events with MCZenith in range ( 40.0318 , 41.0318 )
+Selected 15940 events.
+Src at Zenith = 60.1343 ,  selecting events with MCZenith in range ( 59.6343 , 60.6343 )
+Selected 25411 events.
+Src at Zenith = 89.9867 ,  selecting events with MCZenith in range ( 89.4867 , 90.4867 )
+Selected 21247 events.
+Src at Zenith = 158.096 ,  selecting events with MCZenith in range ( 157.596 , 158.596 )
+Selected 1703 events.
+Src at Zenith = 168.357 ,  selecting events with MCZenith in range ( 167.857 , 168.857 )
+Selected 804 events.
+Src at Zenith = 149.604 ,  selecting events with MCZenith in range ( 149.104 , 150.104 )
+Selected 2645 events.
+Src at Zenith = 150.154 ,  selecting events with MCZenith in range ( 149.654 , 150.654 )
+Selected 2588 events.
+Src at Zenith = 148.562 ,  selecting events with MCZenith in range ( 148.062 , 149.062 )
+Selected 2983 events.
+Src at Zenith = 52.4869 ,  selecting events with MCZenith in range ( 51.9869 , 52.9869 )
+Selected 21778 events.
+Src at Zenith = 113.503 ,  selecting events with MCZenith in range ( 113.003 , 114.003 )
+Selected 8652 events.
+Src at Zenith = 46.0962 ,  selecting events with MCZenith in range ( 45.5962 , 46.5962 )
+Selected 18449 events.
+Src at Zenith = 137.195 ,  selecting events with MCZenith in range ( 136.695 , 137.695 )
+Selected 4382 events.
+Src at Zenith = 122.541 ,  selecting events with MCZenith in range ( 122.041 , 123.041 )
+Selected 6720 events.
+Src at Zenith = 47.4152 ,  selecting events with MCZenith in range ( 46.9152 , 47.9152 )
+Selected 19275 events.
+Src at Zenith = 132.349 ,  selecting events with MCZenith in range ( 131.849 , 132.849 )
+Selected 4944 events.
+Src at Zenith = 102.992 ,  selecting events with MCZenith in range ( 102.492 , 103.492 )
+Selected 11148 events.
+Src at Zenith = 103.646 ,  selecting events with MCZenith in range ( 103.146 , 104.146 )
+Selected 10972 events.
+Src at Zenith = 53.8596 ,  selecting events with MCZenith in range ( 53.3596 , 54.3596 )
+Selected 22204 events.
+Src at Zenith = 111.501 ,  selecting events with MCZenith in range ( 111.001 , 112.001 )
+Selected 8982 events.
+Src at Zenith = 103.59 ,  selecting events with MCZenith in range ( 103.09 , 104.09 )
+Selected 10969 events.
+Src at Zenith = 154.848 ,  selecting events with MCZenith in range ( 154.348 , 155.348 )
+Selected 2054 events.
+Src at Zenith = 59.7251 ,  selecting events with MCZenith in range ( 59.2251 , 60.2251 )
+Selected 25267 events.
+Src at Zenith = 145.68 ,  selecting events with MCZenith in range ( 145.18 , 146.18 )
+Selected 3408 events.
+Src at Zenith = 142.711 ,  selecting events with MCZenith in range ( 142.211 , 143.211 )
+Selected 3695 events.
+Src at Zenith = 124.416 ,  selecting events with MCZenith in range ( 123.916 , 124.916 )
+Selected 6398 events.
+Src at Zenith = 89.1224 ,  selecting events with MCZenith in range ( 88.6224 , 89.6224 )
+Selected 21162 events.
+Src at Zenith = 155.603 ,  selecting events with MCZenith in range ( 155.103 , 156.103 )
+Selected 2081 events.
+Src at Zenith = 30.7527 ,  selecting events with MCZenith in range ( 30.2527 , 31.2527 )
+Selected 11750 events.
+Src at Zenith = 132.029 ,  selecting events with MCZenith in range ( 131.529 , 132.529 )
+Selected 5005 events.
+Src at Zenith = 94.4737 ,  selecting events with MCZenith in range ( 93.9737 , 94.9737 )
+Selected 15419 events.
+Src at Zenith = 89.5381 ,  selecting events with MCZenith in range ( 89.0381 , 90.0381 )
+Selected 21407 events.
+Src at Zenith = 111.681 ,  selecting events with MCZenith in range ( 111.181 , 112.181 )
+Selected 8925 events.
+Src at Zenith = 55.809 ,  selecting events with MCZenith in range ( 55.309 , 56.309 )
+Selected 22981 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.4629 0.0000 0.0000 0.0000 0.0277 0.0477 0.0312 0.0361 0.0383 0.0382 0.0000 0.0348 0.0000 0.0292 0.0325 0.0000 0.0226 0.0186 0.0185 0.0000 0.0220 0.0155 0.0159 0.0000 0.0191 0.0153 0.0180 0.0054 0.0124 0.0000 0.0128 0.0071 0.0049 0.0132 0.0000 
+01:  0.4595 0.0000 0.0000 0.0000 0.0285 0.0481 0.0318 0.0366 0.0385 0.0381 0.0000 0.0351 0.0000 0.0292 0.0321 0.0000 0.0226 0.0190 0.0188 0.0000 0.0221 0.0158 0.0161 0.0000 0.0187 0.0152 0.0179 0.0056 0.0125 0.0000 0.0128 0.0073 0.0051 0.0132 0.0000 
+02:  0.4558 0.0000 0.0000 0.0000 0.0294 0.0484 0.0324 0.0370 0.0386 0.0381 0.0000 0.0354 0.0000 0.0293 0.0318 0.0000 0.0225 0.0194 0.0191 0.0000 0.0221 0.0160 0.0162 0.0000 0.0184 0.0151 0.0178 0.0058 0.0126 0.0000 0.0128 0.0075 0.0053 0.0132 0.0000 
+03:  0.4520 0.0000 0.0000 0.0000 0.0305 0.0487 0.0331 0.0374 0.0387 0.0380 0.0000 0.0357 0.0000 0.0294 0.0315 0.0000 0.0224 0.0197 0.0194 0.0000 0.0221 0.0163 0.0163 0.0000 0.0181 0.0151 0.0177 0.0061 0.0126 0.0000 0.0128 0.0077 0.0055 0.0132 0.0000 
+04:  0.4481 0.0000 0.0000 0.0000 0.0316 0.0490 0.0338 0.0378 0.0387 0.0379 0.0000 0.0360 0.0000 0.0294 0.0312 0.0000 0.0223 0.0201 0.0198 0.0000 0.0222 0.0166 0.0164 0.0000 0.0178 0.0150 0.0175 0.0064 0.0126 0.0000 0.0128 0.0080 0.0057 0.0132 0.0000 
+05:  0.4440 0.0000 0.0000 0.0000 0.0330 0.0492 0.0344 0.0382 0.0388 0.0378 0.0000 0.0362 0.0000 0.0295 0.0310 0.0000 0.0222 0.0205 0.0201 0.0000 0.0222 0.0169 0.0164 0.0000 0.0176 0.0150 0.0174 0.0067 0.0127 0.0000 0.0128 0.0082 0.0060 0.0132 0.0000 
+06:  0.4398 0.0001 0.0000 0.0000 0.0345 0.0494 0.0350 0.0385 0.0388 0.0376 0.0000 0.0365 0.0000 0.0296 0.0307 0.0000 0.0220 0.0209 0.0205 0.0000 0.0222 0.0172 0.0165 0.0000 0.0174 0.0150 0.0172 0.0071 0.0127 0.0000 0.0128 0.0085 0.0063 0.0132 0.0000 
+07:  0.4354 0.0001 0.0000 0.0000 0.0361 0.0496 0.0356 0.0387 0.0388 0.0375 0.0000 0.0368 0.0000 0.0297 0.0306 0.0000 0.0219 0.0213 0.0208 0.0000 0.0223 0.0175 0.0165 0.0000 0.0172 0.0150 0.0171 0.0075 0.0127 0.0000 0.0128 0.0088 0.0066 0.0132 0.0000 
+08:  0.4307 0.0001 0.0000 0.0000 0.0380 0.0497 0.0360 0.0389 0.0388 0.0373 0.0000 0.0370 0.0000 0.0298 0.0304 0.0000 0.0218 0.0217 0.0212 0.0000 0.0223 0.0178 0.0165 0.0000 0.0171 0.0149 0.0169 0.0079 0.0127 0.0000 0.0128 0.0092 0.0070 0.0132 0.0000 
+09:  0.4259 0.0002 0.0001 0.0000 0.0401 0.0498 0.0364 0.0391 0.0387 0.0370 0.0000 0.0373 0.0000 0.0299 0.0303 0.0000 0.0217 0.0221 0.0216 0.0000 0.0223 0.0182 0.0164 0.0000 0.0170 0.0149 0.0168 0.0084 0.0127 0.0000 0.0128 0.0096 0.0074 0.0132 0.0000 
+10:  0.4206 0.0004 0.0001 0.0001 0.0425 0.0498 0.0366 0.0391 0.0386 0.0368 0.0000 0.0376 0.0000 0.0301 0.0303 0.0000 0.0216 0.0226 0.0221 0.0000 0.0224 0.0185 0.0163 0.0000 0.0168 0.0149 0.0166 0.0089 0.0126 0.0000 0.0127 0.0100 0.0078 0.0133 0.0000 
+11:  0.4149 0.0006 0.0002 0.0001 0.0452 0.0497 0.0367 0.0391 0.0385 0.0365 0.0000 0.0380 0.0000 0.0302 0.0303 0.0000 0.0215 0.0231 0.0225 0.0000 0.0225 0.0189 0.0162 0.0000 0.0167 0.0149 0.0165 0.0096 0.0125 0.0000 0.0127 0.0104 0.0084 0.0133 0.0000 
+12:  0.4086 0.0010 0.0003 0.0002 0.0484 0.0494 0.0367 0.0390 0.0383 0.0362 0.0001 0.0383 0.0001 0.0303 0.0303 0.0000 0.0215 0.0236 0.0231 0.0000 0.0226 0.0194 0.0160 0.0000 0.0166 0.0149 0.0164 0.0103 0.0124 0.0000 0.0127 0.0109 0.0090 0.0134 0.0000 
+13:  0.4014 0.0017 0.0005 0.0003 0.0520 0.0490 0.0364 0.0388 0.0379 0.0358 0.0001 0.0388 0.0001 0.0304 0.0304 0.0001 0.0215 0.0242 0.0237 0.0001 0.0227 0.0198 0.0158 0.0001 0.0164 0.0148 0.0163 0.0111 0.0123 0.0000 0.0127 0.0115 0.0097 0.0135 0.0000 
+14:  0.3930 0.0028 0.0008 0.0006 0.0562 0.0484 0.0358 0.0385 0.0375 0.0353 0.0002 0.0392 0.0002 0.0305 0.0305 0.0001 0.0215 0.0249 0.0243 0.0001 0.0229 0.0204 0.0155 0.0001 0.0163 0.0148 0.0162 0.0121 0.0121 0.0000 0.0127 0.0122 0.0105 0.0137 0.0001 
+15:  0.3830 0.0047 0.0014 0.0010 0.0611 0.0475 0.0350 0.0380 0.0370 0.0348 0.0003 0.0397 0.0003 0.0305 0.0307 0.0002 0.0215 0.0257 0.0251 0.0002 0.0231 0.0210 0.0151 0.0002 0.0161 0.0147 0.0161 0.0132 0.0118 0.0001 0.0127 0.0129 0.0115 0.0138 0.0001 
+16:  0.3708 0.0076 0.0023 0.0016 0.0670 0.0463 0.0338 0.0374 0.0362 0.0341 0.0005 0.0403 0.0004 0.0305 0.0308 0.0003 0.0214 0.0265 0.0259 0.0003 0.0234 0.0217 0.0146 0.0003 0.0158 0.0145 0.0161 0.0146 0.0115 0.0001 0.0127 0.0138 0.0127 0.0140 0.0002 
+17:  0.3555 0.0123 0.0037 0.0027 0.0741 0.0447 0.0323 0.0364 0.0352 0.0331 0.0008 0.0408 0.0007 0.0303 0.0308 0.0006 0.0213 0.0274 0.0268 0.0005 0.0237 0.0224 0.0140 0.0005 0.0154 0.0142 0.0159 0.0162 0.0111 0.0002 0.0127 0.0148 0.0140 0.0143 0.0003 
+18:  0.3363 0.0196 0.0061 0.0043 0.0827 0.0424 0.0304 0.0351 0.0338 0.0319 0.0014 0.0413 0.0011 0.0298 0.0307 0.0009 0.0210 0.0284 0.0277 0.0008 0.0240 0.0232 0.0133 0.0009 0.0150 0.0139 0.0158 0.0181 0.0105 0.0004 0.0126 0.0160 0.0157 0.0145 0.0005 
+19:  0.3121 0.0307 0.0096 0.0069 0.0935 0.0395 0.0279 0.0333 0.0319 0.0302 0.0022 0.0415 0.0018 0.0290 0.0302 0.0014 0.0205 0.0293 0.0286 0.0013 0.0242 0.0239 0.0123 0.0014 0.0143 0.0133 0.0154 0.0206 0.0098 0.0006 0.0123 0.0174 0.0178 0.0146 0.0008 
+20:  0.2819 0.0469 0.0150 0.0106 0.1068 0.0358 0.0249 0.0308 0.0293 0.0279 0.0033 0.0411 0.0028 0.0275 0.0293 0.0022 0.0196 0.0301 0.0293 0.0021 0.0241 0.0245 0.0112 0.0021 0.0133 0.0124 0.0149 0.0236 0.0089 0.0009 0.0118 0.0189 0.0203 0.0146 0.0012 
+21:  0.2450 0.0696 0.0226 0.0158 0.1234 0.0312 0.0214 0.0275 0.0260 0.0249 0.0050 0.0399 0.0042 0.0254 0.0276 0.0033 0.0181 0.0303 0.0296 0.0031 0.0236 0.0247 0.0097 0.0031 0.0120 0.0113 0.0140 0.0274 0.0078 0.0013 0.0110 0.0205 0.0235 0.0143 0.0018 
+22:  0.2023 0.0993 0.0327 0.0228 0.1434 0.0258 0.0175 0.0234 0.0220 0.0212 0.0072 0.0374 0.0060 0.0224 0.0250 0.0047 0.0161 0.0298 0.0290 0.0045 0.0224 0.0242 0.0081 0.0045 0.0104 0.0098 0.0126 0.0319 0.0065 0.0019 0.0098 0.0220 0.0273 0.0136 0.0026 
+23:  0.1563 0.1348 0.0449 0.0311 0.1664 0.0200 0.0133 0.0187 0.0174 0.0170 0.0099 0.0335 0.0082 0.0186 0.0215 0.0064 0.0135 0.0282 0.0274 0.0062 0.0203 0.0229 0.0063 0.0062 0.0084 0.0080 0.0108 0.0371 0.0050 0.0026 0.0082 0.0232 0.0317 0.0123 0.0036 
+24:  0.1118 0.1727 0.0580 0.0401 0.1910 0.0143 0.0094 0.0139 0.0128 0.0127 0.0128 0.0283 0.0106 0.0144 0.0174 0.0083 0.0105 0.0254 0.0247 0.0080 0.0174 0.0206 0.0045 0.0080 0.0064 0.0061 0.0087 0.0426 0.0036 0.0033 0.0065 0.0238 0.0364 0.0105 0.0046 
+25:  0.0737 0.2081 0.0703 0.0486 0.2149 0.0095 0.0061 0.0095 0.0087 0.0088 0.0155 0.0225 0.0128 0.0103 0.0131 0.0100 0.0077 0.0217 0.0211 0.0097 0.0140 0.0176 0.0030 0.0096 0.0044 0.0043 0.0065 0.0481 0.0024 0.0040 0.0047 0.0236 0.0410 0.0085 0.0056 
+26:  0.0449 0.2372 0.0803 0.0556 0.2360 0.0058 0.0037 0.0061 0.0054 0.0056 0.0177 0.0168 0.0146 0.0069 0.0092 0.0115 0.0052 0.0178 0.0172 0.0111 0.0107 0.0144 0.0019 0.0110 0.0029 0.0028 0.0045 0.0529 0.0015 0.0046 0.0032 0.0228 0.0451 0.0065 0.0065 
+27:  0.0257 0.2582 0.0875 0.0608 0.2532 0.0033 0.0021 0.0036 0.0032 0.0034 0.0193 0.0120 0.0160 0.0044 0.0062 0.0125 0.0033 0.0140 0.0135 0.0121 0.0078 0.0113 0.0011 0.0121 0.0018 0.0017 0.0030 0.0570 0.0009 0.0050 0.0021 0.0216 0.0485 0.0047 0.0071 
+28:  0.0140 0.2721 0.0921 0.0642 0.2665 0.0018 0.0011 0.0021 0.0018 0.0020 0.0204 0.0084 0.0168 0.0026 0.0040 0.0132 0.0021 0.0108 0.0104 0.0128 0.0055 0.0087 0.0006 0.0128 0.0010 0.0010 0.0019 0.0601 0.0005 0.0053 0.0013 0.0203 0.0511 0.0033 0.0075 
+29:  0.0073 0.2805 0.0947 0.0664 0.2765 0.0010 0.0006 0.0012 0.0010 0.0011 0.0210 0.0057 0.0173 0.0016 0.0025 0.0136 0.0012 0.0082 0.0079 0.0133 0.0038 0.0066 0.0003 0.0132 0.0006 0.0006 0.0012 0.0625 0.0003 0.0055 0.0008 0.0189 0.0531 0.0023 0.0077 
+Src at Zenith = 159.68 ,  selecting events with MCZenith in range ( 159.18 , 160.18 )
+Selected 844 events.
+Src at Zenith = 64.7118 ,  selecting events with MCZenith in range ( 64.2118 , 65.2118 )
+Selected 16207 events.
+Src at Zenith = 40.5318 ,  selecting events with MCZenith in range ( 40.0318 , 41.0318 )
+Selected 10789 events.
+Src at Zenith = 60.1343 ,  selecting events with MCZenith in range ( 59.6343 , 60.6343 )
+Selected 15508 events.
+Src at Zenith = 89.9867 ,  selecting events with MCZenith in range ( 89.4867 , 90.4867 )
+Selected 11453 events.
+Src at Zenith = 158.096 ,  selecting events with MCZenith in range ( 157.596 , 158.596 )
+Selected 926 events.
+Src at Zenith = 168.357 ,  selecting events with MCZenith in range ( 167.857 , 168.857 )
+Selected 475 events.
+Src at Zenith = 149.604 ,  selecting events with MCZenith in range ( 149.104 , 150.104 )
+Selected 1516 events.
+Src at Zenith = 150.154 ,  selecting events with MCZenith in range ( 149.654 , 150.654 )
+Selected 1507 events.
+Src at Zenith = 148.562 ,  selecting events with MCZenith in range ( 148.062 , 149.062 )
+Selected 1549 events.
+Src at Zenith = 52.4869 ,  selecting events with MCZenith in range ( 51.9869 , 52.9869 )
+Selected 13671 events.
+Src at Zenith = 113.503 ,  selecting events with MCZenith in range ( 113.003 , 114.003 )
+Selected 4589 events.
+Src at Zenith = 46.0962 ,  selecting events with MCZenith in range ( 45.5962 , 46.5962 )
+Selected 12315 events.
+Src at Zenith = 137.195 ,  selecting events with MCZenith in range ( 136.695 , 137.695 )
+Selected 2596 events.
+Src at Zenith = 122.541 ,  selecting events with MCZenith in range ( 122.041 , 123.041 )
+Selected 3695 events.
+Src at Zenith = 47.4152 ,  selecting events with MCZenith in range ( 46.9152 , 47.9152 )
+Selected 12476 events.
+Src at Zenith = 132.349 ,  selecting events with MCZenith in range ( 131.849 , 132.849 )
+Selected 2871 events.
+Src at Zenith = 102.992 ,  selecting events with MCZenith in range ( 102.492 , 103.492 )
+Selected 5887 events.
+Src at Zenith = 103.646 ,  selecting events with MCZenith in range ( 103.146 , 104.146 )
+Selected 5688 events.
+Src at Zenith = 53.8596 ,  selecting events with MCZenith in range ( 53.3596 , 54.3596 )
+Selected 14130 events.
+Src at Zenith = 111.501 ,  selecting events with MCZenith in range ( 111.001 , 112.001 )
+Selected 4905 events.
+Src at Zenith = 103.59 ,  selecting events with MCZenith in range ( 103.09 , 104.09 )
+Selected 5743 events.
+Src at Zenith = 154.848 ,  selecting events with MCZenith in range ( 154.348 , 155.348 )
+Selected 1245 events.
+Src at Zenith = 59.7251 ,  selecting events with MCZenith in range ( 59.2251 , 60.2251 )
+Selected 15386 events.
+Src at Zenith = 145.68 ,  selecting events with MCZenith in range ( 145.18 , 146.18 )
+Selected 1972 events.
+Src at Zenith = 142.711 ,  selecting events with MCZenith in range ( 142.211 , 143.211 )
+Selected 2155 events.
+Src at Zenith = 124.416 ,  selecting events with MCZenith in range ( 123.916 , 124.916 )
+Selected 3442 events.
+Src at Zenith = 89.1224 ,  selecting events with MCZenith in range ( 88.6224 , 89.6224 )
+Selected 11744 events.
+Src at Zenith = 155.603 ,  selecting events with MCZenith in range ( 155.103 , 156.103 )
+Selected 1159 events.
+Src at Zenith = 30.7527 ,  selecting events with MCZenith in range ( 30.2527 , 31.2527 )
+Selected 8337 events.
+Src at Zenith = 132.029 ,  selecting events with MCZenith in range ( 131.529 , 132.529 )
+Selected 2892 events.
+Src at Zenith = 94.4737 ,  selecting events with MCZenith in range ( 93.9737 , 94.9737 )
+Selected 8417 events.
+Src at Zenith = 89.5381 ,  selecting events with MCZenith in range ( 89.0381 , 90.0381 )
+Selected 11570 events.
+Src at Zenith = 111.681 ,  selecting events with MCZenith in range ( 111.181 , 112.181 )
+Selected 4791 events.
+Src at Zenith = 55.809 ,  selecting events with MCZenith in range ( 55.309 , 56.309 )
+Selected 14607 events.
+
+Normalized table of Src Weights for different gamma:
+x-axis = Source Index, y-axis = gamma index (soft to hard)
+
+00:  0.3667 0.0003 0.0000 0.0000 0.0452 0.0438 0.0668 0.0461 0.0384 0.0374 0.0000 0.0374 0.0000 0.0355 0.0326 0.0000 0.0233 0.0255 0.0242 0.0000 0.0193 0.0206 0.0204 0.0000 0.0158 0.0164 0.0191 0.0079 0.0125 0.0000 0.0147 0.0096 0.0080 0.0124 0.0000 
+01:  0.3713 0.0003 0.0000 0.0000 0.0453 0.0448 0.0642 0.0458 0.0387 0.0369 0.0000 0.0374 0.0000 0.0351 0.0325 0.0000 0.0233 0.0248 0.0236 0.0000 0.0196 0.0202 0.0200 0.0000 0.0160 0.0163 0.0186 0.0082 0.0125 0.0000 0.0145 0.0096 0.0080 0.0125 0.0000 
+02:  0.3758 0.0003 0.0000 0.0000 0.0454 0.0456 0.0618 0.0454 0.0390 0.0364 0.0000 0.0374 0.0000 0.0348 0.0324 0.0000 0.0232 0.0241 0.0231 0.0000 0.0199 0.0197 0.0197 0.0000 0.0161 0.0163 0.0182 0.0084 0.0125 0.0000 0.0144 0.0095 0.0081 0.0125 0.0000 
+03:  0.3802 0.0003 0.0000 0.0000 0.0455 0.0464 0.0594 0.0451 0.0393 0.0359 0.0000 0.0374 0.0000 0.0345 0.0322 0.0000 0.0230 0.0236 0.0227 0.0000 0.0201 0.0193 0.0194 0.0000 0.0163 0.0162 0.0177 0.0087 0.0125 0.0000 0.0142 0.0095 0.0082 0.0125 0.0000 
+04:  0.3845 0.0003 0.0000 0.0000 0.0456 0.0471 0.0571 0.0447 0.0395 0.0355 0.0000 0.0373 0.0000 0.0343 0.0320 0.0000 0.0229 0.0231 0.0223 0.0000 0.0203 0.0190 0.0190 0.0000 0.0164 0.0161 0.0173 0.0089 0.0124 0.0000 0.0141 0.0095 0.0083 0.0125 0.0000 
+05:  0.3887 0.0004 0.0000 0.0000 0.0459 0.0477 0.0549 0.0444 0.0397 0.0351 0.0000 0.0372 0.0000 0.0341 0.0317 0.0000 0.0227 0.0226 0.0219 0.0000 0.0204 0.0187 0.0187 0.0000 0.0165 0.0160 0.0169 0.0092 0.0123 0.0000 0.0139 0.0095 0.0084 0.0125 0.0000 
+06:  0.3924 0.0004 0.0000 0.0000 0.0462 0.0482 0.0528 0.0440 0.0398 0.0348 0.0000 0.0371 0.0000 0.0339 0.0314 0.0000 0.0225 0.0223 0.0217 0.0000 0.0205 0.0184 0.0183 0.0000 0.0165 0.0159 0.0166 0.0095 0.0123 0.0000 0.0138 0.0095 0.0085 0.0125 0.0000 
+07:  0.3958 0.0005 0.0001 0.0000 0.0467 0.0486 0.0509 0.0437 0.0399 0.0345 0.0000 0.0370 0.0000 0.0337 0.0310 0.0000 0.0223 0.0220 0.0214 0.0000 0.0207 0.0182 0.0180 0.0000 0.0165 0.0158 0.0163 0.0098 0.0122 0.0000 0.0136 0.0096 0.0087 0.0125 0.0000 
+08:  0.3985 0.0006 0.0001 0.0001 0.0473 0.0488 0.0490 0.0433 0.0400 0.0343 0.0000 0.0369 0.0000 0.0335 0.0307 0.0000 0.0221 0.0218 0.0213 0.0000 0.0208 0.0181 0.0177 0.0000 0.0166 0.0157 0.0160 0.0101 0.0121 0.0000 0.0134 0.0097 0.0089 0.0125 0.0000 
+09:  0.4005 0.0007 0.0002 0.0001 0.0482 0.0490 0.0473 0.0430 0.0400 0.0341 0.0000 0.0368 0.0000 0.0334 0.0304 0.0000 0.0220 0.0217 0.0212 0.0000 0.0208 0.0180 0.0174 0.0000 0.0165 0.0156 0.0158 0.0104 0.0120 0.0000 0.0133 0.0099 0.0091 0.0125 0.0000 
+10:  0.4014 0.0009 0.0003 0.0002 0.0494 0.0490 0.0456 0.0426 0.0400 0.0338 0.0000 0.0368 0.0000 0.0333 0.0302 0.0000 0.0218 0.0217 0.0212 0.0000 0.0210 0.0180 0.0171 0.0000 0.0165 0.0155 0.0156 0.0108 0.0119 0.0000 0.0132 0.0101 0.0093 0.0126 0.0000 
+11:  0.4011 0.0013 0.0004 0.0003 0.0509 0.0488 0.0440 0.0423 0.0399 0.0336 0.0001 0.0369 0.0001 0.0332 0.0299 0.0001 0.0217 0.0218 0.0213 0.0001 0.0211 0.0181 0.0169 0.0001 0.0164 0.0155 0.0154 0.0113 0.0118 0.0000 0.0131 0.0104 0.0097 0.0126 0.0000 
+12:  0.3992 0.0019 0.0006 0.0004 0.0530 0.0485 0.0425 0.0418 0.0398 0.0334 0.0001 0.0370 0.0001 0.0331 0.0298 0.0001 0.0217 0.0220 0.0215 0.0001 0.0213 0.0183 0.0166 0.0001 0.0164 0.0154 0.0153 0.0118 0.0117 0.0000 0.0130 0.0108 0.0101 0.0127 0.0001 
+13:  0.3955 0.0029 0.0010 0.0006 0.0555 0.0481 0.0410 0.0413 0.0395 0.0331 0.0002 0.0372 0.0002 0.0330 0.0297 0.0001 0.0217 0.0223 0.0218 0.0001 0.0215 0.0185 0.0164 0.0001 0.0163 0.0153 0.0152 0.0124 0.0116 0.0001 0.0130 0.0112 0.0106 0.0128 0.0001 
+14:  0.3895 0.0045 0.0016 0.0010 0.0587 0.0474 0.0396 0.0407 0.0391 0.0327 0.0003 0.0375 0.0003 0.0329 0.0297 0.0002 0.0217 0.0228 0.0223 0.0002 0.0218 0.0188 0.0161 0.0002 0.0162 0.0152 0.0152 0.0132 0.0115 0.0001 0.0130 0.0118 0.0112 0.0130 0.0001 
+15:  0.3807 0.0069 0.0025 0.0016 0.0628 0.0464 0.0381 0.0400 0.0386 0.0323 0.0005 0.0379 0.0004 0.0327 0.0298 0.0003 0.0217 0.0234 0.0228 0.0003 0.0221 0.0193 0.0158 0.0003 0.0160 0.0151 0.0152 0.0141 0.0114 0.0001 0.0130 0.0125 0.0119 0.0131 0.0002 
+16:  0.3687 0.0106 0.0039 0.0025 0.0679 0.0451 0.0364 0.0390 0.0378 0.0317 0.0008 0.0383 0.0007 0.0325 0.0298 0.0005 0.0217 0.0241 0.0235 0.0005 0.0225 0.0199 0.0155 0.0005 0.0158 0.0150 0.0152 0.0153 0.0112 0.0002 0.0129 0.0134 0.0129 0.0134 0.0003 
+17:  0.3527 0.0163 0.0061 0.0039 0.0742 0.0434 0.0345 0.0378 0.0367 0.0309 0.0012 0.0387 0.0011 0.0321 0.0299 0.0008 0.0216 0.0249 0.0243 0.0008 0.0230 0.0205 0.0150 0.0008 0.0156 0.0147 0.0152 0.0167 0.0109 0.0004 0.0129 0.0144 0.0141 0.0136 0.0005 
+18:  0.3320 0.0248 0.0094 0.0060 0.0820 0.0412 0.0323 0.0361 0.0352 0.0298 0.0019 0.0391 0.0016 0.0314 0.0298 0.0013 0.0213 0.0259 0.0252 0.0012 0.0234 0.0212 0.0144 0.0012 0.0151 0.0143 0.0151 0.0185 0.0104 0.0006 0.0127 0.0156 0.0156 0.0138 0.0007 
+19:  0.3057 0.0373 0.0143 0.0090 0.0918 0.0383 0.0296 0.0339 0.0331 0.0282 0.0029 0.0391 0.0025 0.0303 0.0293 0.0020 0.0208 0.0268 0.0260 0.0019 0.0236 0.0220 0.0135 0.0018 0.0145 0.0137 0.0148 0.0207 0.0098 0.0008 0.0124 0.0169 0.0174 0.0140 0.0011 
+20:  0.2734 0.0549 0.0212 0.0133 0.1039 0.0347 0.0264 0.0310 0.0303 0.0260 0.0044 0.0386 0.0037 0.0287 0.0284 0.0029 0.0199 0.0276 0.0267 0.0028 0.0236 0.0225 0.0124 0.0026 0.0136 0.0128 0.0143 0.0235 0.0090 0.0013 0.0119 0.0184 0.0197 0.0140 0.0016 
+21:  0.2350 0.0789 0.0306 0.0192 0.1189 0.0303 0.0225 0.0273 0.0267 0.0231 0.0063 0.0372 0.0054 0.0263 0.0268 0.0042 0.0184 0.0280 0.0270 0.0040 0.0231 0.0227 0.0109 0.0038 0.0124 0.0116 0.0135 0.0269 0.0079 0.0018 0.0110 0.0200 0.0225 0.0137 0.0023 
+22:  0.1916 0.1093 0.0427 0.0266 0.1367 0.0251 0.0182 0.0229 0.0224 0.0196 0.0088 0.0347 0.0076 0.0230 0.0242 0.0059 0.0162 0.0277 0.0265 0.0056 0.0218 0.0224 0.0091 0.0053 0.0108 0.0100 0.0122 0.0310 0.0066 0.0025 0.0098 0.0214 0.0259 0.0129 0.0032 
+23:  0.1463 0.1447 0.0568 0.0353 0.1569 0.0195 0.0138 0.0180 0.0176 0.0156 0.0117 0.0308 0.0101 0.0190 0.0208 0.0078 0.0135 0.0264 0.0251 0.0074 0.0197 0.0212 0.0071 0.0070 0.0088 0.0081 0.0104 0.0357 0.0051 0.0034 0.0082 0.0224 0.0298 0.0116 0.0043 
+24:  0.1036 0.1817 0.0715 0.0443 0.1784 0.0141 0.0096 0.0132 0.0129 0.0115 0.0147 0.0259 0.0128 0.0147 0.0168 0.0098 0.0105 0.0240 0.0227 0.0093 0.0168 0.0191 0.0051 0.0088 0.0067 0.0062 0.0083 0.0409 0.0037 0.0043 0.0064 0.0228 0.0341 0.0099 0.0054 
+25:  0.0677 0.2155 0.0850 0.0525 0.1993 0.0094 0.0061 0.0089 0.0087 0.0079 0.0174 0.0205 0.0153 0.0105 0.0127 0.0116 0.0076 0.0207 0.0195 0.0110 0.0135 0.0164 0.0033 0.0104 0.0047 0.0044 0.0062 0.0460 0.0025 0.0051 0.0046 0.0225 0.0383 0.0079 0.0064 
+26:  0.0411 0.2428 0.0959 0.0591 0.2179 0.0058 0.0036 0.0056 0.0055 0.0050 0.0196 0.0153 0.0173 0.0071 0.0090 0.0131 0.0052 0.0171 0.0159 0.0124 0.0103 0.0134 0.0020 0.0117 0.0031 0.0029 0.0044 0.0507 0.0015 0.0057 0.0031 0.0216 0.0421 0.0060 0.0072 
+27:  0.0235 0.2621 0.1036 0.0638 0.2333 0.0034 0.0020 0.0033 0.0033 0.0030 0.0211 0.0109 0.0187 0.0045 0.0061 0.0141 0.0033 0.0136 0.0126 0.0134 0.0075 0.0106 0.0012 0.0126 0.0019 0.0018 0.0029 0.0548 0.0009 0.0062 0.0020 0.0204 0.0454 0.0044 0.0077 
+28:  0.0128 0.2745 0.1086 0.0668 0.2455 0.0019 0.0011 0.0019 0.0019 0.0017 0.0221 0.0076 0.0197 0.0027 0.0040 0.0148 0.0021 0.0106 0.0097 0.0140 0.0053 0.0082 0.0006 0.0132 0.0011 0.0011 0.0019 0.0582 0.0005 0.0065 0.0012 0.0190 0.0481 0.0031 0.0081 
+29:  0.0068 0.2816 0.1115 0.0686 0.2549 0.0010 0.0005 0.0011 0.0010 0.0009 0.0226 0.0052 0.0202 0.0016 0.0025 0.0152 0.0012 0.0082 0.0075 0.0144 0.0037 0.0063 0.0003 0.0135 0.0006 0.0006 0.0012 0.0609 0.0003 0.0067 0.0007 0.0177 0.0502 0.0022 0.0083 
+Weights for Gamma=1: 0.245198 0.219514 0.242049 0.29324  
+Weights for Gamma=1.1: 0.219632 0.226639 0.249885 0.303844  
+Weights for Gamma=1.2: 0.199849 0.232073 0.255868 0.31221  
+Weights for Gamma=1.3: 0.185469 0.235996 0.260157 0.318379  
+Weights for Gamma=1.4: 0.175767 0.238694 0.263025 0.322514  
+Weights for Gamma=1.5: 0.169658 0.240517 0.264864 0.324961  
+Weights for Gamma=1.6: 0.165831 0.241789 0.266118 0.326263  
+Weights for Gamma=1.7: 0.163068 0.242707 0.267173 0.327052  
+Weights for Gamma=1.8: 0.160531 0.24333 0.268275 0.327864  
+Weights for Gamma=1.9: 0.15782 0.243641 0.269524 0.329016  
+Weights for Gamma=2: 0.154832 0.243617 0.270934 0.330617  
+Weights for Gamma=2.1: 0.151596 0.24327 0.272493 0.332641  
+Weights for Gamma=2.2: 0.148176 0.242641 0.274187 0.334996  
+Weights for Gamma=2.3: 0.144623 0.241791 0.27601 0.337575  
+Weights for Gamma=2.4: 0.140979 0.240787 0.277958 0.340275  
+Weights for Gamma=2.5: 0.137269 0.239691 0.28003 0.34301  
+Weights for Gamma=2.6: 0.13351 0.238555 0.28222 0.345714  
+Weights for Gamma=2.7: 0.129717 0.237423 0.28452 0.348341  
+Weights for Gamma=2.8: 0.125898 0.236324 0.286912 0.350866  
+Weights for Gamma=2.9: 0.122064 0.235275 0.289379 0.353283  
+Weights for Gamma=3: 0.118225 0.234284 0.291894 0.355596  
+Weights for Gamma=3.1: 0.114392 0.233353 0.294431 0.357824  
+Weights for Gamma=3.2: 0.110577 0.232473 0.296959 0.359991  
+Weights for Gamma=3.3: 0.106791 0.231638 0.299448 0.362123  
+Weights for Gamma=3.4: 0.103045 0.230835 0.301867 0.364253  
+Weights for Gamma=3.5: 0.0993514 0.230053 0.304186 0.366409  
+Weights for Gamma=3.6: 0.0957189 0.229282 0.306378 0.368621  
+Weights for Gamma=3.7: 0.0921564 0.228512 0.308416 0.370916  
+Weights for Gamma=3.8: 0.0886713 0.227734 0.310277 0.373317  
+Weights for Gamma=3.9: 0.0852693 0.226943 0.31194 0.375847  
+Weights for Gamma=4: 0.0819551 0.226133 0.313387 0.378525  
+GetEstProb:  0.5
+GetTestStat: 0
+Get Ns:      9.99034e-11
+Get gamma:   2.16989
+..q.qqq.qq.qqqq.qqq.qqqqqq

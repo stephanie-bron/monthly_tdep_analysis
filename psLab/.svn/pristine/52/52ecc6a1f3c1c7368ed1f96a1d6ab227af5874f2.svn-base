@@ -1,0 +1,52 @@
+
+{
+  // THESE WON'T GET CHANGED IF THEY HAVE ALREADY BEEN SET ELSEWHERE
+  bool DISCO_DISCOVERY;
+  int DISCO_LOOPS;
+
+  // psData && llhFn must already be configured
+
+  DiscoveryPotential disco;
+  disco.monitor_ = true;
+  disco.SetLogLikelihood(llhFn);
+
+  disco.method_ = 2;
+  if (DISCO_LOOPS > 0) { disco.loops_ = DISCO_LOOPS; }
+  else { disco.loops_ = 20; }
+  cout << "Configuring Disco:\n Loops: " << disco.loops_ << endl;
+
+
+  if (DISCO_DISCOVERY) { // Select for Discovery Potential
+    cout << " Setting for discovery:\n";
+    disco.SetForDiscovery();
+    disco.detectionSignificance_ = 2.87e-7; // one-sided p-value for 5sigma
+    disco.detectionPower_ = 0.5;
+  }
+  else { // Select for Sensitivity
+    cout << " Setting for Sensitivity:\n";
+    disco.SetForUpperLimit();
+    disco.detectionPower_ = 0.90;
+    cout << " Calculating Median Bkg Prob (set sensitivity p-threshold):\n";
+    double medBkgProb = disco.MedianProbForBkg(&psData, srcLocation, 1000);
+    disco.detectionSignificance_ = medBkgProb;
+    cout << " Median Bkg Prob: " << medBkgProb << endl;
+  }
+
+  cout << " Significance: " << disco.detectionSignificance_;
+  cout << "   Power: " << disco.detectionPower_ << endl;
+
+
+  double meanSrcEv_ForFlux = psData.GetSource()->GetMeanSrcNev();
+  cout << "Mean Number of Source events expected for source model: ";
+  cout << meanSrcEv_ForFlux << endl;
+
+  //  cout << "Analysis Parameters:\n";
+  //  cout << "Significance Required for Detection: ";
+  //  cout << disco->detectionSignificance_ << endl;
+  //  cout << "Fraction of Trials to be Detected: ";
+  //  cout << disco->detectionPower_ << endl;
+
+  disco.AnalyzeDiscoveryPotential(&psData,srcLocation);
+
+  PresentDiscoveryPotentialResults(&disco);
+}

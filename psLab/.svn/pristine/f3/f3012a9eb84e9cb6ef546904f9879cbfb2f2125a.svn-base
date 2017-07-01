@@ -1,0 +1,77 @@
+
+{
+  /*
+  vector<I3Event> shortEvents;
+  for (int i=0; i<baseEvents.size(); ++i) {
+    shortEvents.push_back(baseEvents[i]);
+  }
+
+  psData.SetBaseEvents(shortEvents);
+  //  psData.SetBaseEvents(baseEvents);
+
+
+  psData.SetSource(*mySignalPtr);
+  psData.SetRandomizeSrc(false); // shouldn't need to do this usually
+
+
+  LlhEnergy llhEnergyFn;
+  llhEnergyFn.SetUseEnergy(true);
+  llhEnergyFn.SetOptimizeTolerance(0.01);
+  llhEnergyFn.SetOptimizeAngleDeg(10.);
+  //  llhEnergyFn.SetOptimizeSrcFracMax(15000./30000);
+  llhEnergyFn.SetMonitorLevel(0);
+  */
+
+  gROOT->ProcessLine(".x macro_SetLlhEnergy.C(true, 5., 0.01)");
+
+  int nTrials = 1000;
+  int nSrc = 0.;
+
+  // Reset the stopwatches (otherwise keep value from last time)
+  llhEnergyFn.stopwatch_MaximizeLlh_.Reset();
+  llhEnergyFn.stopwatch_optimize_.Reset();
+  llhEnergyFn.stopwatch_minuitMigrad_.Reset();
+  llhEnergyFn.stopwatch_minuitFCN_.Reset();
+
+  cout << "\nNumber of Trials: " << nTrials << endl;
+  cout << "\nNumber of Base Events: " << psData.GetEvents()->size() << endl;
+  cout << "Base Thinning: " << psData.GetBaseThinningProb() << endl;
+  cout << "Search Location: " << mySrcLocation.GetRa() << " , "
+       << mySrcLocation.GetDec() << endl;
+  cout << "nSrc events to add: " << nSrc << endl;
+
+
+
+  CountMonitor cm(10., nTrials);
+
+  TStopwatch tsTotal, tsGenerate;
+  tsTotal.Stop();
+  tsGenerate.Stop();
+
+  tsTotal.Start(false);  // false = don't reset
+  for (int i=0; i<nTrials; ++i) {
+    cm.UpdateCount();
+    tsGenerate.Start(false);  // false = don't reset
+    psData.GenerateDataSet_with_nSrcEvents(nSrc);
+    //    psData.UseRealData();
+    tsGenerate.Stop();
+    llhEnergyFn.SetAnalysis(psData,mySrcLocation);
+    llhEnergyFn.MaximizeLlh();
+  }
+  tsTotal.Stop();
+  cout << endl;
+
+  cout << "Total Time Results:        ";
+  tsTotal.Print();
+  cout << "- Total Generator Results:   ";
+  tsGenerate.Print();
+  cout << "- MaximizeLlh Time Results:  ";
+  llhEnergyFn.stopwatch_MaximizeLlh_.Print();
+  cout << "  - Optimize Time Results:     ";
+  llhEnergyFn.stopwatch_optimize_.Print();
+  cout << "  - MinuitMigrad Time Results: ";
+  llhEnergyFn.stopwatch_minuitMigrad_.Print();
+  cout << "    - MinuitFCN Time Results:    ";
+  llhEnergyFn.stopwatch_minuitFCN_.Print();
+
+}

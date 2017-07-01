@@ -1,0 +1,234 @@
+Error in <TSystem::ExpandFileName>: input: $HOME/.root.mimes, output: $HOME/.root.mimes
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/fluxus/public//net/user/mrameez/trunk/fluxus/public/FluxFunction_C.so
+*** Interpreter error recovered ***
+Logging configured from file /net/user/aguilar/icetray/meta-projects/std-processing/11-01-00/build_RHEL_6.0_amd64/log4cplus.conf
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/CoordinateTransform_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/CoordClasses_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/CoordEquatorialDeg_h.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/classes_h.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/Time_h.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/EventTimeModule_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/EventTimeModuleDiscrete_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/TimePdf_h.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/I3Event_h.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/EventLoader_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/I3SignalGenerator_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/DeclinationDensityMap_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/EnergyProb_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/SimpleEnergyProb_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/ZenithEnergyProb_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/BkgSpaceProb_h.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/DecBkgProb_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/I3Analysis_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/MinuitWrapperClass_h.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/LlhFunctionsBase_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/LlhFunctions_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/LlhEnergy_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/MinuitAnalysisFn_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/NewLlhEnergy_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/MultiAnalysisSet_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/MultiAnalysisFn_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/llh_discovery_potential_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/Kent_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/BetaProf_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/EventLoaderExt_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/NewLlhStack_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/I3TH2FGenerator_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/NewLlhTH2F_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/NewLlhExt_C.so
+*** Interpreter error recovered ***
+dlopen error: SetPad_h.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/llh/public/VectorLoader_C.so
+*** Interpreter error recovered ***
+Error: Symbol AnalysisSet is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:7:
+Error: Symbol psData is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:7:
+Error: Invalid type 'EquatorialDeg' in declaration of 'mySrcLocation' /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:8:
+Error: Symbol EquatorialDeg mySrcLocation is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:8:
+Error: Syntax error /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:13:
+Error: void type variable can not be declared /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:13:
+Error: Syntax error /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:15:
+Error: void type variable can not be declared /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:15:
+Warning: Unknown type 'TimePdf' in function argument handled as int /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:34:
+Error: Symbol SourceModule is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:43:
+Error: Symbol src is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:43:
+Error: void type variable can not be declared /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:47:
+Syntax Error: SetSource Maybe missing ';' /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:47:
+Error: Syntax error /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:71:
+Error: void type variable can not be declared /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:97:
+Syntax Error: SetPointSource Maybe missing ';' /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:97:
+Error: Invalid type 'EventLoader' in declaration of 'evLoader' /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:112:
+Error: Symbol EventLoader evLoader is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Ark.C:112:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/memory:37:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/memory:38:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/memory:43:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/memory:44:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/memory:45:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/vector:51:
+Error: Function I3Event() is not defined in current scope  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/vector:442:
+Error: Function I3Event() is not defined in current scope  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/vector:442:
+Error: Syntax error /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/vector:522:
+Error: void type variable can not be declared /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/vector:522:
+Warning: Error occurred during reading source files
+Note: Link requested for undefined class vector<I3Event,allocator<I3Event> >::value_type (ignore this message) :0:
+Warning: Error occurred during dictionary source generation
+!!!Removing /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/AutoDict_vector_I3Event__cxx_ACLiC_dict.cxx /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/AutoDict_vector_I3Event__cxx_ACLiC_dict.h !!!
+Error: /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/bin/rootcint: error loading headers...
+Error in <ACLiC>: Dictionary generation failed!
+Error: class,struct,union or type I3Event not defined  defalloc.h:137:
+*** Interpreter error recovered ***
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/./mpfSigmaDegRescaledIC79V2_C.so
+dlopen error: FluxFunction_C.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/./mpfSigmaDegRescaledIC79V2_C.so
+*** Interpreter error recovered ***
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/./mpfSigmaDegRescaledIC59_C.so
+dlopen error: FluxFunction_C.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/./mpfSigmaDegRescaledIC59_C.so
+*** Interpreter error recovered ***
+Info in <TUnixSystem::ACLiC>: creating shared library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/./mpfSigmaDegRescaled2_C.so
+dlopen error: FluxFunction_C.so: cannot open shared object file: No such file or directory
+Load Error: Failed to load Dynamic link library /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/./mpfSigmaDegRescaled2_C.so
+*** Interpreter error recovered ***
+Error: Invalid type 'I3Ark' in declaration of 'ark40' /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:36:
+Error: Symbol I3Ark ark40 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:36:
+Error: Syntax error load_ark_ic40.C:2:
+Error: Missing one of ',;' expected at or after line 2.
+Error: Unexpected end of file (G__fignorestream():3) load_ark_ic40.C:162:
+Error: void type variable can not be declared load_ark_ic40.C:162:
+Error: Missing one of ',;=():' expected at or after line 162.
+Error: Unexpected end of file (G__fgetstream():2) load_ark_ic40.C:162:
+Syntax Error:  Maybe missing ';' load_ark_ic40.C:162:
+Error: Symbol ark40 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:37:
+Error: Symbol ark40 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:37:
+Error: Function load_ark_ic40(ark40,OPT_USEREALDATA) is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:37:
+*** Interpreter error recovered ***
+Error: Invalid type 'I3Ark' in declaration of 'ark59' /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:39:
+Error: Symbol I3Ark ark59 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:39:
+Error: Syntax error load_ark_ic59_BDT.C:2:
+Error: Missing one of ',;' expected at or after line 2.
+Error: Unexpected end of file (G__fignorestream():3) load_ark_ic59_BDT.C:212:
+Error: void type variable can not be declared load_ark_ic59_BDT.C:212:
+Error: Missing one of ',;=():' expected at or after line 212.
+Error: Unexpected end of file (G__fgetstream():2) load_ark_ic59_BDT.C:212:
+Syntax Error:  Maybe missing ';' load_ark_ic59_BDT.C:212:
+Error: Symbol ark59 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:40:
+Error: Symbol ark59 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:40:
+Error: Function load_ark_ic59_BDT(ark59,OPT_USEREALDATA) is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:40:
+*** Interpreter error recovered ***
+Error: Invalid type 'I3Ark' in declaration of 'ark79' /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:42:
+Error: Symbol I3Ark ark79 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:42:
+Error: Syntax error load_ark_ic79_Final.C:2:
+Error: Missing one of ',;' expected at or after line 2.
+Error: Unexpected end of file (G__fignorestream():3) load_ark_ic79_Final.C:241:
+Error: void type variable can not be declared load_ark_ic79_Final.C:241:
+Error: Missing one of ',;=():' expected at or after line 241.
+Error: Unexpected end of file (G__fgetstream():2) load_ark_ic79_Final.C:241:
+Syntax Error:  Maybe missing ';' load_ark_ic79_Final.C:241:
+Error: Symbol ark79 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:43:
+Error: Symbol ark79 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:43:
+Error: Function load_ark_ic79_Final(ark79,OPT_USEREALDATA) is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:43:
+*** Interpreter error recovered ***
+Error: Invalid type 'MultiArk' in declaration of 'mark' /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:49:
+Error: Symbol MultiArk mark is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:49:
+Error: Symbol mark is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:51:
+Error: Failed to evaluate mark.AddArk(ark40)
+Error: Symbol mark is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:52:
+Error: Failed to evaluate mark.AddArk(ark59)
+Error: Symbol mark is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:53:
+Error: Failed to evaluate mark.AddArk(ark79)
+Error: Symbol MultiAnalysisSet is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:55:
+Error: Symbol mark is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:55:
+Error: Failed to evaluate mark.psData
+Error: class,struct,union or type MultiAnalysisSet not defined  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:55:
+Error: Invalid type 'MultiAnalysisSet*' in declaration of 'mas' /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:55:
+Error: Invalid type 'I3MultiSignalGenerator' in declaration of 'msg40' /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:64:
+Error: Symbol I3MultiSignalGenerator msg40 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:64:
+Error: Invalid type 'I3MultiSignalGenerator' in declaration of 'msg59' /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:65:
+Error: Symbol I3MultiSignalGenerator msg59 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:65:
+Error: Invalid type 'I3MultiSignalGenerator' in declaration of 'msg79' /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:66:
+Error: Symbol I3MultiSignalGenerator msg79 is not defined in current scope  /net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/Track_multi_405979_genTS.C:66:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/memory:37:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/memory:38:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/memory:43:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/memory:44:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/memory:45:
+Error: class,struct,union or type I3Event not defined  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/vector:51:
+Error: Function I3Event() is not defined in current scope  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/vector:442:
+Error: Function I3Event() is not defined in current scope  /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/vector:442:
+Error: Syntax error /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/vector:522:
+Error: void type variable can not be declared /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/cint/cint/lib/prec_stl/vector:522:
+Warning: Error occurred during reading source files
+Note: Link requested for undefined class vector<I3Event,allocator<I3Event> >::value_type (ignore this message) :0:
+Warning: Error occurred during dictionary source generation
+!!!Removing /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/AutoDict_vector_I3Event__cxx_ACLiC_dict.cxx /net/user/mrameez/trunk/lib64/llh/public//net/user/mrameez/trunk/macro_llh/ic79/Stacking/Blackhole/AutoDict_vector_I3Event__cxx_ACLiC_dict.h !!!
+Error: /net/local/software/RHEL_6.0_amd64/i3ports/v3/root-v5.28.00/bin/rootcint: error loading headers...
+Error in <ACLiC>: Dictionary generation failed!
+Error: class,struct,union or type I3Event not defined  defalloc.h:137:
+*** Interpreter error recovered ***

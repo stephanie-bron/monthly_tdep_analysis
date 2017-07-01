@@ -1,0 +1,109 @@
+
+{
+  TCanvas *canDetectionZenith;
+
+  cout << "Warning: use with caution... this is an older script and is not\n";
+  cout << "prepared to handle more complicated fluxes possible now.\n";
+
+
+  // First, reproduce what wsa done in macro_DetectionZenith script
+
+  // only make new canvas if it didn't already exist:
+  canDetectionZenith = dynamic_cast<TCanvas*> 
+    ( gROOT->GetListOfCanvases()->FindObject("canDetectionZenith") );
+  if ( !canDetectionZenith ) {
+    canDetectionZenith = 
+      new TCanvas("canDetectionZenith","canDetectionZenith",20,20,800,700);
+    canDetectionZenith->Divide(2,2,0.005,0.005);
+  }
+  TCanvas *can = canDetectionZenith;
+
+  can->cd(1);
+  hBkgEvents->Draw();
+
+  can->cd(2);
+  hFixedFluxEvents->Draw();
+
+  can->cd(3);
+  hDetectEvents->Draw();
+
+  can->cd(4);
+  hDetectFlux->Draw();
+  gPad->SetLogy(true);
+
+
+
+  // Now, do stuff that was part of original script
+  // To Do: update with methods from fluxus project...
+
+
+  TCanvas *can = new TCanvas("canDetectEvents","canDetectEvents",800,400);
+
+  can->cd();
+  can->SetRightMargin(0.075);
+  can->SetLeftMargin(0.11);
+  can->SetBottomMargin(0.14);
+  can->SetTopMargin(0.1);
+
+  TH1D* hDetectEvents_temp = dynamic_cast<TH1D*> (hDetectEvents->Clone());
+  hDetectEvents_temp->Draw("P");
+  gPad->SetGridy(1);
+  hDetectEvents_temp->SetMarkerStyle(2);
+  hDetectEvents_temp->SetMarkerSize(4);
+  hDetectEvents_temp->SetMinimum(0);
+  int maxBin = hDetectEvents_temp->GetMaximumBin();
+  double max = hDetectEvents_temp->GetBinContent(maxBin);
+  hDetectEvents_temp->SetMaximum(1.5*max );
+  gPad->SetTickx(1);
+  gPad->SetTicky(1);
+
+  hDetectEvents_temp->GetYaxis()->SetTitle("Events");
+
+  hDetectEvents_temp->GetYaxis()->CenterTitle(false);
+
+  hDetectEvents_temp->GetYaxis()->SetTitleSize(0.06);
+  hDetectEvents_temp->GetYaxis()->SetLabelSize(0.06);
+  hDetectEvents_temp->GetYaxis()->SetTitleOffset(0.6);
+
+  hDetectEvents_temp->GetXaxis()->SetTitleSize(0.06);
+  hDetectEvents_temp->GetXaxis()->SetLabelSize(0.05);
+  hDetectEvents_temp->GetXaxis()->CenterTitle(true);
+
+
+
+
+
+  TCanvas *can = new TCanvas("canDetectFlux","canDetectFlux",800,400);
+
+  can->cd();
+  can->SetRightMargin(0.075);
+  can->SetLeftMargin(0.11);
+  can->SetBottomMargin(0.14);
+  can->SetTopMargin(0.1);
+
+  TH1D* hDetectFlux_temp = dynamic_cast<TH1D*> (hDetectFlux->Clone());
+  hDetectFlux_temp->Draw("L");
+  gPad->SetTickx(1);
+  gPad->SetTicky(1);
+  gPad->SetLogy(1);
+
+  hDetectFlux_temp->GetYaxis()->SetTitle("#Phi^{0} [GeV^{-1} cm^{-2} s^{-1}]");
+
+  hDetectFlux_temp->GetYaxis()->CenterTitle(true);
+
+  hDetectFlux_temp->GetYaxis()->SetTitleSize(0.06);
+  hDetectFlux_temp->GetYaxis()->SetLabelSize(0.06);
+  hDetectFlux_temp->GetYaxis()->SetTitleOffset(0.9);
+
+  hDetectFlux_temp->GetXaxis()->SetTitleSize(0.06);
+  hDetectFlux_temp->GetXaxis()->SetLabelSize(0.05);
+  hDetectFlux_temp->GetXaxis()->CenterTitle(true);
+
+  int minBin = hDetectFlux_temp->GetMinimumBin();
+  double min = hDetectFlux_temp->GetBinContent(minBin);
+  hDetectFlux_temp->SetMinimum(0.5*min);
+  int maxBin = hDetectFlux_temp->GetMaximumBin();
+  double max = hDetectFlux_temp->GetBinContent(maxBin);
+  hDetectFlux_temp->SetMaximum(2.0*max);
+
+}

@@ -1,0 +1,158 @@
+// Okay, I want a simple way of plotting the events which contribute
+// near the 
+
+//should assume I've already loaded the data + source (ark59).
+{
+
+  bool optEnergy = true;
+
+  I3Ark new_ark = arkIC79;
+
+  string nstring;
+  int n;
+  
+  double dist;
+  double mjd;
+  double tmin = new_ark.tmin;
+  double tmax = new_ark.tmax;
+int tbins = max(100.,(tmax-tmin)*1000.);
+ 
+ double nsrc_best, g, eweight, w, w1;
+ int ntimes;
+ vector<double> dvect;
+ const Coord *cc;
+ EquatorialDeg *cceq;
+ 
+ vector<I3Event> eventVector = new_ark.baseEvents;
+
+ //Hotspot
+ //EquatorialDeg testSearch1(343.45,-31.65);
+
+ //Wide blue blob
+ EquatorialDeg testSearch1(115.419, 20.8571);
+ double gammasrc = 1.25;   //1.64;//2.15;//llhEnergyFn->GetPar(1);
+
+ TH1D * weightTimes = new TH1D("weightTimes","weightTimes",tbins,tmin,tmax);
+ TH1D * bkgTimes = new TH1D("bkgTimes","bkgTimes",tbins,tmin,tmax);
+ TH1D * srcTimes = new TH1D("srcTimes","srcTimes",tbins,tmin,tmax);
+ 
+ srcTimes->SetLineColor(2);
+
+ //Hotspot
+ // GaussianTimePdf tPdfsrc(new_ark.tmin, new_ark.tmax, 55466., 1.7889,1.);
+ //Wide region
+ GaussianTimePdf tPdfsrc(new_ark.tmin, new_ark.tmax, 55609.875, 0.00109553,1.);
+ //GaussianTimePdf tPdfsrc(new_ark.tmin, new_ark.tmax, 55609.9., 0.01.,1.);
+ 
+ 
+ tPdfsrc.fillHisto(1e6);
+ //tPdfsrc.livetimeTotal = livetime/86400.;
+ 
+ I3Event e;
+ 
+
+
+ double eweight, rDeg;
+EquatorialDeg pos;
+ 
+ TCanvas* c1 = new TCanvas("c1","c1",1000,500);
+ c1.SetLogy(1);
+c1.SetGridx();
+ weightTimes->SetTitle("");
+weightTimes->GetYaxis()->SetTitle("Time-Independent Event Weight");
+weightTimes->GetXaxis()->SetTitle("Event Time (MJD)");
+weightTimes->GetYaxis()->SetRangeUser(9.,9e5);
+//weightTimes->GetYaxis()->SetRangeUser(0.1,5.);
+//weightTimes->GetYaxis()->SetMaximum(1e4);
+weightTimes->Draw();
+double soverb;
+double spaceang;
+double tdweight;
+
+new_ark.decBkgProb.FixToBase();
+
+/*
+for (int i=0;i<eventVector40.size();i++) {
+//  bkgTimes->Fill( eventVector[i].GetTime().GetTime() );
+  eweight = ark40.eProb->GetEnergyMaxRatio(eventVector40[i]);
+  if (gammasrc) eweight = ark40.eProb->GetEnergyProbGamma(eventVector40[i],gammasrc)/ark40.eProb->GetEnergyProbBkg(eventVector40[i]);
+ 
+  soverb = eventVector40[i].ProbFrom(testSearch1[nsrc])*eweight/ark40.decBkgProb.GetBkgProbDensity(eventVector40[i]);
+
+  if (soverb>10){
+    spaceang = eventVector40[i].GetCoord().DistanceTo(testSearch1[nsrc]);
+    //cout << soverb << " " << eventVector[i].GetTime().GetTime() << " " << eventVector[i].GetParams().runID << " " << eventVector[i].GetParams().eventID << " " << eventVector[i].GetEquatorialDeg().GetRa() << " " << eventVector[i].GetEquatorialDeg().GetDec() << " " << spaceang << endl;
+    l = new TLine(eventVector40[i].GetTime().GetTime(), 0., eventVector40[i].GetTime().GetTime(), soverb);  
+    
+    l->SetLineWidth(1);
+    l->SetLineColor(4);
+    //if ( fabs(eventVector[i].GetTime().GetTime()-54874.7) < 0.1 ) { l->SetLineColor(2); }
+    l->Draw();
+  }
+}
+*/
+
+ ofstream fout("ic79_flare_unblinded.txt");
+ char cadena[300];   
+ for (int i=0;i<eventVector.size();i++) {
+//  bkgTimes->Fill( eventVector[i].GetTime().GetTime() );
+   if ( eventVector[i].GetTime().GetTime() > 55615 ||  eventVector[i].GetTime().GetTime() < 55600) continue;
+   
+
+  eweight = new_ark.eProb->GetEnergyMaxRatio(eventVector[i]);
+  if (gammasrc) eweight = new_ark.eProb->GetEnergyProbGamma(eventVector[i],gammasrc)/new_ark.eProb->GetEnergyProbBkg(eventVector[i]);
+ 
+  soverb = eventVector[i].ProbFrom(testSearch1)*eweight/new_ark.decBkgProb.GetBkgProbDensity(eventVector[i]);
+                                               //eventVector[i].GetBkgSpaceProbFn()->GetBkgProbDensity(eventVector[i]);
+
+
+  if ( (soverb)>10){
+    spaceang = eventVector[i].GetCoord().DistanceTo(testSearch1);
+    
+    tdweight = soverb * tPdfsrc->GetPdfValue(eventVector[i].GetTime().GetTime()) * new_ark.livetime / 86400.;
+
+    //cout << setprecision(20) << endl;
+
+    cout << soverb << " " << soverb/eweight << " " << eweight << " " << eventVector[i].GetParams().energyValue << " " << cout.precision(9) << eventVector[i].GetTime().GetTime() << " " << tPdfsrc->GetPdfValue(eventVector[i].GetTime().GetTime())<< " " << eventVector[i].GetParams().runID << " " << eventVector[i].GetParams().eventID << " " << eventVector[i].GetEquatorialDeg().GetRa() << " " << eventVector[i].GetEquatorialDeg().GetDec() <<  " " << eventVector[i].GetParams().parafitSigmaDeg << " " << spaceang << endl;
+    
+    
+      
+
+    fout << soverb << " " << (eventVector[i].GetTime().GetTime()) << endl;
+    
+    
+    
+    //if (spaceang<10) { l = new TLine(eventVector[i].GetTime().GetTime(), 0., eventVector[i].GetTime().GetTime(), 1./spaceang); }
+    if (tdweight>1e-60) {
+      sprintf(cadena, "%3.8f", eventVector[i].GetTime().GetTime());
+    
+      cout << "**** " << cadena << endl;
+    }
+      l = new TLine(eventVector[i].GetTime().GetTime(), 9., eventVector[i].GetTime().GetTime(), soverb );
+    l->SetLineWidth(1);
+    l->SetLineColor(4);
+    //if ( fabs(eventVector[i].GetTime().GetTime()-54874.7) < 0.1 ) { l->SetLineColor(2); }
+    l->Draw();
+    //}
+  }
+}
+
+double norm = tPdfsrc.GetNorm();
+tPdfsrc->GetHisto()->Scale(5e6*norm);
+tPdfsrc->GetHisto()->SetLineWidth(2);
+tPdfsrc->GetHisto()->SetLineColor(2);
+tPdfsrc->GetHisto()->Draw("same");
+
+leg = new TLegend(0.45,0.75,0.85,0.88);
+leg->AddEntry(l,"IceCube Events","l");
+leg->AddEntry(tPdfsrc->GetHisto(),"Best-Fit Flare","l");
+//leg->AddEntry(ll,"Best-Fit Threshold","l");
+leg->SetFillColor(0);
+leg->Draw();
+
+TString savestr = "Gaus_unblindresult.png";
+c1->SaveAs(savestr);
+
+//DateAxis_forPaper(c1);
+
+}

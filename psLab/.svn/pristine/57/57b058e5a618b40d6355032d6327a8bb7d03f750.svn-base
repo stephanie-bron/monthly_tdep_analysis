@@ -1,0 +1,197 @@
+import matplotlib.pyplot as plt
+from pylab import *
+import numpy
+import sys
+
+#CRAB MODELS AND SENSITIVITIES FOR IC79+IC59+IC40
+
+x = arange(2, 11, 0.01)
+
+j2019 = pow(10,x)*pow(10,x)*pow(10,-8.43862-2.13987*x-pow(10,x)/pow(10,5.76691)*log10(exp(1)))
+f1908 = pow(10,x)*pow(10,x)*pow(10,-8.46417-2.13987*x-pow(10,x)/pow(10,5.76692)*log10(exp(1)))
+f2031 = pow(10,x)*pow(10,x)*pow(10,-8.6052-2.13987*x-pow(10,x)/pow(10,5.76691)*log10(exp(1)))
+f2043 = pow(10,x)*pow(10,x)*pow(10,-8.75264-2.13987*x-pow(10,x)/pow(10,5.76691)*log10(exp(1)))
+f2032 = pow(10,x)*pow(10,x)*pow(10,-8.86801-2.13987*x-pow(10,x)/pow(10,5.76691)*log10(exp(1)))
+f1852 = pow(10,x)*pow(10,x)*pow(10,-8.04067-2.13987*x-pow(10,x)/pow(10,5.76692)*log10(exp(1)))
+
+
+def MilagroFluxCalculator_nu(fluxNorm_g, energyNorm_g, alpha_g, energyCut_g, x):
+  k_g = fluxNorm_g / ( pow(energyNorm_g,-alpha_g) )
+  k_nu = (0.694 - 0.16*alpha_g) * k_g
+  alpha_nu = alpha_g
+  energyCut_nu = 0.59 * energyCut_g
+  k_nu_GeV = k_nu * pow(10, -3 + 3*alpha_nu)
+  energyCut_nu_GeV = energyCut_nu * 1000
+  result = k_nu_GeV*pow(x,-1*alpha_nu)*exp(-sqrt(x/energyCut_nu_GeV))
+  return result
+
+#j2019 = MilagroFluxCalculator_nu(8.7e-15, 20., 2., 29., pow(10, x1)) for x1 in x
+#f1908 = MilagroFluxCalculator_nu(8.8e-15, 20., 2., 24., pow(10, x1)) for x1 in x
+#f2031 = MilagroFluxCalculator_nu(9.8e-15, 20., 2.7, 44., pow(10, x1)) for x1 in x
+#f2043 = MilagroFluxCalculator_nu(3.1e-15, 20., 2., 31., pow(10, x1)) for x1 in x
+#f2032 = MilagroFluxCalculator_nu(3.4e-15, 20., 2., 31., pow(10, x1)) for x1 in x
+#f1852 = MilagroFluxCalculator_nu(5.7e-14, 12., 2., 31., pow(10, x1)) for x1 in x
+
+
+#fVirgo		= pow(10,((-1.12270e+01)+(-1.95487e+00)*x) if (x<=(8.71865e+00)) else ((-1.12270e+01)+(-1.95487e+00)*(8.71865e+00)-(-3.63437e+00)*(8.71865e+00)+(-3.63437e+00)*x))
+#fVirgo          =pow(10, (k = -1.12270e+01-1.95487e+00*x if x<=8.71865e+00 else -1.12270e+01-1.95487e+00*8.71865e+00+3.63437e+00*8.71865e+00-3.63437e+00*x))
+
+#fVirgo          = pow(10,-1.12270e+01-1.95487e+00*x) if x<=8.71865e+00 else pow(10,-1.12270e+01-1.95487e+00*8.71865e+00+3.63437e+00*8.71865e+00-3.63437e+00*x)
+#fVirgo          = [pow(10,x1)*pow(10,x1)*pow(10,-1.12270e+01-1.95487e+00*x1) if x1<=8.71865e+00 else pow(10,x1)*pow(10,x1)*pow(10,-1.12270e+01-1.95487e+00*8.71865e+00+3.63437e+00*8.71865e+00-3.63437e+00*x1) for x1 in x ]
+#for x1 in x:
+  #if x1<=8.71865e+00:
+    #fVirgo.append(pow(10,-1.12270e+01-1.95487e+00*x1))
+  #else:
+    #fVirgo.append(pow(10,-1.12270e+01-1.95487e+00*8.71865e+00+3.63437e+00*8.71865e+00-3.63437e+00*x1)
+p0     =     -1.12270e+01
+p1     =     -1.95487e+00
+p2     =     -3.63437e+00
+p3     =      8.71865e+00
+    
+fileV = open("DataforIceCube/Virgo/NeuFluxB")
+#fVirgo         = [pow(10,x1)*pow(10,x1)*pow(10,p0+p1*x1) if x1<=p3 else pow(10,x1)*pow(10,x1)* pow(10,p0+p1*p3 - p2*p3 + p2*x1) for x1 in x ]
+
+q0     =     -1.30551e+01
+q1     =     -1.95249e+00
+q2     =     -3.60693e+00
+q3     =      8.67377e+00
+
+fileCo = open("DataforIceCube/Coma/NeuFluxB")
+#fComa		= [pow(10,x1)*pow(10,x1)*pow(10,q0+q1*x1) if x1<=q3 else pow(10,x1)*pow(10,x1)* pow(10,q0+q1*q3 - q2*q3 + q2*x1) for x1 in x ]
+
+r0     =     -1.32234e+01
+r1     =     -1.95249e+00
+r2     =     -3.60693e+00
+r3     =      8.67169e+00
+
+fileO = open("DataforIceCube/Ophiuchus/NeuFluxB")
+#fOphiuchus	= [pow(10,x1)*pow(10,x1)*pow(10,r0+r1*x1) if x1<=r3 else pow(10,x1)*pow(10,x1)* pow(10,r0+p1*r3 - r2*r3 + r2*x1) for x1 in x ]
+
+s0     =     -1.27370e+01
+s1     =     -1.95249e+00
+s2     =     -3.60693e+00 
+s3     =      8.67598e+00 
+
+fileP = open("DataforIceCube/Perseus/NeuFluxB")
+#fPerseus	= [pow(10,x1)*pow(10,x1)*pow(10,s0+s1*x1) if x1<=s3 else pow(10,x1)*pow(10,x1)* pow(10,s0+s1*s3 - s2*s3 + s2*x1) for x1 in x ]
+
+t0     =     -1.20376e+01 
+t1     =     -1.95487e+00
+t2     =     -3.63437e+00 
+t3     =      8.71528e+00
+
+fileCe = open("DataforIceCube/Centaurus/NeuFluxB")
+#fCentaurus	= [pow(10,x1)*pow(10,x1)*pow(10,t0+t1*x1) if x1<=t3 else pow(10,x1)*pow(10,x1)* pow(10,t0+t1*t3 - t2*t3 + t2*x1) for x1 in x ]
+
+BaseDir='/home/mrameez/psLab_Debian_64/macro_llh/ic86-I/Stacking/Clusters/DataforIceCube/'
+
+clusters=['Virgo','Coma','Centaurus','Ophiuchus','Perseus']
+models=['B']
+Data={}
+
+# open and plot Model B
+for cluster in clusters:
+        for model in models:
+                name=cluster+'_'+model
+                Data[name]=numpy.genfromtxt('%s/%s/NeuFlux%s' % (BaseDir,cluster,model))
+
+# assume fluxes are column 4 - plot fluxes
+FluxSums={}
+
+for model in models:
+        FluxSum=numpy.zeros(len(Data['Virgo_%s' % (model)][:,3]))
+        for cluster in clusters:
+                name=cluster+'_'+model
+                En=Data[name][:,0]
+                Flux=Data[name][:,3]
+                FluxSum+=Flux
+                #pylab.loglog(En,Flux*En**2,label=name)
+
+        FluxSums[model]=FluxSum
+
+        #pylab.loglog(En,FluxSum*En**2,label='Sum')
+        #pylab.legend()
+        #pylab.xlim(1e3,1e11)
+        #pylab.ylim(1e-13,1e-5)
+        #pylab.xlabel('Energy')
+        #pylab.ylabel('E^2 x Flux')
+        #pylab.savefig('Clusters_%s.png' %(model))
+        #pylab.show()
+    
+#total2 = [1e-3*42.57*(a+b+c+d+e) for a,b,c,d,e in zip(fVirgo, fComa , fOphiuchus , fPerseus , fCentaurus)]
+
+
+#upperlimlowbound2 = [6.17*0.91045*x1 for x1 in total2]
+#upperlimuppbound2 = [6.17*1.08955*x1 for x1 in total2]
+
+
+    
+total = 1e-3 * (j2019 + f1908 + f2031 + f2043 + f2032 + f1852)
+upperlimit = 1.97826 * total*(x> 2.9)*(x<5.41)
+upperlimlowbound = 1.84*0.91045*total
+upperlimuppbound = 1.84*1.08955*total
+
+left, width = 0.15, 0.75
+bottom, height = 0.15, 0.75
+
+mainplot = [left, bottom, width, height]
+
+ax = axes(mainplot)
+
+#x = [pow(10,xi) for xi in x]
+
+print x
+
+ax.plot(x, total, 'black', lw=2, label=" Total predicted fluxes")
+ax.plot(x, upperlimit,'k--', lw=3, label="Upper Limit (90 % C.L.)")
+#ax.fill_between(x, upperlimlowbound, upperlimuppbound,alpha=0.5, facecolor='red', interpolate=True)
+
+print En
+
+upperlimit2 = [6.30 * x1 for x1 in FluxSum/70.47216*En**2]*(log10(En) >=3.28)*(log10(En)<6.88)
+
+ax.plot(log10(En), FluxSum/70.47216*En**2, 'b',lw=2 )
+ax.plot(log10(En), upperlimit2, 'b--', lw=3 )
+
+
+ax.set_xlabel("${\log}_{10}$ [$E_{\\"+"nu}$ (GeV)]", fontsize=23)
+#ax.set_xlabel("E$_{\\"+"nu}$ (GeV)", fontsize=23)
+ax.set_ylabel("E$^{2}$dN/dE (TeV cm$^{-2}$ s$^{-1}$)", fontsize=23)
+
+ax.set_yscale('log')
+#ax.set_xscale('log')
+ax.set_ylim(1e-13, 1e-10)
+ax.set_xlim(2., 9.)
+
+t1 = text(0.45, 0.75,'Milagro 6 (Halzen et al)', horizontalalignment='center', verticalalignment='center', transform = ax.transAxes, fontsize=20)
+t2 = text(0.6, 0.38,'Galaxy Clusters\n(Model B)', horizontalalignment='left', verticalalignment='center', transform = ax.transAxes, fontsize=20, color="blue")
+
+
+leg = legend(loc="upper right")
+grid()
+
+setp(ax.get_xticklabels(), fontsize=20)
+setp(ax.get_yticklabels(), fontsize=20)
+setp(leg.get_texts(), fontsize=20)
+"""
+hess = text(3.0, 4e-11, 'Kappes et al.')
+setp(hess, size='large', color='g', style='italic')
+
+
+#b = text(4.9, 6e-11, 'Link & Burgio (1)')
+#setp(b, size='large', color='r', style='italic')
+
+
+b2 = text(4.9, 1.5e-11, 'Link & Burgio')
+setp(b2, size='large', color='blue', style='italic')
+
+bl = text(5.0, 0.5e-12, 'Amato et al.')
+setp(bl, size='large', color='black', style='italic')
+
+grid()
+
+legend(loc='upper right', scatterpoints=1)
+
+"""
+savefig("milagrolog.eps")
+show()

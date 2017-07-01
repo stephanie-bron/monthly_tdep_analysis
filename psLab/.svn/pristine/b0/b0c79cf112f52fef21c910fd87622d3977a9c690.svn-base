@@ -1,0 +1,40 @@
+SQLCreator(){
+
+  ofstream fout("TABLE_CREATOR.sql");
+  
+  
+  fout << "CREATE TABLE skymap (BIN int not null unique key, BINI int, BINJ int, RA double, D double, SIG double);" << endl;
+  
+  const char *ins = "INSERT INTO skymap VALUES ('%i','%i', '%i', '%f', '%f', '%f');";
+  
+  
+  char sql[100];
+  
+  TFile fin("/net/user/mfbaker/psLab/trunk/macro_llh/ic59/maps/integrated/mapIC4059_unblind_newEZ.root");
+  
+  TH2D *hAS = fin.Get("hAllSkyCoarse");
+  
+  int nbinsx = hAS->GetNbinsX();
+  int nbinsy = hAS->GetNbinsY();
+
+  int bin = 1;
+
+  for(int i = 1; i <= nbinsx; i++)
+    {
+      for(int j = 1; j <= nbinsy; j++)
+	{
+	  double x = hAS->GetXaxis()->GetBinCenter(i);
+	  double y = hAS->GetYaxis()->GetBinCenter(j);
+	  double content = hAS->GetBinContent(i,j);
+	  
+	  sprintf(sql, ins, bin, i, j, x , y, content);
+	  bin++;
+	  
+	  //cout << sql << endl;
+	  fout << sql << endl;
+	  
+	  
+	}
+      
+    }
+}
