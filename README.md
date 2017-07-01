@@ -4,9 +4,12 @@ This project is meant to work on the cobalt machines because it needs files stor
 
 To run the code:
 
-  First source the environement: source setup.sh
+  First source the environement: 
+  
+  source setup.sh
  
   Then:
+    
     cd pysLab
     
     python pysLab.py
